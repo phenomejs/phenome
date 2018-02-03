@@ -159,6 +159,7 @@
 ```javascript
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import classNames from 'classnames'
 
 import Utils from '../utils/utils';
 import Mixins from '../utils/mixins';
@@ -197,7 +198,7 @@ export class F7Button extends Component {
         }
     
         const linkEl = (
-            <a onClick={this.onClick.bind(this)} {...this.attrs}>
+            <a onClick={this.onClick.bind(this)} {...this.attrs} className={classNames({ ...this.classes, button: true })}>
                 {[iconEl, textEl, <slot />]}
             </a>
         );
