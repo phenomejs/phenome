@@ -26,7 +26,7 @@
 import Mixins from '../utils/mixins';
 
 export const F7Badge = props => (
-    <span class="badge" classes={ {...Misinx.colorClasses(props)} }>
+    <span class="badge" classes={ {...Mixins.colorClasses(props)} }>
         {props.children}
     </span>
 );
