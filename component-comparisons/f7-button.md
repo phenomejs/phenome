@@ -199,7 +199,7 @@ export class F7Button extends Component {
     
         const linkEl = (
             <a onClick={this.onClick.bind(this)} {...this.attrs} className={classNames({ ...this.classes, button: true })}>
-                {[iconEl, textEl, <slot />]}
+                {[iconEl, textEl, ...React.Children.toArray(this.props.children)]}
             </a>
         );
     
