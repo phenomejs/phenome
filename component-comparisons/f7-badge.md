@@ -24,9 +24,10 @@
 
 ```javascript
 import Mixins from '../utils/mixins';
+import classNames from 'classnames';
 
 export const F7Badge = props => (
-    <span class="badge" classes={ {...Mixins.colorClasses(props)} }>
+    <span className={classNames('badge', {...Mixins.colorClasses(props)}) }>
         {props.children}
     </span>
 );
