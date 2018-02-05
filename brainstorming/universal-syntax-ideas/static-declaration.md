@@ -1,6 +1,6 @@
 # Static Declaration
 
-One more option is to use static object declaration. Because Vue as component declaration actually uses same static object "props" object, on other hand React and WebComponent use JavaScript classes. So i can assume and option to use static declaration which is probably will be easier to process with compiler with output to both static and class
+One more option is to use static object declaration. Because Vue, as component declaration, actually uses same static object, on other hand React and WebComponent use JavaScript classes. So i can suggest an option to use static declaration which is probably will be easier to process with compiler with output to both static and class.
 
 ## F7 Badge
 
