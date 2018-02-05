@@ -255,7 +255,7 @@ As i understood setting initial state in React is done via `this.state = {}` in 
 }
 ```
 
-So we need to comeup here with something common or to pick the one from React or from Vue. Just need to think which one will easier to compile to another one
+So we need to come up here with something common or to pick the one from React or from Vue. Just need to think which one will be easier to compile to another one
 
 
 ## Element Reference
