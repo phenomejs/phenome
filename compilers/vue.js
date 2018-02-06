@@ -1,5 +1,5 @@
 /* eslint no-param-reassign: "off" */
-const acorn = require('acorn');
+const acorn = require('acorn-jsx');
 const walk = require('acorn/dist/walk');
 const escodegen = require('escodegen');
 
@@ -111,6 +111,9 @@ function compile(componentString) {
     allowHashBang: false,
     locations: false,
     preserveParens: true,
+    plugins: {
+      jsx: { allowNamespaces: false },
+    },
   });
   walk.simple(ast, {
     ExportDefaultDeclaration(node) {

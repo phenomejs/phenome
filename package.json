@@ -18,6 +18,7 @@
   "homepage": "https://github.com/nolimits4web/universal-component#readme",
   "devDependencies": {
     "acorn": "^5.4.1",
+    "acorn-jsx": "^4.1.1",
     "escodegen": "^1.9.0",
     "eslint": "^4.17.0",
     "eslint-config-airbnb": "^16.1.0",
