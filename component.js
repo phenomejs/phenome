@@ -5,9 +5,25 @@ function doSomething() {
 }
 
 export default {
-  name: 'my-component',
+  name: 'my-button',
   props: {
     checked: Boolean,
+    selected: {
+      type: Boolean,
+      default: true,
+    },
+    title: {
+      type: String,
+      default: 'Ta-Da!',
+      required: true,
+    },
+    age: [String, Number, Array],
+    date: {
+      type: [String, Number, Date],
+      required: true,
+    },
+    callback: Function,
+    formData: window.FormData,
   },
   state(props, secondArgument) {
     const foo = props.checked ? 'bar-checked' : 'bar';
@@ -19,11 +35,8 @@ export default {
     };
   },
   render() {
-    const data = {
-      class: ['b', 'c'],
-    };
     return (
-        <div class={{test: true}} data-id="2" checked onClick={this.onClick}>Hello</div>
+      <div class={{test: true}} data-id="2" checked onClick={this.onClick}><p>Hello {this.state.counter} times!</p></div>
     );
   },
   methods: {

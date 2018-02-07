@@ -5,9 +5,25 @@ function doSomething() {
 }
 
 export default {
-  name: 'my-component',
+  name: 'my-button',
   props: {
-    checked: Boolean
+    checked: Boolean,
+    selected: {
+      type: Boolean,
+      default: true
+    },
+    title: {
+      type: String,
+      default: 'Ta-Da!',
+      required: true
+    },
+    age: [String, Number, Array],
+    date: {
+      type: [String, Number, Date],
+      required: true
+    },
+    callback: Function,
+    formData: window.FormData
   },
 
   data(secondArgument) {
@@ -22,10 +38,7 @@ export default {
 
   render() {
     const h = arguments[0];
-    const data = {
-      class: ['b', 'c']
-    };
-    return h("li", {
+    return h("div", {
       "class": {
         test: true
       },
@@ -36,7 +49,7 @@ export default {
       on: {
         "click": this.onClick
       }
-    }, ["Hello"]);
+    }, [h("p", null, ["Hello ", this.state.counter, " times!"])]);
   },
 
   methods: {

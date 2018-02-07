@@ -4,6 +4,10 @@
 const babel = require('@babel/core');
 const generate = require('@babel/generator').default;
 
+function transform(code) {
+  return babel.transform(code).ast;
+}
+
 const addComputed = `
   const obj = {
     computed: {
@@ -55,7 +59,7 @@ function modifyExport(declaration) {
       if (prop.params && prop.params.length > 0) {
         prop.params.splice(0, 1);
       }
-      prop.body.body.unshift(babel.transform('const props = this;').ast.program.body[0]);
+      prop.body.body.unshift(transform('const props = this;').program.body[0]);
     }
     if (prop.key && prop.key.name === 'computed') computed = prop;
     if (prop.key && prop.key.name === 'methods') methods = prop;
@@ -85,7 +89,7 @@ function modifyExport(declaration) {
   });
 
   // Add/Modify Computed Props
-  const computedObjToAdd = babel.transform(addComputed).ast.program.body[0].declarations[0].init.properties[0];
+  const computedObjToAdd = transform(addComputed).program.body[0].declarations[0].init.properties[0];
   if (computed) {
     const computedPropsToAdd = computedObjToAdd.value.properties;
     computed.value.properties.push(...computedPropsToAdd);
@@ -94,7 +98,7 @@ function modifyExport(declaration) {
   }
 
   // Add/Modify Methods Props
-  const methodsObjToAdd = babel.transform(addMethods).ast.program.body[0].declarations[0].init.properties[0];
+  const methodsObjToAdd = transform(addMethods).program.body[0].declarations[0].init.properties[0];
   if (methods) {
     const methodPropsToAdd = methodsObjToAdd.value.properties;
     methods.value.properties.push(...methodPropsToAdd);

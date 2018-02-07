@@ -8,7 +8,9 @@ const componentString = fs.readFileSync('./component.js', 'utf8');
 vueCompiler(componentString, (code) => {
   fs.writeFileSync('./component.vue.js', code, 'utf8');
 });
+reactCompiler(componentString, (code) => {
+  fs.writeFileSync('./component.react.js', code, 'utf8');
+});
 
-fs.writeFileSync('./component.react.js', reactCompiler(componentString), 'utf8');
-fs.writeFileSync('./component.web.js', webComponentCompiler(componentString), 'utf8');
+// fs.writeFileSync('./component.web.js', webComponentCompiler(componentString), 'utf8');
 
