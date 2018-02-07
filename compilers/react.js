@@ -22,7 +22,7 @@ class {{name}} extends React.Component {
   }
   dispatchEvent(event, ...args) {
     const self = this;
-    if (!event || !event.trim.length) return;
+    if (!event || !event.trim().length) return;
     const eventName = (event || '')
       .trim()
       .split(/[ -_:]/)
