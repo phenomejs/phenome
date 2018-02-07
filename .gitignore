@@ -57,3 +57,8 @@ typings/
 # dotenv environment variables file
 .env
 
+test/app-react.js
+test/app-vue.js
+test/src/test-component-vue.js
+test/src/test-component-react.js
+test/src/test-component-web.js
