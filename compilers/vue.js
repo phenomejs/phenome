@@ -1,7 +1,8 @@
 /* eslint no-param-reassign: "off" */
-const acorn = require('acorn-jsx');
-const walk = require('acorn/dist/walk');
-const escodegen = require('escodegen');
+/* eslint prefer-destructuring: "off" */
+/* eslint import/no-extraneous-dependencies: "off" */
+const babel = require('@babel/core');
+const generate = require('@babel/generator').default;
 
 const addComputed = `
   const obj = {
@@ -50,10 +51,11 @@ function modifyExport(declaration) {
     // Rename/Modify State
     if (prop.key && prop.key.name === 'state') {
       prop.key.name = 'data';
-      if (prop.value.params && prop.value.params.length > 0) {
-        prop.value.params.splice(0, 1);
+      // console.log(prop);
+      if (prop.params && prop.params.length > 0) {
+        prop.params.splice(0, 1);
       }
-      prop.value.body.body.unshift(acorn.parse('const props = this;').body[0]);
+      prop.body.body.unshift(babel.transform('const props = this;').ast.program.body[0]);
     }
     if (prop.key && prop.key.name === 'computed') computed = prop;
     if (prop.key && prop.key.name === 'methods') methods = prop;
@@ -83,8 +85,7 @@ function modifyExport(declaration) {
   });
 
   // Add/Modify Computed Props
-
-  const computedObjToAdd = acorn.parse(addComputed).body[0].declarations[0].init.properties[0];
+  const computedObjToAdd = babel.transform(addComputed).ast.program.body[0].declarations[0].init.properties[0];
   if (computed) {
     const computedPropsToAdd = computedObjToAdd.value.properties;
     computed.value.properties.push(...computedPropsToAdd);
@@ -93,7 +94,7 @@ function modifyExport(declaration) {
   }
 
   // Add/Modify Methods Props
-  const methodsObjToAdd = acorn.parse(addMethods).body[0].declarations[0].init.properties[0];
+  const methodsObjToAdd = babel.transform(addMethods).ast.program.body[0].declarations[0].init.properties[0];
   if (methods) {
     const methodPropsToAdd = methodsObjToAdd.value.properties;
     methods.value.properties.push(...methodPropsToAdd);
@@ -102,32 +103,31 @@ function modifyExport(declaration) {
   }
 }
 
-function compile(componentString) {
-  const ast = acorn.parse(componentString, {
-    sourceType: 'module',
-    allowReserved: false,
-    allowReturnOutsideFunction: false,
-    allowImportExportEverywhere: false,
-    allowHashBang: false,
-    locations: false,
-    preserveParens: true,
-    plugins: {
-      jsx: { allowNamespaces: false },
+function compile(componentString, callback) {
+  const transformResult = babel.transform(
+    componentString,
+    {
+      sourceType: 'module',
+      code: false,
+      plugins: [
+        '@babel/plugin-syntax-jsx',
+        'transform-vue-jsx',
+      ],
     },
-  });
-  walk.simple(ast, {
-    ExportDefaultDeclaration(node) {
+  );
+
+  const ast = transformResult.ast;
+  ast.program.body.forEach((node) => {
+    if (node.type === 'ExportDefaultDeclaration') {
       modifyExport(node.declaration);
-    },
+    }
   });
-  return escodegen.generate(ast, {
-    format: {
-      indent: {
-        style: '  ',
-      },
-      quotes: 'single',
-    },
-  });
+
+  const generateResult = generate(ast, {});
+
+  const code = generateResult.code;
+
+  callback(code);
 }
 
 module.exports = compile;

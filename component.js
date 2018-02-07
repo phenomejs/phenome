@@ -18,6 +18,14 @@ export default {
       items: [],
     };
   },
+  render() {
+    const data = {
+      class: ['b', 'c'],
+    };
+    return (
+        <div class={{test: true}} data-id="2" checked onClick={this.onClick}>Hello</div>
+    );
+  },
   methods: {
     incremenent() {
       const self = this;
