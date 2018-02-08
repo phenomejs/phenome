@@ -245,7 +245,7 @@ function compile(componentString, callback) {
       code: false,
       plugins: [[
         '@babel/plugin-transform-react-jsx', {
-          pragma: 'React.createElement'
+          pragma: '__c'
         }
       ]],
     },
