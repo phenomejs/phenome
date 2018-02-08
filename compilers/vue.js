@@ -10,10 +10,7 @@ function transform(code) {
 const getPropsFunctionCode = `
 function __getVueComponentProps(component) {
   const props = {};
-  const propsKeys = Object.keys(component.$options.propsData) || [];
-  propsKeys.forEach((propKey) => {
-    props[propKey] = component[propKey];
-  })
+  {{props}}
   return props;
 }
 `;
@@ -60,9 +57,24 @@ function state() {
   return { state };
 }
 `;
+function getComponentProps(declaration) {
+  // Collect Props
+  const propNames = [];
+  declaration.properties.forEach((prop) => {
+    if (prop.key && prop.key.name === 'props') {
+      prop.value.properties.forEach((propertyNode) => {
+        propNames.push(propertyNode.key.name);
+      });
+    }
+  });
+  const propsString = propNames.map((propName) => `if (typeof component.${propName} !== 'undefined') props.${propName} = component.${propName}`).join(';\n');
+  return propsString;
+}
 function modifyExport(declaration) {
   let computed;
   let methods;
+
+
   declaration.properties.forEach((prop) => {
     // Rename/Modify State
     if (prop.key && prop.key.name === 'state') {
@@ -134,11 +146,15 @@ function compile(componentString, callback) {
   );
 
   const ast = transformResult.ast;
-  const getPropsFunctionNode = transform(getPropsFunctionCode).program.body[0];
+
   ast.program.body.forEach((node) => {
     if (node.type === 'ExportDefaultDeclaration') {
       modifyExport(node.declaration);
-      ast.program.body.splice(ast.program.body.indexOf(node), 0, getPropsFunctionNode);
+      const propsString = getComponentProps(node.declaration);
+      if (propsString && propsString.length) {
+        const getPropsFunctionNode = transform(getPropsFunctionCode.replace(/{{props}}/, propsString)).program.body[0];
+        ast.program.body.splice(ast.program.body.indexOf(node), 0, getPropsFunctionNode);
+      }
     }
   });
 
