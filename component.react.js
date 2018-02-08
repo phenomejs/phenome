@@ -37,14 +37,14 @@ class MyButton extends React.Component {
   }
 
   render() {
-    return React.createElement("div", {
+    return __c("div", {
       "class": {
         test: true
       },
       "data-id": "2",
       checked: true,
       onClick: this.onClick
-    }, React.createElement("p", null, "Hello ", this.state.counter, " times!"));
+    }, __c("p", null, "Hello ", this.state.counter, " times!"));
   }
 
   incremenent() {
@@ -106,3 +106,14 @@ MyButton.propTypes = {
 };
 
 export default MyButton;
+
+const __c = (name, props) => {
+  props.forEach(prop => {
+    switch (prop) {
+      case 'class':
+        props[className] = props['class'];
+        delete props['class'];
+        break;
+    }
+  });
+};

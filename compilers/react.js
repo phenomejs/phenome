@@ -47,6 +47,31 @@ const defaultPropsCode = `
 {{name}}.defaultProps = {};
 `;
 
+const createElementInterceptorCode = `
+const __c = (name, props, children) => {
+  if (props) {
+    Object.keys(props).forEach(propName => {
+      let newPropName;
+
+      if (propName === 'class') {
+        newPropName = 'className';
+      } else if (propName.substring(0, 3) !== 'data') {
+        newPropName = propName.trim().split(/[-_:]/).map(word => word[0].toLowerCase() + word.substring(1)).join('');
+      }
+
+      if (propName !== newPropName) {
+          props[newPropName] = props[propName];
+          delete props[propName];
+      }
+    });
+  }
+
+  const r = react || React;
+
+  return r.createElement(name, props, children);
+};
+`;
+
 function getPropType(type) {
   function map(value) {
     if (value === 'String') return 'string';
@@ -218,9 +243,11 @@ function compile(componentString, callback) {
     {
       sourceType: 'module',
       code: false,
-      plugins: [
-        '@babel/plugin-transform-react-jsx',
-      ],
+      plugins: [[
+        '@babel/plugin-transform-react-jsx', {
+          pragma: 'React.createElement'
+        }
+      ]],
     },
   );
 
@@ -263,6 +290,8 @@ function compile(componentString, callback) {
   }
 
   ast.program.body.push(reactClassExportNode);
+
+  ast.program.body.push(transform(createElementInterceptorCode).program.body[0]);
 
   const generateResult = generate(ast, {});
 

@@ -66,3 +66,25 @@ MyComponent.propTypes = {
 };
 
 export default MyComponent;
+
+const __c = (name, props, children) => {
+  if (props) {
+    Object.keys(props).forEach(propName => {
+      let newPropName;
+
+      if (propName === 'class') {
+        newPropName = 'className';
+      } else if (propName.substring(0, 3) !== 'data') {
+        newPropName = propName.trim().split(/[-_:]/).map(word => word[0].toLowerCase() + word.substring(1)).join('');
+      }
+
+      if (propName !== newPropName) {
+        props[newPropName] = props[propName];
+        delete props[propName];
+      }
+    });
+  }
+
+  const r = react || React;
+  return r.createElement(name, props, children);
+};
