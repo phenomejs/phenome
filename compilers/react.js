@@ -55,8 +55,10 @@ const __c = (name, props, ...children) => {
 
       if (propName === 'class') {
         newPropName = 'className';
-      } else if (propName.substring(0, 3) !== 'data') {
+      } else if (propName.substring(0, 4) !== 'data') {
         newPropName = propName.trim().split(/[-_:]/).map(word => word[0].toLowerCase() + word.substring(1)).join('');
+      } else {
+        newPropName = propName;
       }
 
       if (propName !== newPropName) {
