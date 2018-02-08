@@ -4,6 +4,22 @@ function doSomething() {
   const foo = 'bar';
 }
 
+function __getVueComponentProps(component) {
+  const props = {};
+  if (typeof component.checked !== 'undefined') props.checked = component.checked;
+  if (typeof component.selected !== 'undefined') props.selected = component.selected;
+  if (typeof component.title !== 'undefined') props.title = component.title;
+  if (typeof component.age !== 'undefined') props.age = component.age;
+  if (typeof component.date !== 'undefined') props.date = component.date;
+  if (typeof component.callback !== 'undefined') props.callback = component.callback;
+  if (typeof component.formData !== 'undefined') props.formData = component.formData;
+  return props;
+}
+
+function __transformVueJSXProps(data) {
+  return data;
+}
+
 export default {
   name: 'my-button',
   props: {
@@ -27,18 +43,25 @@ export default {
   },
 
   data(secondArgument) {
-    const props = this;
-    const foo = props.checked ? 'bar-checked' : 'bar';
+    const props = __getVueComponentProps(this);
+
+    const state = (() => {
+      const foo = props.checked ? 'bar-checked' : 'bar';
+      return {
+        foo,
+        counter: 0,
+        items: []
+      };
+    })();
+
     return {
-      foo,
-      counter: 0,
-      items: []
+      state
     };
   },
 
   render() {
     const h = arguments[0];
-    return h("div", {
+    return h("div", __transformVueJSXProps({
       "class": {
         test: true
       },
@@ -49,7 +72,7 @@ export default {
       on: {
         "click": this.onClick
       }
-    }, [h("p", null, ["Hello ", this.state.counter, " times!"])]);
+    }), [h("p", __transformVueJSXProps(null), ["Hello ", this.state.counter, " times!"])]);
   },
 
   methods: {
@@ -86,7 +109,7 @@ export default {
       }
 
       Object.keys(newState).forEach(key => {
-        self.$set(self, key, newState[key]);
+        self.$set(self.state, key, newState[key]);
       });
       if (typeof callback === 'function') callback();
     }
@@ -104,11 +127,7 @@ export default {
     },
 
     props() {
-      return this;
-    },
-
-    state() {
-      return this;
+      return __getVueComponentProps(this);
     }
 
   },

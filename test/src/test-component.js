@@ -20,7 +20,7 @@ export default {
   render() {
     return (
       <div>
-        <h2>{this.props.compiler}</h2>
+        <h2 className="class-test" maxLength="3" data-id="4" data-tab-id="5">{this.props.compiler}</h2>
         <p>Hello {this.props.name}! I've been clicked <b>{this.state.counter}</b> times</p>
         <p>
           <button onClick={this.increment.bind(this)}>Increment!</button>

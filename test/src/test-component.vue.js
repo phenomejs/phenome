@@ -1,10 +1,13 @@
 function __getVueComponentProps(component) {
   const props = {};
-  const propsKeys = Object.keys(component.$options.propsData) || [];
-  propsKeys.forEach(propKey => {
-    props[propKey] = component[propKey];
-  });
+  if (typeof component.name !== 'undefined') props.name = component.name;
+  if (typeof component.countFrom !== 'undefined') props.countFrom = component.countFrom;
+  if (typeof component.compiler !== 'undefined') props.compiler = component.compiler;
   return props;
+}
+
+function __transformVueJSXProps(data) {
+  return data;
 }
 
 export default {
@@ -38,15 +41,22 @@ export default {
 
   render() {
     const h = arguments[0];
-    return h("div", null, [h("h2", null, [this.props.compiler]), h("p", null, ["Hello ", this.props.name, "! I've been clicked ", h("b", null, [this.state.counter]), " times"]), h("p", null, [h("button", {
+    return h("div", __transformVueJSXProps(null), [h("h2", __transformVueJSXProps({
+      attrs: {
+        className: "class-test",
+        maxLength: "3",
+        "data-id": "4",
+        "data-tab-id": "5"
+      }
+    }), [this.props.compiler]), h("p", __transformVueJSXProps(null), ["Hello ", this.props.name, "! I've been clicked ", h("b", __transformVueJSXProps(null), [this.state.counter]), " times"]), h("p", __transformVueJSXProps(null), [h("button", __transformVueJSXProps({
       on: {
         "click": this.increment.bind(this)
       }
-    }, ["Increment!"])]), h("p", null, [h("button", {
+    }), ["Increment!"])]), h("p", __transformVueJSXProps(null), [h("button", __transformVueJSXProps({
       on: {
         "click": this.emitClick.bind(this)
       }
-    }, ["Emit Click Event"]), " (check console)"]), h("p", null, ["But time is ticking ", this.state.seconds])]);
+    }), ["Emit Click Event"]), " (check console)"]), h("p", __transformVueJSXProps(null), ["But time is ticking ", this.state.seconds])]);
   },
 
   methods: {

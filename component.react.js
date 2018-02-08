@@ -2,6 +2,29 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import test from 'test';
 
+function __transformReactJSXProps(props) {
+  if (props) {
+    Object.keys(props).forEach(propName => {
+      let newPropName;
+
+      if (propName === 'class') {
+        newPropName = 'className';
+      } else if (propName.substring(0, 4) !== 'data') {
+        newPropName = propName.trim().split(/[-_:]/).map(word => word[0].toLowerCase() + word.substring(1)).join('');
+      } else {
+        newPropName = propName;
+      }
+
+      if (propName !== newPropName) {
+        props[newPropName] = props[propName];
+        delete props[propName];
+      }
+    });
+  }
+
+  return props;
+}
+
 function doSomething() {
   const foo = 'bar';
 }
@@ -37,14 +60,14 @@ class MyButton extends React.Component {
   }
 
   render() {
-    return __c("div", {
+    return React.createElement("div", __transformReactJSXProps({
       "class": {
         test: true
       },
       "data-id": "2",
       checked: true,
       onClick: this.onClick
-    }, __c("p", null, "Hello ", this.state.counter, " times!"));
+    }), React.createElement("p", __transformReactJSXProps(null), "Hello ", this.state.counter, " times!"));
   }
 
   incremenent() {
@@ -106,14 +129,3 @@ MyButton.propTypes = {
 };
 
 export default MyButton;
-
-const __c = (name, props) => {
-  props.forEach(prop => {
-    switch (prop) {
-      case 'class':
-        props[className] = props['class'];
-        delete props['class'];
-        break;
-    }
-  });
-};

@@ -1,4 +1,28 @@
 import React from 'react';
+
+function __transformReactJSXProps(props) {
+  if (props) {
+    Object.keys(props).forEach(propName => {
+      let newPropName;
+
+      if (propName === 'class') {
+        newPropName = 'className';
+      } else if (propName.substring(0, 4) !== 'data') {
+        newPropName = propName.trim().split(/[-_:]/).map(word => word[0].toLowerCase() + word.substring(1)).join('');
+      } else {
+        newPropName = propName;
+      }
+
+      if (propName !== newPropName) {
+        props[newPropName] = props[propName];
+        delete props[propName];
+      }
+    });
+  }
+
+  return props;
+}
+
 import PropTypes from 'prop-types';
 
 class MyComponent extends React.Component {
@@ -22,11 +46,16 @@ class MyComponent extends React.Component {
   }
 
   render() {
-    return __c("div", null, __c("h2", null, this.props.compiler), __c("p", null, "Hello ", this.props.name, "! I've been clicked ", __c("b", null, this.state.counter), " times"), __c("p", null, __c("button", {
+    return React.createElement("div", __transformReactJSXProps(null), React.createElement("h2", __transformReactJSXProps({
+      className: "class-test",
+      maxLength: "3",
+      "data-id": "4",
+      "data-tab-id": "5"
+    }), this.props.compiler), React.createElement("p", __transformReactJSXProps(null), "Hello ", this.props.name, "! I've been clicked ", React.createElement("b", __transformReactJSXProps(null), this.state.counter), " times"), React.createElement("p", __transformReactJSXProps(null), React.createElement("button", __transformReactJSXProps({
       onClick: this.increment.bind(this)
-    }, "Increment!")), __c("p", null, __c("button", {
+    }), "Increment!")), React.createElement("p", __transformReactJSXProps(null), React.createElement("button", __transformReactJSXProps({
       onClick: this.emitClick.bind(this)
-    }, "Emit Click Event"), " (check console)"), __c("p", null, "But time is ticking ", this.state.seconds));
+    }), "Emit Click Event"), " (check console)"), React.createElement("p", __transformReactJSXProps(null), "But time is ticking ", this.state.seconds));
   }
 
   emitClick(event) {
@@ -66,24 +95,3 @@ MyComponent.propTypes = {
 };
 
 export default MyComponent;
-
-const __c = (name, props, children) => {
-  if (props) {
-    Object.keys(props).forEach(propName => {
-      let newPropName;
-
-      if (propName === 'class') {
-        newPropName = 'className';
-      } else if (propName.substring(0, 3) !== 'data') {
-        newPropName = propName.trim().split(/[-_:]/).map(word => word[0].toLowerCase() + word.substring(1)).join('');
-      }
-
-      if (propName !== newPropName) {
-        props[newPropName] = props[propName];
-        delete props[propName];
-      }
-    });
-  }
-
-  return React.createElement(name, props, children);
-};

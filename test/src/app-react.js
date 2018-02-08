@@ -6,6 +6,7 @@ import MyComponent from './test-component.react';
 ReactDOM.render(
   React.createElement(MyComponent, {
     name: 'Ben',
+    className: 'extra-class',
     countFrom: 10,
     compiler: 'React',
     onClick(e) {
