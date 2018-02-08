@@ -4,6 +4,7 @@
 const babel = require('@babel/core');
 const generate = require('@babel/generator').default;
 const toCamelCase = require('../utils/to-camel-case.js');
+const walk = require('babylon-walk');
 
 function transform(code) {
   return babel.transform(code).ast;
@@ -47,8 +48,8 @@ const defaultPropsCode = `
 {{name}}.defaultProps = {};
 `;
 
-const createElementInterceptorCode = `
-const __c = (name, props, ...children) => {
+const transformReactJsxFunctionCode = `
+function __transformReactJSXProps (props) {
   if (props) {
     Object.keys(props).forEach(propName => {
       let newPropName;
@@ -68,7 +69,7 @@ const __c = (name, props, ...children) => {
     });
   }
 
-  return React.createElement(name, props, ...children);
+  return props;
 };
 `;
 
@@ -243,11 +244,9 @@ function compile(componentString, callback) {
     {
       sourceType: 'module',
       code: false,
-      plugins: [[
-        '@babel/plugin-transform-react-jsx', {
-          pragma: '__c'
-        }
-      ]],
+      plugins: [
+        '@babel/plugin-transform-react-jsx',
+      ],
     },
   );
 
@@ -289,9 +288,32 @@ function compile(componentString, callback) {
     ast.program.body.push(propTypesNode);
   }
 
-  ast.program.body.push(reactClassExportNode);
+  // Add JSX Transforms
+  const transformReactJsxFunctionNode = transform(transformReactJsxFunctionCode).program.body[0];
+  ast.program.body.splice(ast.program.body.indexOf(reactClassNode) - 1, 0, transformReactJsxFunctionNode);
+  walk.simple(ast.program, {
+    // eslint-disable-next-line
+    CallExpression(node) {
+      if (
+        node.callee.type === 'MemberExpression' &&
+        node.callee.object.name === 'React' &&
+        node.callee.property.name === 'createElement' &&
+        node.arguments &&
+        node.arguments[1]
+      ) {
+        node.arguments[1] = {
+          type: 'CallExpression',
+          callee: {
+            type: 'Identifier',
+            name: '__transformReactJSXProps',
+          },
+          arguments: [node.arguments[1]],
+        };
+      }
+    },
+  });
 
-  ast.program.body.push(transform(createElementInterceptorCode).program.body[0]);
+  ast.program.body.push(reactClassExportNode);
 
   const generateResult = generate(ast, {});
 

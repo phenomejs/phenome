@@ -3,10 +3,17 @@
 /* eslint import/no-extraneous-dependencies: "off" */
 const babel = require('@babel/core');
 const generate = require('@babel/generator').default;
+const walk = require('babylon-walk');
 
 function transform(code) {
   return babel.transform(code).ast;
 }
+
+const transformVueJsxFunctionCode = `
+function __transformVueJSXProps(data) {
+  return data;
+}
+`;
 const getPropsFunctionCode = `
 function __getVueComponentProps(component) {
   const props = {};
@@ -73,7 +80,6 @@ function getComponentProps(declaration) {
 function modifyExport(declaration) {
   let computed;
   let methods;
-
 
   declaration.properties.forEach((prop) => {
     // Rename/Modify State
@@ -149,14 +155,35 @@ function compile(componentString, callback) {
 
   ast.program.body.forEach((node) => {
     if (node.type === 'ExportDefaultDeclaration') {
+      // Modify Export
       modifyExport(node.declaration);
+      // Add props
       const propsString = getComponentProps(node.declaration);
       if (propsString && propsString.length) {
         const getPropsFunctionNode = transform(getPropsFunctionCode.replace(/{{props}}/, propsString)).program.body[0];
         ast.program.body.splice(ast.program.body.indexOf(node), 0, getPropsFunctionNode);
       }
+      // Add JSX Transforms
+      const transformVueJsxFunctionNode = transform(transformVueJsxFunctionCode).program.body[0];
+      ast.program.body.splice(ast.program.body.indexOf(node), 0, transformVueJsxFunctionNode);
+      walk.simple(node, {
+        // eslint-disable-next-line
+        CallExpression(node) {
+          if (node.callee && node.callee.name === 'h' && node.arguments[1]) {
+            node.arguments[1] = {
+              type: 'CallExpression',
+              callee: {
+                type: 'Identifier',
+                name: '__transformVueJSXProps',
+              },
+              arguments: [node.arguments[1]],
+            };
+          }
+        },
+      });
     }
   });
+
 
   const generateResult = generate(ast, {});
 
