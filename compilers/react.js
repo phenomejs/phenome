@@ -66,9 +66,7 @@ const __c = (name, props, children) => {
     });
   }
 
-  const r = react || React;
-
-  return r.createElement(name, props, children);
+  return React.createElement(name, props, children);
 };
 `;
 
