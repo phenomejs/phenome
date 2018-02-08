@@ -1,3 +1,12 @@
+function __getVueComponentProps(component) {
+  const props = {};
+  const propsKeys = Object.keys(component.$options.propsData) || [];
+  propsKeys.forEach(propKey => {
+    props[propKey] = component[propKey];
+  });
+  return props;
+}
+
 export default {
   name: 'my-component',
   props: {
@@ -13,10 +22,17 @@ export default {
   },
 
   data() {
-    const props = this;
+    const props = __getVueComponentProps(this);
+
+    const state = (() => {
+      return {
+        counter: props.countFrom || 0,
+        seconds: 0
+      };
+    })();
+
     return {
-      counter: props.countFrom || 0,
-      seconds: 0
+      state
     };
   },
 
@@ -74,7 +90,7 @@ export default {
       }
 
       Object.keys(newState).forEach(key => {
-        self.$set(self, key, newState[key]);
+        self.$set(self.state, key, newState[key]);
       });
       if (typeof callback === 'function') callback();
     }
@@ -89,11 +105,7 @@ export default {
 
   computed: {
     props() {
-      return this;
-    },
-
-    state() {
-      return this;
+      return __getVueComponentProps(this);
     }
 
   }

@@ -7,15 +7,21 @@ const generate = require('@babel/generator').default;
 function transform(code) {
   return babel.transform(code).ast;
 }
-
+const getPropsFunctionCode = `
+function __getVueComponentProps(component) {
+  const props = {};
+  const propsKeys = Object.keys(component.$options.propsData) || [];
+  propsKeys.forEach((propKey) => {
+    props[propKey] = component[propKey];
+  })
+  return props;
+}
+`;
 const addComputed = `
   const obj = {
     computed: {
       props() {
-        return this;
-      },
-      state() {
-        return this;
+        return __getVueComponentProps(this);
       },
     }
   }
@@ -40,14 +46,20 @@ const addMethods = `
           newState = updater;
         }
         Object.keys(newState).forEach((key) => {
-          self.$set(self, key, newState[key])
+          self.$set(self.state, key, newState[key])
         });
         if (typeof callback === 'function') callback();
       },
     }
   }
 `;
-
+const stateFunctionCode = `
+function state() {
+  const props = __getVueComponentProps(this);
+  const state = (() => {})();
+  return { state };
+}
+`;
 function modifyExport(declaration) {
   let computed;
   let methods;
@@ -55,11 +67,12 @@ function modifyExport(declaration) {
     // Rename/Modify State
     if (prop.key && prop.key.name === 'state') {
       prop.key.name = 'data';
-      // console.log(prop);
       if (prop.params && prop.params.length > 0) {
         prop.params.splice(0, 1);
       }
-      prop.body.body.unshift(transform('const props = this;').program.body[0]);
+      const stateFunctionNode = transform(stateFunctionCode).program.body[0];
+      stateFunctionNode.body.body[1].declarations[0].init.callee.body.body.push(...prop.body.body);
+      prop.body.body = stateFunctionNode.body.body;
     }
     if (prop.key && prop.key.name === 'computed') computed = prop;
     if (prop.key && prop.key.name === 'methods') methods = prop;
@@ -121,9 +134,11 @@ function compile(componentString, callback) {
   );
 
   const ast = transformResult.ast;
+  const getPropsFunctionNode = transform(getPropsFunctionCode).program.body[0];
   ast.program.body.forEach((node) => {
     if (node.type === 'ExportDefaultDeclaration') {
       modifyExport(node.declaration);
+      ast.program.body.splice(ast.program.body.indexOf(node), 0, getPropsFunctionNode);
     }
   });
 

@@ -22,11 +22,11 @@ class MyComponent extends React.Component {
   }
 
   render() {
-    return React.createElement("div", null, React.createElement("h2", null, this.props.compiler), React.createElement("p", null, "Hello ", this.props.name, "! I've been clicked ", React.createElement("b", null, this.state.counter), " times"), React.createElement("p", null, React.createElement("button", {
+    return __c("div", null, __c("h2", null, this.props.compiler), __c("p", null, "Hello ", this.props.name, "! I've been clicked ", __c("b", null, this.state.counter), " times"), __c("p", null, __c("button", {
       onClick: this.increment.bind(this)
-    }, "Increment!")), React.createElement("p", null, React.createElement("button", {
+    }, "Increment!")), __c("p", null, __c("button", {
       onClick: this.emitClick.bind(this)
-    }, "Emit Click Event"), " (check console)"), React.createElement("p", null, "But time is ticking ", this.state.seconds));
+    }, "Emit Click Event"), " (check console)"), __c("p", null, "But time is ticking ", this.state.seconds));
   }
 
   emitClick(event) {
@@ -85,6 +85,5 @@ const __c = (name, props, children) => {
     });
   }
 
-  const r = react || React;
-  return r.createElement(name, props, children);
+  return React.createElement(name, props, children);
 };
