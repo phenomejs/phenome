@@ -48,7 +48,7 @@ const defaultPropsCode = `
 `;
 
 const createElementInterceptorCode = `
-const __c = (name, props, children) => {
+const __c = (name, props, ...children) => {
   if (props) {
     Object.keys(props).forEach(propName => {
       let newPropName;
@@ -66,7 +66,7 @@ const __c = (name, props, children) => {
     });
   }
 
-  return React.createElement(name, props, children);
+  return React.createElement(name, props, ...children);
 };
 `;
 
