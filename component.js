@@ -36,7 +36,7 @@ export default {
   },
   render() {
     return (
-      <div class={{test: true}} data-id="2" checked onClick={this.onClick}><p>Hello {this.state.counter} times!</p></div>
+      <div className={{test: true}} data-id="2" checked onClick={this.onClick}><p>Hello {this.state.counter} times!</p></div>
     );
   },
   methods: {
