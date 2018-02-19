@@ -11,13 +11,40 @@ function transform(code) {
 
 const transformVueJsxFunctionCode = `
 function __transformVueJSXProps(data) {
+  if (!data) return data;
+  if (!data.attrs) return data;
+  Object.keys(data.attrs).forEach((key) => {
+    if (key === 'className') {
+      data.class = data.attrs.className;
+      delete data.attrs.className;
+      return;
+    }
+    if (key.indexOf('-') >= 0) return;
+
+    let newKey;
+    let value = data.attrs[key];
+    if (key === 'maxLength') newKey = 'maxlength';
+    else if (key === 'tabIndex') newKey = 'tabindex';
+    else {
+      newKey = key.replace(/([A-Z])/g, function (v) { return '-' + v.toLowerCase(); });
+    }
+    data.attrs[newKey] = value;
+    delete data.attrs[key];
+  });
   return data;
 }
 `;
 const getPropsFunctionCode = `
+let __vueComponentPropKeys;
+function __getVueComponentPropKeys(props) {
+  __vueComponentPropKeys = Object.keys(props);
+  return props;
+}
 function __getVueComponentProps(component) {
   const props = {};
-  {{props}}
+  __vueComponentPropKeys.forEach((propKey) => {
+    if (typeof component[propKey] !== 'undefined') props[propKey] = component[propKey];
+  });
   return props;
 }
 `;
@@ -64,18 +91,24 @@ function state() {
   return { state };
 }
 `;
-function getComponentProps(declaration) {
+function wrapComponentProps(declaration) {
   // Collect Props
-  const propNames = [];
+  let hasProps;
   declaration.properties.forEach((prop) => {
     if (prop.key && prop.key.name === 'props') {
-      prop.value.properties.forEach((propertyNode) => {
-        propNames.push(propertyNode.key.name);
-      });
+      hasProps = true;
+      const newValue = {
+        type: 'CallExpression',
+        callee: {
+          type: 'Identifier',
+          name: '__getVueComponentPropKeys',
+        },
+        arguments: [prop.value],
+      };
+      prop.value = newValue;
     }
   });
-  const propsString = propNames.map((propName) => `if (typeof component.${propName} !== 'undefined') props.${propName} = component.${propName}`).join(';\n');
-  return propsString;
+  return hasProps;
 }
 function modifyExport(declaration) {
   let computed;
@@ -157,12 +190,16 @@ function compile(componentString, callback) {
     if (node.type === 'ExportDefaultDeclaration') {
       // Modify Export
       modifyExport(node.declaration);
+
       // Add props
-      const propsString = getComponentProps(node.declaration);
-      if (propsString && propsString.length) {
-        const getPropsFunctionNode = transform(getPropsFunctionCode.replace(/{{props}}/, propsString)).program.body[0];
-        ast.program.body.splice(ast.program.body.indexOf(node), 0, getPropsFunctionNode);
+      const hasProps = wrapComponentProps(node.declaration);
+      if (hasProps) {
+        const getPropsFunctionNode = transform(getPropsFunctionCode).program.body;
+        getPropsFunctionNode.forEach((getPropsNode) => {
+          ast.program.body.splice(ast.program.body.indexOf(node), 0, getPropsNode);
+        });
       }
+
       // Add JSX Transforms
       const transformVueJsxFunctionNode = transform(transformVueJsxFunctionCode).program.body[0];
       ast.program.body.splice(ast.program.body.indexOf(node), 0, transformVueJsxFunctionNode);
