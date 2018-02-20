@@ -15,7 +15,11 @@ const app = new Vue({
         console.log('Vue click', e.target);
       },
     },
-  }),
+  }, [
+    h('span', { slot: 'before-button' }, ['Before button']),
+    h('span', { slot: 'after-button' }, ['After button']),
+    h('span', ['Default slot']),
+  ]),
 });
 
 export default app;

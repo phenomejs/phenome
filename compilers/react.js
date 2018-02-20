@@ -32,6 +32,12 @@ class {{name}} extends React.Component {
     const propName = 'on' + eventName;
     if (self.props[propName]) self.props[propName](...args);
   }
+  get children() {
+    return [];
+  }
+  get parent() {
+    return undefined;
+  },
 }
 `;
 const reactClassExportCode = `
@@ -50,27 +56,54 @@ const defaultPropsCode = `
 
 const transformReactJsxFunctionCode = `
 function __transformReactJSXProps (props) {
-  if (props) {
-    Object.keys(props).forEach(propName => {
-      let newPropName;
+  if (!props) return props;
 
-      if (propName === 'class') {
-        newPropName = 'className';
-      } else if (propName.substring(0, 4) !== 'data') {
-        newPropName = propName.trim().split(/[-_:]/).map(word => word[0].toLowerCase() + word.substring(1)).join('');
-      } else {
-        newPropName = propName;
-      }
+  Object.keys(props).forEach(propName => {
+    let newPropName;
 
-      if (propName !== newPropName) {
-          props[newPropName] = props[propName];
-          delete props[propName];
-      }
-    });
-  }
+    if (propName === 'class') {
+      newPropName = 'className';
+    } else {
+      newPropName = propName;
+    }
+
+    if (propName !== newPropName) {
+        props[newPropName] = props[propName];
+        delete props[propName];
+    }
+  });
 
   return props;
 };
+`;
+
+const getSlotFunctionCode = `
+function __getReactComponentSlot(self, name, defaultChildren) {
+  if (!self.props.children) {
+    return defaultChildren;
+  }
+
+  let slotChildren;
+  if (Array.isArray(self.props.children)) {
+    slotChildren = [];
+    self.props.children.forEach((child) => {
+      const slotName = child.props.slot || 'default';
+      if (slotName === name) {
+        slotChildren.push(child);
+      }
+    });
+
+    if (slotChildren.length === 1) return slotChildren[0];
+    if (slotChildren.length > 1) return slotChildren;
+
+  } else if (self.props.children.props && self.props.children.props.slot === name) {
+    return self.props.children;
+  } else if (self.props.children.props && !self.props.children.props.slot && name === 'default') {
+    return self.props.children;
+  }
+
+  return defaultChildren;
+}
 `;
 
 function getPropType(type) {
@@ -289,6 +322,7 @@ function compile(componentString, callback) {
   }
 
   // Add JSX Transforms
+  let hasSlots;
   const transformReactJsxFunctionNode = transform(transformReactJsxFunctionCode).program.body[0];
   ast.program.body.splice(ast.program.body.indexOf(reactClassNode) - 1, 0, transformReactJsxFunctionNode);
   walk.simple(ast.program, {
@@ -301,17 +335,43 @@ function compile(componentString, callback) {
         node.arguments &&
         node.arguments[1]
       ) {
-        node.arguments[1] = {
-          type: 'CallExpression',
-          callee: {
+        if (node.arguments[0] && node.arguments[0].type === 'StringLiteral' && node.arguments[0].value === 'slot') {
+          hasSlots = true;
+          node.callee = {
             type: 'Identifier',
-            name: '__transformReactJSXProps',
-          },
-          arguments: [node.arguments[1]],
-        };
+            name: '__getReactComponentSlot',
+          };
+          const newArguments = [
+            {
+              type: 'ThisExpression',
+            },
+            {
+              type: 'StringLiteral',
+              value: node.arguments[1].properties ? node.arguments[1].properties[0].value.value : 'default',
+            },
+          ];
+          if (node.arguments[2]) newArguments.push(node.arguments[2]);
+          node.arguments = newArguments;
+        } else if (node.arguments[1]) {
+          node.arguments[1] = {
+            type: 'CallExpression',
+            callee: {
+              type: 'Identifier',
+              name: '__transformReactJSXProps',
+            },
+            arguments: [node.arguments[1]],
+          };
+        }
       }
     },
   });
+
+  if (hasSlots) {
+    const getSlotsFunctionNode = transform(getSlotFunctionCode).program.body;
+    getSlotsFunctionNode.forEach((getSlotsNode) => {
+      ast.program.body.splice(ast.program.body.indexOf(reactClassNode) - 1, 0, getSlotsNode);
+    });
+  }
 
   ast.program.body.push(reactClassExportNode);
 

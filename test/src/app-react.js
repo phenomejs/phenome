@@ -12,6 +12,10 @@ ReactDOM.render(
     onClick(e) {
       console.log('React click', e.target);
     },
-  }),
+  }, [
+    React.createElement('span', { slot: 'before-button' }, ['Before button']),
+    React.createElement('span', { slot: 'after-button' }, ['After button']),
+    React.createElement('span', null, ['Default slot']),
+  ]),
   document.getElementById('app-react'),
 );

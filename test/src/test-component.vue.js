@@ -1,18 +1,68 @@
+let __vueComponentPropKeys;
+
+function __getVueComponentPropKeys(props) {
+  __vueComponentPropKeys = Object.keys(props);
+  return props;
+}
+
 function __getVueComponentProps(component) {
   const props = {};
-  if (typeof component.name !== 'undefined') props.name = component.name;
-  if (typeof component.countFrom !== 'undefined') props.countFrom = component.countFrom;
-  if (typeof component.compiler !== 'undefined') props.compiler = component.compiler;
+
+  __vueComponentPropKeys.forEach(propKey => {
+    if (typeof component[propKey] !== 'undefined') props[propKey] = component[propKey];
+  });
+
+  const children = [];
+  Object.keys(component.$slots).forEach(slotName => {
+    children.push(...component.$slots[slotName]);
+  });
+  props.children = children;
+  setTimeout(() => {
+    console.log(1, component.children);
+    console.log(2, component.$children);
+    console.log(3, props.children);
+  }, 1000);
   return props;
 }
 
 function __transformVueJSXProps(data) {
+  if (!data) return data;
+  if (!data.attrs) return data;
+  Object.keys(data.attrs).forEach(key => {
+    if (key === 'className') {
+      data.class = data.attrs.className;
+      delete data.attrs.className;
+      return;
+    }
+
+    if (key.indexOf('-') >= 0) return;
+    let newKey;
+    let value = data.attrs[key];
+    if (key === 'maxLength') newKey = 'maxlength';else if (key === 'tabIndex') newKey = 'tabindex';else {
+      newKey = key.replace(/([A-Z])/g, function (v) {
+        return '-' + v.toLowerCase();
+      });
+    }
+
+    if (newKey !== key) {
+      data.attrs[newKey] = value;
+      delete data.attrs[key];
+    }
+  });
   return data;
+}
+
+function __getVueComponentSlot(self, name, defaultChildren) {
+  if (self.$slots[name] && self.$slots[name].length) {
+    return self.$slots[name];
+  }
+
+  return defaultChildren;
 }
 
 export default {
   name: 'my-component',
-  props: {
+  props: __getVueComponentPropKeys({
     name: {
       type: String,
       default: 'World'
@@ -22,7 +72,7 @@ export default {
       type: String,
       required: true
     }
-  },
+  }),
 
   data() {
     const props = __getVueComponentProps(this);
@@ -48,15 +98,15 @@ export default {
         "data-id": "4",
         "data-tab-id": "5"
       }
-    }), [this.props.compiler]), h("p", __transformVueJSXProps(null), ["Hello ", this.props.name, "! I've been clicked ", h("b", __transformVueJSXProps(null), [this.state.counter]), " times"]), h("p", __transformVueJSXProps(null), [h("button", __transformVueJSXProps({
+    }), [this.props.compiler]), h("p", __transformVueJSXProps(null), ["Hello ", this.props.name, "! I've been clicked ", h("b", __transformVueJSXProps(null), [this.state.counter]), " times"]), h("p", __transformVueJSXProps(null), [__getVueComponentSlot(this, "before-button"), h("button", __transformVueJSXProps({
       on: {
         "click": this.increment.bind(this)
       }
-    }), ["Increment!"])]), h("p", __transformVueJSXProps(null), [h("button", __transformVueJSXProps({
+    }), ["Increment!"]), __getVueComponentSlot(this, "after-button")]), h("p", __transformVueJSXProps(null), [h("button", __transformVueJSXProps({
       on: {
         "click": this.emitClick.bind(this)
       }
-    }), ["Emit Click Event"]), " (check console)"]), h("p", __transformVueJSXProps(null), ["But time is ticking ", this.state.seconds])]);
+    }), ["Emit Click Event"]), " (check console)"]), h("p", __transformVueJSXProps(null), ["But time is ticking ", this.state.seconds]), __getVueComponentSlot(this, "default")]);
   },
 
   methods: {
@@ -116,6 +166,10 @@ export default {
   computed: {
     props() {
       return __getVueComponentProps(this);
+    },
+
+    children() {
+      return this.$children;
     }
 
   }

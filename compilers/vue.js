@@ -28,10 +28,20 @@ function __transformVueJSXProps(data) {
     else {
       newKey = key.replace(/([A-Z])/g, function (v) { return '-' + v.toLowerCase(); });
     }
-    data.attrs[newKey] = value;
-    delete data.attrs[key];
+    if (newKey !== key) {
+      data.attrs[newKey] = value;
+      delete data.attrs[key];
+    }
   });
   return data;
+}
+`;
+const getSlotFunctionCode = `
+function __getVueComponentSlot(self, name, defaultChildren) {
+  if (self.$slots[name] && self.$slots[name].length) {
+    return self.$slots[name];
+  }
+  return defaultChildren;
 }
 `;
 const getPropsFunctionCode = `
@@ -45,6 +55,13 @@ function __getVueComponentProps(component) {
   __vueComponentPropKeys.forEach((propKey) => {
     if (typeof component[propKey] !== 'undefined') props[propKey] = component[propKey];
   });
+
+  const children = [];
+  Object.keys(component.$slots).forEach((slotName) => {
+    children.push(...component.$slots[slotName]);
+  });
+  props.children = children;
+
   return props;
 }
 `;
@@ -53,6 +70,12 @@ const addComputed = `
     computed: {
       props() {
         return __getVueComponentProps(this);
+      },
+      children() {
+        return this.$children;
+      },
+      parent() {
+        return this.$parent;
       },
     }
   }
@@ -201,23 +224,47 @@ function compile(componentString, callback) {
       }
 
       // Add JSX Transforms
+      let hasSlots;
       const transformVueJsxFunctionNode = transform(transformVueJsxFunctionCode).program.body[0];
       ast.program.body.splice(ast.program.body.indexOf(node), 0, transformVueJsxFunctionNode);
+
       walk.simple(node, {
         // eslint-disable-next-line
         CallExpression(node) {
-          if (node.callee && node.callee.name === 'h' && node.arguments[1]) {
-            node.arguments[1] = {
-              type: 'CallExpression',
-              callee: {
-                type: 'Identifier',
-                name: '__transformVueJSXProps',
-              },
-              arguments: [node.arguments[1]],
-            };
+          if (node.callee && node.callee.name === 'h') {
+            if (node.arguments[0] && node.arguments[0].type === 'StringLiteral' && node.arguments[0].value === 'slot') {
+              hasSlots = true;
+              node.callee.name = '__getVueComponentSlot';
+              const newArguments = [
+                {
+                  type: 'ThisExpression',
+                },
+                {
+                  type: 'StringLiteral',
+                  value: node.arguments[1].properties ? node.arguments[1].properties[0].value.properties[0].value.value : 'default',
+                },
+              ];
+              if (node.arguments[2]) newArguments.push(node.arguments[2]);
+              node.arguments = newArguments;
+            } else if (node.arguments[1]) {
+              node.arguments[1] = {
+                type: 'CallExpression',
+                callee: {
+                  type: 'Identifier',
+                  name: '__transformVueJSXProps',
+                },
+                arguments: [node.arguments[1]],
+              };
+            }
           }
         },
       });
+      if (hasSlots) {
+        const getSlotsFunctionNode = transform(getSlotFunctionCode).program.body;
+        getSlotsFunctionNode.forEach((getSlotsNode) => {
+          ast.program.body.splice(ast.program.body.indexOf(node), 0, getSlotsNode);
+        });
+      }
     }
   });
 
