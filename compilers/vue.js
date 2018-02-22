@@ -68,6 +68,9 @@ function __getVueComponentProps(component) {
 const addComputed = `
   const obj = {
     computed: {
+      refs() {
+        return this.$refs;
+      },
       props() {
         return __getVueComponentProps(this);
       },
@@ -76,6 +79,9 @@ const addComputed = `
       },
       parent() {
         return this.$parent;
+      },
+      el() {
+        return this.$el;
       },
     }
   }

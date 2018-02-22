@@ -69,24 +69,88 @@ class MyComponent extends React.Component {
   }
 
   get children() {
-    if (!this.props.children) return [];else if (Array.isArray(this.props.children)) return this.props.children;else return [this.props.children];
+    const self = this;
+    const children = [];
+    let child = self._reactInternalFiber && self._reactInternalFiber.child;
+
+    function findChildren(node) {
+      if (node.type && typeof node.type === 'function') {
+        children.push(node.stateNode);
+      } else if (node.child) {
+        findChildren(node.child);
+      }
+
+      if (node.sibling) findChildren(node.sibling);
+    }
+
+    if (child) findChildren(child);
+    return children;
+  }
+
+  get parent() {
+    const self = this;
+    const el = self.el;
+    let parent;
+    let reactProp;
+
+    function checkParentNode(node) {
+      if (!node) return;
+
+      if (!reactProp) {
+        for (let propName in node) {
+          if (propName.indexOf('__reactInternalInstance') >= 0) reactProp = propName;
+        }
+      }
+
+      if (node[reactProp] && node[reactProp]._debugOwner && typeof node[reactProp]._debugOwner.type === 'function' && node[reactProp]._debugOwner.stateNode && node[reactProp]._debugOwner.stateNode !== self) {
+        parent = node[reactProp]._debugOwner.stateNode;
+        return;
+      }
+
+      checkParentNode(node.parentNode);
+    }
+
+    if (self._reactInternalFiber._debugOwner) return self._reactInternalFiber._debugOwner.stateNode;else if (el) checkParentNode(el);
+    return parent;
+  }
+
+  get el() {
+    const self = this;
+    let el;
+    let child = self._reactInternalFiber.child;
+
+    while (!el && child) {
+      if (child.stateNode && child.stateNode instanceof window.HTMLElement) {
+        el = child.stateNode;
+      } else {
+        child = child.child;
+      }
+    }
+
+    return el;
   }
 
   render() {
-    return React.createElement("div", __transformReactJSXProps(null), React.createElement("h2", __transformReactJSXProps({
+    return React.createElement("div", __transformReactJSXProps({
+      ref: "main"
+    }), React.createElement("h2", __transformReactJSXProps({
       className: "class-test",
       maxLength: "3",
       "data-id": "4",
       "data-tab-id": "5"
-    }), this.props.compiler), React.createElement("p", __transformReactJSXProps(null), "Hello ", this.props.name, "! I've been clicked ", React.createElement("b", __transformReactJSXProps(null), this.state.counter), " times"), React.createElement("p", __transformReactJSXProps(null), __getReactComponentSlot(this, "before-button"), React.createElement("button", __transformReactJSXProps({
+    }), this.props.compiler), React.createElement("p", __transformReactJSXProps(null), "Hello ", this.props.name, "! I've been clicked ", React.createElement("b", __transformReactJSXProps(null), this.state.counter), " times"), React.createElement("p", __transformReactJSXProps(null), __getReactComponentSlot(this, "before-button", "No before button slot passed"), React.createElement("button", __transformReactJSXProps({
+      ref: "button",
       onClick: this.increment.bind(this)
-    }), "Increment!"), __getReactComponentSlot(this, "after-button")), React.createElement("p", __transformReactJSXProps(null), React.createElement("button", __transformReactJSXProps({
+    }), "Increment!"), __getReactComponentSlot(this, "after-button", "No after button slot passed")), React.createElement("p", __transformReactJSXProps(null), React.createElement("button", __transformReactJSXProps({
+      ref: "button",
       onClick: this.emitClick.bind(this)
-    }), "Emit Click Event"), " (check console)"), React.createElement("p", __transformReactJSXProps(null), "But time is ticking ", this.state.seconds), __getReactComponentSlot(this, "default"));
+    }), "Emit Click Event"), " (check console)"), React.createElement("p", __transformReactJSXProps(null), "But time is ticking ", this.state.seconds), __getReactComponentSlot(this, "default", "No default slot passed"));
   }
 
   emitClick(event) {
     const self = this;
+    console.log(self);
+    window.comp = self;
     self.dispatchEvent('click', event);
   }
 

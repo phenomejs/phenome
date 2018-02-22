@@ -17,11 +17,6 @@ function __getVueComponentProps(component) {
     children.push(...component.$slots[slotName]);
   });
   props.children = children;
-  setTimeout(() => {
-    console.log(1, component.children);
-    console.log(2, component.$children);
-    console.log(3, props.children);
-  }, 1000);
   return props;
 }
 
@@ -91,27 +86,33 @@ export default {
 
   render() {
     const h = arguments[0];
-    return h("div", __transformVueJSXProps(null), [h("h2", __transformVueJSXProps({
+    return h("div", __transformVueJSXProps({
+      ref: "main"
+    }), [h("h2", __transformVueJSXProps({
       attrs: {
         className: "class-test",
         maxLength: "3",
         "data-id": "4",
         "data-tab-id": "5"
       }
-    }), [this.props.compiler]), h("p", __transformVueJSXProps(null), ["Hello ", this.props.name, "! I've been clicked ", h("b", __transformVueJSXProps(null), [this.state.counter]), " times"]), h("p", __transformVueJSXProps(null), [__getVueComponentSlot(this, "before-button"), h("button", __transformVueJSXProps({
+    }), [this.props.compiler]), h("p", __transformVueJSXProps(null), ["Hello ", this.props.name, "! I've been clicked ", h("b", __transformVueJSXProps(null), [this.state.counter]), " times"]), h("p", __transformVueJSXProps(null), [__getVueComponentSlot(this, "before-button", ["No before button slot passed"]), h("button", __transformVueJSXProps({
+      ref: "button",
       on: {
         "click": this.increment.bind(this)
       }
-    }), ["Increment!"]), __getVueComponentSlot(this, "after-button")]), h("p", __transformVueJSXProps(null), [h("button", __transformVueJSXProps({
+    }), ["Increment!"]), __getVueComponentSlot(this, "after-button", ["No after button slot passed"])]), h("p", __transformVueJSXProps(null), [h("button", __transformVueJSXProps({
+      ref: "button",
       on: {
         "click": this.emitClick.bind(this)
       }
-    }), ["Emit Click Event"]), " (check console)"]), h("p", __transformVueJSXProps(null), ["But time is ticking ", this.state.seconds]), __getVueComponentSlot(this, "default")]);
+    }), ["Emit Click Event"]), " (check console)"]), h("p", __transformVueJSXProps(null), ["But time is ticking ", this.state.seconds]), __getVueComponentSlot(this, "default", ["No default slot passed"])]);
   },
 
   methods: {
     emitClick(event) {
       const self = this;
+      console.log(self);
+      window.comp = self;
       self.dispatchEvent('click', event);
     },
 
@@ -164,12 +165,24 @@ export default {
   },
 
   computed: {
+    refs() {
+      return this.$refs;
+    },
+
     props() {
       return __getVueComponentProps(this);
     },
 
     children() {
       return this.$children;
+    },
+
+    parent() {
+      return this.$parent;
+    },
+
+    el() {
+      return this.$el;
     }
 
   }

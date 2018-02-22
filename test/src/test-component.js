@@ -19,12 +19,12 @@ export default {
   },
   render() {
     return (
-      <div>
+      <div ref="main">
         <h2 className="class-test" maxLength="3" data-id="4" data-tab-id="5">{this.props.compiler}</h2>
         <p>Hello {this.props.name}! I've been clicked <b>{this.state.counter}</b> times</p>
         <p>
           <slot name="before-button">No before button slot passed</slot>
-          <button onClick={this.increment.bind(this)}>Increment!</button>
+          <button ref="button" onClick={this.increment.bind(this)}>Increment!</button>
           <slot name="after-button">No after button slot passed</slot>
         </p>
         <p><button onClick={this.emitClick.bind(this)}>Emit Click Event</button> (check console)</p>
@@ -36,6 +36,8 @@ export default {
   methods: {
     emitClick(event) {
       const self = this;
+      console.log(self);
+      window.comp = self;
       self.dispatchEvent('click', event);
     },
     tick() {
