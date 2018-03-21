@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "serve": "http-server ./test/ -o -c 1 -a localhost",
-    "build-test": "node parser --file ./test/src/test-component.js && cd test && node build",
+    "serve": "http-server ./test/app/ -o -c 1 -a localhost",
+    "build-test": "node ./test/build",
     "test": "npm run build-test && npm run serve"
   },
   "repository": {
@@ -31,7 +31,8 @@
     "eslint-config-airbnb": "^16.1.0",
     "eslint-plugin-import": "^2.8.0",
     "eslint-plugin-jsx-a11y": "^6.0.3",
-    "eslint-plugin-react": "^7.6.1"
+    "eslint-plugin-react": "^7.6.1",
+    "fs-extra": "^5.0.0"
   },
   "devDependencies": {
     "http-server": "^0.11.1",

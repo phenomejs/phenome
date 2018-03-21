@@ -200,7 +200,7 @@ function modifyExport(declaration) {
   }
 }
 
-function compile(componentString, callback) {
+function compile(componentString) {
   const transformResult = babel.transform(
     componentString,
     {
@@ -279,7 +279,7 @@ function compile(componentString, callback) {
 
   const code = generateResult.code;
 
-  callback(code);
+  return code;
 }
 
 module.exports = compile;
