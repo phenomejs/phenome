@@ -123,10 +123,8 @@ function state() {
 `;
 function wrapComponentProps(declaration) {
   // Collect Props
-  let hasProps;
   declaration.properties.forEach((prop) => {
     if (prop.key && prop.key.name === 'props') {
-      hasProps = true;
       const newValue = {
         type: 'CallExpression',
         callee: {
@@ -138,13 +136,17 @@ function wrapComponentProps(declaration) {
       prop.value = newValue;
     }
   });
-  return hasProps;
 }
-function modifyExport(declaration) {
+function modifyVueComponent(declaration) {
   let computed;
   let methods;
 
+  let hasProps;
+
   declaration.properties.forEach((prop) => {
+    if (prop.key && prop.key.name === 'props') {
+      hasProps = true;
+    }
     // Rename/Modify State
     if (prop.key && prop.key.name === 'state') {
       prop.key.name = 'data';
@@ -199,6 +201,10 @@ function modifyExport(declaration) {
   } else {
     declaration.properties.push(methodsObjToAdd);
   }
+
+  return {
+    hasProps,
+  };
 }
 
 function compile(componentString, options) {
@@ -230,11 +236,11 @@ function compile(componentString, options) {
 
     if (node.type === 'ExportDefaultDeclaration') {
       // Modify Export
-      modifyExport(node.declaration);
+      const { hasProps } = modifyVueComponent(node.declaration);
 
       // Add props
-      const hasProps = wrapComponentProps(node.declaration);
       if (hasProps) {
+        wrapComponentProps(node.declaration);
         const getPropsFunctionNode = transform(getPropsFunctionCode).program.body;
         getPropsFunctionNode.forEach((getPropsNode) => {
           ast.program.body.splice(ast.program.body.indexOf(node), 0, getPropsNode);
