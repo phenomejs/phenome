@@ -1,10 +1,10 @@
 /* eslint no-param-reassign: "off" */
 /* eslint prefer-destructuring: "off" */
-/* eslint import/no-extraneous-dependencies: "off" */
 const babel = require('@babel/core');
 const generate = require('@babel/generator').default;
-const toCamelCase = require('../utils/to-camel-case.js');
 const walk = require('babylon-walk');
+const path = require('path');
+const toCamelCase = require('../utils/to-camel-case.js');
 
 function transform(code) {
   return babel.transform(code).ast;
@@ -100,10 +100,6 @@ const emptyArrowFunctionCode = `
 (() => {})()
 `;
 
-const defaultPropsCode = `
-{{name}}.defaultProps = {};
-`;
-
 const transformReactJsxFunctionCode = `
 function __transformReactJSXProps (props) {
   if (!props) return props;
@@ -126,7 +122,6 @@ function __transformReactJSXProps (props) {
   return props;
 };
 `;
-
 const getSlotFunctionCode = `
 function __getReactComponentSlot(self, name, defaultChildren) {
   if (!self.props.children) {
@@ -155,97 +150,46 @@ function __getReactComponentSlot(self, name, defaultChildren) {
   return defaultChildren;
 }
 `;
-
-function getPropType(type) {
-  function map(value) {
-    if (value === 'String') return 'string';
-    if (value === 'Boolean') return 'bool';
-    if (value === 'Function') return 'func';
-    if (value === 'Number') return 'number';
-    if (value === 'Object') return 'object';
-    if (value === 'Array') return 'array';
-    if (value === 'Symbol') return 'symbol';
-    return `instanceOf(${value})`;
+const setPropsFunctionCode = `
+function __setComponentProps(props) {
+  function propType(type) {
+    if (type === String) return PropTypes.string;
+    if (type === Boolean) return PropTypes.bool;
+    if (type === Function) return PropTypes.func;
+    if (type === Number) return PropTypes.number;
+    if (type === Object) return PropTypes.object;
+    if (type === Array) return PropTypes.array;
+    if (type === Symbol) return PropTypes.symbol;
+    if (type.constructor === Function) return PropTypes.instanceOf(type);
+    return PropTypes.any;
   }
-  if (type.type === 'Identifier') {
-    return `PropTypes.${map(type.name)}`;
-  } else if (type.type === 'ArrayExpression') {
-    return `
-PropTypes.oneOfType([
-  ${type.elements.map(el => `PropTypes.${map(el.name)}`).join(', ')}
-])`.trim();
-  } else if (type.type === 'MemberExpression' && type.object.name && type.property.name) {
-    return `PropTypes.${map(`${type.object.name}.${type.property.name}`)}`;
-  }
-  return 'PropTypes.any';
-}
-
-function createProps(name, componentObjectNode) {
-  const props = [];
-  const defaultProps = [];
-  componentObjectNode.properties.forEach((prop) => {
-    if (prop.key && prop.key.name === 'props') {
-      prop.value.properties.forEach((property) => {
-        const propKey = property.key;
-        let propType;
-        let propIsRequired;
-        let propDefaultValue;
-        if (property.value.type === 'ObjectExpression') {
-          property.value.properties.forEach((propProp) => {
-            if (propProp.key.name === 'type') {
-              propType = propProp.value;
-            }
-            if (propProp.key.name === 'default') {
-              propDefaultValue = propProp.value;
-            }
-            if (propProp.key.name === 'required') {
-              propIsRequired = propProp.value;
-            }
-          });
-        } else {
-          propType = property.value;
-        }
-        if (propDefaultValue) {
-          defaultProps.push({
-            key: propKey,
-            value: propDefaultValue,
-          });
-        }
-        props.push({
-          key: propKey,
-          type: propType,
-          required: propIsRequired,
-        });
-      });
+  Object.keys(props).forEach((propName) => {
+    const prop = props[propName];
+    const required = typeof prop.required !== 'undefined';
+    const defaultValue = typeof prop.default !== 'undefined';
+    const type = prop.type || prop;
+    if (Array.isArray(type)) {
+      if (required) {
+        {{name}}.propTypes[propName] = PropTypes.oneOfType(type.map(propType)).required;
+      } else {
+        {{name}}.propTypes[propName] = PropTypes.oneOfType(type.map(propType));
+      }
+    } else {
+      if (required) {
+        {{name}}.propTypes[propName] = propType(type).required;
+      } else {
+        {{name}}.propTypes[propName] = propType(type)
+      }
+    }
+    if (defaultValue) {
+      if (!{{name}}.defaultProps) {{name}}.defaultProps = {};
+      {{name}}.defaultProps[propName] = defaultValue
     }
   });
-
-  let defaultPropsNode;
-  if (defaultProps.length) {
-    defaultPropsNode = transform(defaultPropsCode.replace(/{{name}}/, name)).program.body[0];
-    defaultProps.forEach((prop) => {
-      defaultPropsNode.expression.right.properties.push({
-        type: 'ObjectProperty',
-        key: prop.key,
-        value: prop.value,
-      });
-    });
-  }
-
-  let propTypesNode;
-  if (props.length) {
-    const propTypesCode = `
-      ${name}.propTypes = {
-        ${props.map((prop) => {
-          const propKey = prop.key.name;
-          const propType = `${getPropType(prop.type)}${prop.required ? '.isRequired' : ''}`;
-          return `${propKey}: ${propType}`;
-        }).join(',\n  ')}
-      }`;
-    propTypesNode = transform(propTypesCode);
-  }
-  return { defaultPropsNode, propTypesNode };
 }
+__setComponentProps(props);
+`;
+
 
 function addClassMethod(classNode, method, forceKind) {
   const {
@@ -272,6 +216,8 @@ function modifyReactClass(name, reactClassNode, componentObjectNode) {
     if (node.kind === 'constructor') reactClassConstructor = node;
   });
 
+  let hasProps, propsNode;
+
   componentObjectNode.properties.forEach((prop) => {
     if (prop.key && prop.key.name === 'componentWillCreate') {
       const emptyArrowFunction = transform(emptyArrowFunctionCode).program.body[0];
@@ -292,6 +238,10 @@ function modifyReactClass(name, reactClassNode, componentObjectNode) {
     }
     if (prop.key && prop.key.name === 'render') {
       addClassMethod(reactClassBody, prop);
+    }
+    if (prop.key && prop.key.name === 'props') {
+      hasProps = true;
+      propsNode = prop.value;
     }
     if (prop.key && prop.key.name === 'state') {
       const stateSetterBody = transform(stateFunctionCode).program.body[0];
@@ -319,9 +269,14 @@ function modifyReactClass(name, reactClassNode, componentObjectNode) {
       addClassMethod(reactClassBody, prop);
     }
   });
+
+  return {
+    hasProps,
+    propsNode,
+  }
 }
 
-function compile(componentString) {
+function compile(componentString, options) {
   const transformResult = babel.transform(
     componentString,
     {
@@ -339,8 +294,18 @@ function compile(componentString) {
   let name = 'MyComponent';
   let componentExportNode;
 
-  // Find name and component declaration
+
   ast.program.body.forEach((node) => {
+    if (node.type === 'ImportDeclaration') {
+      // Fix import paths
+      if (node.source.value.indexOf('.') === 0) {
+        node.source.value = path.relative(
+          options.outPath,
+          path.resolve(options.relativePath, path.dirname(options.filePath), node.source.value)
+        )
+      }
+    }
+    // Find name and component declaration
     if (node.type === 'ExportDefaultDeclaration') {
       componentExportNode = node;
       node.declaration.properties.forEach((prop) => {
@@ -359,22 +324,21 @@ function compile(componentString) {
   ast.program.body.splice(ast.program.body.indexOf(componentExportNode), 1);
   ast.program.body.push(reactClassNode);
 
-  modifyReactClass(name, reactClassNode, componentExportNode.declaration);
-
-  const { defaultPropsNode, propTypesNode } = createProps(name, componentExportNode.declaration);
-  if (defaultPropsNode) {
-    ast.program.body.push(defaultPropsNode);
-  }
-  if (propTypesNode) {
+  const { hasProps, propsNode } = modifyReactClass(name, reactClassNode, componentExportNode.declaration);
+  if (hasProps) {
     const propTypesImportNode = transform(propTypesImportCode).program.body[0];
+    const setPropsFunction = transform(setPropsFunctionCode.replace(/{{name}}/g, name));
+    const setPropsFunctionDeclaration = setPropsFunction.program.body[0];
+    const setPropsFunctionCall = setPropsFunction.program.body[1];
+    setPropsFunctionCall.expression.arguments = [propsNode];
     ast.program.body.splice(ast.program.body.indexOf(reactImportNode) + 1, 0, propTypesImportNode);
-    ast.program.body.push(propTypesNode);
+    ast.program.body.push(setPropsFunctionDeclaration, setPropsFunctionCall);
   }
 
   // Add JSX Transforms
   let hasSlots;
   const transformReactJsxFunctionNode = transform(transformReactJsxFunctionCode).program.body[0];
-  ast.program.body.splice(ast.program.body.indexOf(reactClassNode) - 1, 0, transformReactJsxFunctionNode);
+  ast.program.body.splice(ast.program.body.indexOf(reactClassNode), 0, transformReactJsxFunctionNode);
   walk.simple(ast.program, {
     // eslint-disable-next-line
     CallExpression(node) {
@@ -419,7 +383,7 @@ function compile(componentString) {
   if (hasSlots) {
     const getSlotsFunctionNode = transform(getSlotFunctionCode).program.body;
     getSlotsFunctionNode.forEach((getSlotsNode) => {
-      ast.program.body.splice(ast.program.body.indexOf(reactClassNode) - 1, 0, getSlotsNode);
+      ast.program.body.splice(ast.program.body.indexOf(reactClassNode), 0, getSlotsNode);
     });
   }
 
