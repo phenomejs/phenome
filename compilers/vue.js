@@ -4,6 +4,7 @@
 const babel = require('@babel/core');
 const generate = require('@babel/generator').default;
 const walk = require('babylon-walk');
+const path = require('path');
 
 function transform(code) {
   return babel.transform(code).ast;
@@ -200,7 +201,7 @@ function modifyExport(declaration) {
   }
 }
 
-function compile(componentString) {
+function compile(componentString, options) {
   const transformResult = babel.transform(
     componentString,
     {
@@ -216,6 +217,17 @@ function compile(componentString) {
   const ast = transformResult.ast;
 
   ast.program.body.forEach((node) => {
+
+    if (node.type === 'ImportDeclaration') {
+      // Fix import paths
+      if (node.source.value.indexOf('.') === 0) {
+        node.source.value = path.relative(
+          options.outPath,
+          path.resolve(options.relativePath, path.dirname(options.filePath), node.source.value)
+        )
+      }
+    }
+
     if (node.type === 'ExportDefaultDeclaration') {
       // Modify Export
       modifyExport(node.declaration);
@@ -247,7 +259,7 @@ function compile(componentString) {
                 },
                 {
                   type: 'StringLiteral',
-                  value: node.arguments[1].properties ? node.arguments[1].properties[0].value.properties[0].value.value : 'default',
+                  value: node.arguments[1] && node.arguments[1].properties ? node.arguments[1].properties[0].value.properties[0].value.value : 'default',
                 },
               ];
               if (node.arguments[2]) newArguments.push(node.arguments[2]);
@@ -273,7 +285,6 @@ function compile(componentString) {
       }
     }
   });
-
 
   const generateResult = generate(ast, {});
 
