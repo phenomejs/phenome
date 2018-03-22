@@ -1,5 +1,5 @@
 module.exports = {
-    "extends": "airbnb"
+    "extends": "airbnb",
     "rules": {
         'max-len': ['error', 200, 2, {
             ignoreUrls: true,
