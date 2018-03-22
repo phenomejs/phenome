@@ -1,7 +1,6 @@
 /* eslint import/no-extraneous-dependencies: "off" */
 import Vue from 'vue';
-import MyComponent from './test-component.vue';
-
+import MyComponent from '../../../component-library/dist/vue/test-component';
 
 const NestedNestedComponent = {
   render(h) {
