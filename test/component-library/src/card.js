@@ -1,9 +1,9 @@
 import Utils from '../utils/utils';
 import Mixins from '../utils/mixins';
 
-import F7CardHeader from './card-header';
-import F7CardContent from './card-content';
-import F7CardFooter from './card-footer';
+import F7CardHeader from './card-header'; // @keep-import-path
+import F7CardContent from './card-content'; // @keep-import-path
+import F7CardFooter from './card-footer'; // @keep-import-path
 
 const CardProps = Utils.extend(
   {

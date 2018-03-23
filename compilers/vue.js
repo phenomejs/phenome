@@ -222,15 +222,27 @@ function compile(componentString, options) {
 
   const ast = transformResult.ast;
 
-  ast.program.body.forEach((node) => {
+  // Comment flags
+  const keepImportsLines = [];
+  if (ast.comments.length) {
+    ast.comments.forEach((comment) => {
+      if (comment.type === 'CommentLine' && comment.value.indexOf('@keep-import-path') >= 0) {
+        keepImportsLines.push(comment.loc.start.line);
+      }
+    });
+  }
 
+  ast.program.body.forEach((node) => {
     if (node.type === 'ImportDeclaration') {
       // Fix import paths
+      if (keepImportsLines.length && keepImportsLines.indexOf(node.loc.end.line) >= 0) {
+        return;
+      }
       if (node.source.value.indexOf('.') === 0) {
         node.source.value = path.relative(
           options.outPath,
-          path.resolve(options.relativePath, path.dirname(options.filePath), node.source.value)
-        )
+          path.resolve(options.relativePath, path.dirname(options.filePath), node.source.value),
+        );
       }
     }
 
@@ -292,9 +304,12 @@ function compile(componentString, options) {
     }
   });
 
+
   const generateResult = generate(ast, {});
 
   const code = generateResult.code;
+
+  code.replace(/process.env.COMPILER/g, 'vue');
 
   return code;
 }
