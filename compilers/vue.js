@@ -72,6 +72,9 @@ const addComputed = `
       refs() {
         return this.$refs;
       },
+      slots() {
+        return this.$slots;
+      },
       props() {
         return __getVueComponentProps(this);
       },
