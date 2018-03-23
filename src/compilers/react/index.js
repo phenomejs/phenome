@@ -4,7 +4,7 @@ const babel = require('@babel/core');
 const generate = require('@babel/generator').default;
 const walk = require('babylon-walk');
 const path = require('path');
-const toCamelCase = require('../utils/to-camel-case.js');
+const toCamelCase = require('../compiler-utils/to-camel-case.js');
 
 function transform(code) {
   return babel.transform(code).ast;

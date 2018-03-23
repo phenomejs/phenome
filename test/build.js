@@ -4,7 +4,7 @@ const rollupResolve = require('rollup-plugin-node-resolve');
 const rollupCommonJs = require('rollup-plugin-commonjs');
 const rollupReplace = require('rollup-plugin-replace');
 
-const compile = require('../compiler-io/');
+const compile = require('../src/compiler-io/');
 
 const buildComponentLibrary = async () => {
   await compile({
