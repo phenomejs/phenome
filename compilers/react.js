@@ -42,7 +42,7 @@ class {{name}} extends React.Component {
     let slotChildren;
     if (Array.isArray(self.props.children)) {
       self.props.children.forEach((child) => {
-        const slotName = child.props.slot || 'default';
+        const slotName = child.props && child.props.slot || 'default';
         if (!slots[name]) slots[name] = [];
         slots[name].push(child);
       });
@@ -152,11 +152,10 @@ function __getReactComponentSlot(self, name, defaultChildren) {
     return defaultChildren;
   }
 
-  let slotChildren;
   if (Array.isArray(self.props.children)) {
-    slotChildren = [];
+    const slotChildren = [];
     self.props.children.forEach((child) => {
-      const slotName = child.props.slot || 'default';
+      const slotName = child.props && child.props.slot || 'default';
       if (slotName === name) {
         slotChildren.push(child);
       }
@@ -168,6 +167,8 @@ function __getReactComponentSlot(self, name, defaultChildren) {
   } else if (self.props.children.props && self.props.children.props.slot === name) {
     return self.props.children;
   } else if (self.props.children.props && !self.props.children.props.slot && name === 'default') {
+    return self.props.children;
+  } else if (typeof self.props.children === 'string' && name === 'default') {
     return self.props.children;
   }
 
@@ -187,10 +188,10 @@ function __setComponentProps(props) {
     if (type.constructor === Function) return PropTypes.instanceOf(type);
     return PropTypes.any;
   }
+  if (!{{name}}.propTypes) {{name}}.propTypes = {};
   Object.keys(props).forEach((propName) => {
     const prop = props[propName];
     const required = typeof prop.required !== 'undefined';
-    const defaultValue = typeof prop.default !== 'undefined';
     const type = prop.type || prop;
     if (Array.isArray(type)) {
       if (required) {
@@ -205,9 +206,9 @@ function __setComponentProps(props) {
         {{name}}.propTypes[propName] = propType(type)
       }
     }
-    if (defaultValue) {
+    if (typeof prop.default !== 'undefined') {
       if (!{{name}}.defaultProps) {{name}}.defaultProps = {};
-      {{name}}.defaultProps[propName] = defaultValue
+      {{name}}.defaultProps[propName] = prop.default
     }
   });
 }
