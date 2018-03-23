@@ -27,7 +27,7 @@ export default {
     let contentEl;
     let footerEl;
 
-    if (self.title || (self.$slots && self.$slots.header)) {
+    if (self.title || (self.slots && self.slots.header)) {
       headerEl = (
         <F7CardHeader>
           {self.props.title}
@@ -35,7 +35,7 @@ export default {
         </F7CardHeader>
       );
     }
-    if (self.content || (self.$slots && self.$slots.content)) {
+    if (self.content || (self.slots && self.slots.content)) {
       contentEl = (
         <F7CardContent padding={this.props.padding}>
           {self.props.content}
@@ -43,7 +43,7 @@ export default {
         </F7CardContent>
       );
     }
-    if (self.footer || (self.$slots && self.$slots.footer)) {
+    if (self.footer || (self.slots && self.slots.footer)) {
       footerEl = (
         <F7CardFooter>
           {self.props.title}

@@ -17,14 +17,14 @@ export default {
     let mediaEl;
     let labelEl;
     let deleteEl;
-    if (self.media || (self.$slots && self.$slots.media)) {
+    if (self.media || (self.slots && self.slots.media)) {
       mediaEl = (
         <div className={self.mediaClasses}>
           {self.props.media ? self.props.media : (<slot name="media"></slot>)}
         </div>
       )
     }
-    if (self.text || (self.$slots && self.$slots.text)) {
+    if (self.text || (self.slots && self.slots.text)) {
       labelEl = (
         <div className="chip-label">
           {self.props.text}
