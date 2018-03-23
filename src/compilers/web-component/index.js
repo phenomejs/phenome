@@ -1,4 +1,4 @@
-function compile(componentString) {
+function compile() {
   return '';
 }
 
