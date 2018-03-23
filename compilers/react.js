@@ -32,6 +32,30 @@ class {{name}} extends React.Component {
     const propName = 'on' + eventName;
     if (self.props[propName]) self.props[propName](...args);
   }
+  get slots() {
+    const self = this;
+    const slots = {};
+    if (!self.props.children || self.props.children.length == 0) {
+      return slots;
+    }
+
+    let slotChildren;
+    if (Array.isArray(self.props.children)) {
+      self.props.children.forEach((child) => {
+        const slotName = child.props.slot || 'default';
+        if (!slots[name]) slots[name] = [];
+        slots[name].push(child);
+      });
+    } else if (self.props.children.props && self.props.children.props.slot === name) {
+      if (!slots[name]) slots[name] = [];
+      slots[name].push(child);
+    } else if (self.props.children.props && !self.props.children.props.slot) {
+      if (!slots.default) slots.default = [];
+      slots.default.push(self.props.children)
+    }
+
+    return slots;
+  }
   get children() {
     const self = this;
     const children = [];
