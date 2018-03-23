@@ -43,7 +43,7 @@
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
     "rollup": "^0.55.3",
-    "rollup-plugin-buble": "^0.18.0",
+    "rollup-plugin-buble": "^0.19.2",
     "rollup-plugin-commonjs": "^8.3.0",
     "rollup-plugin-node-resolve": "^3.0.2",
     "rollup-plugin-replace": "^2.0.0",
