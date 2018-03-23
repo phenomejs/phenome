@@ -1,7 +1,7 @@
 /* eslint import/no-extraneous-dependencies: "off" */
 import React from 'react';
 import ReactDOM from 'react-dom';
-import MyComponent from '../../../component-library/dist/react/test-component';
+import MyComponent from '../../../component-library/dist/react/components/test-component';
 
 class NestedNestedComponent extends React.Component {
   render() {

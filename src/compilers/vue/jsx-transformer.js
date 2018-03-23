@@ -66,7 +66,7 @@ const transform = (componentString, state) => {
             },
             {
               type: 'StringLiteral',
-              value: node.arguments[1].properties ? node.arguments[1].properties[0].value.properties[0].value.value : 'default',
+              value: node.arguments[1] && node.arguments[1].properties ? node.arguments[1].properties[0].value.properties[0].value.value : 'default',
             },
           ];
           if (node.arguments[2]) newArguments.push(node.arguments[2]);

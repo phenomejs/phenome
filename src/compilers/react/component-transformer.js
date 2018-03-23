@@ -96,7 +96,7 @@ const emptyArrowFunctionCode = `
 `;
 
 const setPropsFunctionCode = `
-function __setComponentProps(props) {
+function __setComponentProps(component, props) {
   function propType(type) {
     if (type === String) return PropTypes.string;
     if (type === Boolean) return PropTypes.bool;
@@ -109,7 +109,7 @@ function __setComponentProps(props) {
     return PropTypes.any;
   }
 
-  {{name}}.propTypes = {};
+  component.propTypes = {};
 
   Object.keys(props).forEach((propName) => {
     const prop = props[propName];
@@ -119,24 +119,24 @@ function __setComponentProps(props) {
 
     if (Array.isArray(type)) {
       if (required) {
-        {{name}}.propTypes[propName] = PropTypes.oneOfType(type.map(propType)).required;
+        component.propTypes[propName] = PropTypes.oneOfType(type.map(propType)).required;
       } else {
-        {{name}}.propTypes[propName] = PropTypes.oneOfType(type.map(propType));
+        component.propTypes[propName] = PropTypes.oneOfType(type.map(propType));
       }
     } else {
       if (required) {
-        {{name}}.propTypes[propName] = propType(type).required;
+        component.propTypes[propName] = propType(type).required;
       } else {
-        {{name}}.propTypes[propName] = propType(type)
+        component.propTypes[propName] = propType(type)
       }
     }
     if (defaultValue) {
-      if (!{{name}}.defaultProps) {{name}}.defaultProps = {};
-      {{name}}.defaultProps[propName] = defaultValue
+      if (!component.defaultProps) component.defaultProps = {};
+      component.defaultProps[propName] = defaultValue
     }
   });
 }
-__setComponentProps(props);
+__setComponentProps({{name}}, props);
 `;
 
 
@@ -242,11 +242,12 @@ function transform(componentNode, state) {
     const setPropsFunctionDeclaration = setPropsFunction.program.body[0];
     const setPropsFunctionCall = setPropsFunction.program.body[1];
 
-    setPropsFunctionCall.expression.arguments = [propsNode];
+    setPropsFunctionCall.expression.arguments[1] = propsNode;
 
     state.imports.propTypes = propTypesImportNode;
 
-    state.declarations.push(setPropsFunctionDeclaration, setPropsFunctionCall);
+    state.declarations.setPropsFunction = setPropsFunctionDeclaration;
+    reactClassNode.callee.body.body.splice(1, 0, setPropsFunctionCall);
   }
 
   return reactClassNode;
