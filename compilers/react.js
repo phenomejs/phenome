@@ -188,11 +188,14 @@ function __setComponentProps(props) {
     if (type.constructor === Function) return PropTypes.instanceOf(type);
     return PropTypes.any;
   }
-  if (!{{name}}.propTypes) {{name}}.propTypes = {};
+
+  {{name}}.propTypes = {};
+
   Object.keys(props).forEach((propName) => {
     const prop = props[propName];
     const required = typeof prop.required !== 'undefined';
     const type = prop.type || prop;
+
     if (Array.isArray(type)) {
       if (required) {
         {{name}}.propTypes[propName] = PropTypes.oneOfType(type.map(propType)).required;
