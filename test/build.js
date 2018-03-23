@@ -3,6 +3,7 @@ const rollupBuble = require('rollup-plugin-buble');
 const rollupResolve = require('rollup-plugin-node-resolve');
 const rollupCommonJs = require('rollup-plugin-commonjs');
 const rollupReplace = require('rollup-plugin-replace');
+const rollupVue = require('rollup-plugin-vue');
 
 const compile = require('../compiler-io/');
 
@@ -20,19 +21,23 @@ const buildComponentLibrary = async () => {
 
 let cache;
 
-const buildApp = async library => {
+const buildApp = async (library) => {
+  const plugins = [
+    rollupResolve({ jsnext: true, browser: true }),
+    rollupCommonJs(),
+    rollupReplace({
+      delimiters: ['', ''],
+      'process.env.NODE_ENV': JSON.stringify('development'), // or 'production'
+    }),
+    rollupBuble(),
+  ]
+  if (library === 'vue') {
+    plugins.splice(3, 0, rollupVue());
+  }
   const inputOptions = {
     input: `./test/app/${library}/src/app.js`,
     cache,
-    plugins: [
-      rollupResolve({ jsnext: true, browser: true }),
-          rollupCommonJs(),
-          rollupReplace({
-          delimiters: ['', ''],
-          'process.env.NODE_ENV': JSON.stringify('development'), // or 'production'
-      }),
-      rollupBuble(),
-    ],
+    plugins,
   };
 
   const outputOptions = {
