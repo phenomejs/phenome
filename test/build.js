@@ -11,11 +11,11 @@ const buildComponentLibrary = async () => {
   await compile({
     paths: ['./component-library/src/**/*.js'],
     vue: {
-      out: './component-library/dist/vue/'
+      out: './component-library/dist/vue/',
     },
     react: {
-      out: './component-library/dist/react/'
-    }
+      out: './component-library/dist/react/',
+    },
   });
 };
 
@@ -24,16 +24,17 @@ let cache;
 const buildApp = async (library) => {
   const plugins = [
     rollupResolve({ jsnext: true, browser: true }),
+    rollupBuble(),
     rollupCommonJs(),
     rollupReplace({
       delimiters: ['', ''],
       'process.env.NODE_ENV': JSON.stringify('development'), // or 'production'
     }),
-    rollupBuble(),
-  ]
+  ];
   if (library === 'vue') {
-    plugins.splice(3, 0, rollupVue());
+    plugins.splice(1, 0, rollupVue());
   }
+
   const inputOptions = {
     input: `./test/app/${library}/src/app.js`,
     cache,
@@ -50,7 +51,9 @@ const buildApp = async (library) => {
 
   const buildBundle = async () => {
     // create a bundle
-    const bundle = await rollup.rollup(inputOptions);
+    const bundle = await rollup.rollup(inputOptions).catch((error)=> {
+      console.log(error);
+    });
 
     // generate code and a sourcemap
     const { code, map } = await bundle.generate(outputOptions);
@@ -66,7 +69,7 @@ const buildAll = async () => {
   await buildComponentLibrary();
   await [
     await buildApp('vue'),
-    await buildApp('react')
+    await buildApp('react'),
   ];
 };
 
