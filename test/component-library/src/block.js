@@ -22,7 +22,13 @@ export default {
   props: BlockProps,
   render() {
     return (
-      <div className={this.classes} onTabShow={this.onTabShow.bind(this)} onTabHide={this.onTabHide.bind(this)}>
+      <div
+        id={this.props.id}
+        style={this.props.style}
+        className={this.classes}
+        onTabShow={this.onTabShow.bind(this)}
+        onTabHide={this.onTabHide.bind(this)}
+      >
         <slot></slot>
       </div>
     );
@@ -30,7 +36,8 @@ export default {
   computed: {
     classes() {
       const self = this;
-      return Utils.extend(
+      return Utils.classNames(
+        self.props.className,
         {
           block: true,
           inset: self.props.inset,
@@ -44,7 +51,7 @@ export default {
           'no-hairlines-md': self.props.noHairlinesMd,
           'no-hairlines-ios': self.props.noHairlinesIos,
         },
-        Mixins.colorClasses(self)
+        Mixins.colorClasses(self),
       );
     },
   },

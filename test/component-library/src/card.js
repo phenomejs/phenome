@@ -53,7 +53,7 @@ export default {
     }
 
     return (
-      <div className={this.classes}>
+      <div id={this.props.id} style={this.props.style} className={this.classes}>
         {headerEl}
         {contentEl}
         {footerEl}
@@ -64,9 +64,12 @@ export default {
   computed: {
     classes() {
       const self = this;
-      return Utils.extend({
-        card: true,
-      }, Mixins.colorClasses(self));
+      return Utils.classNames(
+        self.props.className,
+        {
+          card: true,
+        }, Mixins.colorClasses(self)
+      );
     },
   },
 };

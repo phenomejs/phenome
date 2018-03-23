@@ -5,14 +5,18 @@ export default {
   name: 'f7-block-footer',
   props: Mixins.colorProps,
   render() {
-    return (<div className={this.classes}><slot></slot></div>);
+    return (<div id={this.props.id} style={this.props.style} className={this.classes}><slot></slot></div>);
   },
   computed: {
     classes() {
       const self = this;
-      return Utils.extend({
-        'block-footer': true,
-      }, Mixins.colorClasses(self));
+      return Utils.classNames(
+        self.props.className,
+        {
+          'block-footer': true,
+        },
+        Mixins.colorClasses(self)
+      );
     },
   },
 };

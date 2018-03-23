@@ -21,7 +21,7 @@ export default {
     const RowTag = self.props.tag;
 
     return (
-      <RowTag className={self.classes}>
+      <RowTag id={this.props.id} style={this.props.style} className={self.classes}>
         <slot></slot>
       </RowTag>
     );
@@ -29,7 +29,8 @@ export default {
   computed: {
     classes() {
       const self = this;
-      return Utils.extend(
+      return Utils.classNames(
+        self.props.className,
         {
           row: true,
           'no-gap': self.props.noGap,
