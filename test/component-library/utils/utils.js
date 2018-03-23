@@ -48,5 +48,16 @@ const Utils = {
     }
     return to;
   },
+  classNames(...args) {
+    const classes = [];
+    args.forEach((arg) => {
+      if (typeof arg === 'object' && arg.constructor === Object) {
+        Object.keys(arg).forEach((key) => {
+          if (arg[key]) classes.push(key);
+        });
+      } else if (arg) classes.push(arg);
+    });
+    return classes.join(' ');
+  }
 };
 export default Utils;
