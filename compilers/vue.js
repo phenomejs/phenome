@@ -90,10 +90,6 @@ const addComputed = `
 const addMethods = `
   const obj = {
     methods: {
-      forceUpdate() {
-        const self = this;
-        self.$forceUpdate();
-      },
       dispatchEvent(event, ...args) {
         const self = this;
         self.$emit(event, ...args);
