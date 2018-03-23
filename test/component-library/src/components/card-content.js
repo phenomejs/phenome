@@ -15,12 +15,13 @@ export default {
   name: 'f7-card-content',
   props: CardContentProps,
   render() {
-    return (<div className={this.classes}><slot></slot></div>);
+    return (<div id={this.props.id} style={this.props.style} className={this.classes}><slot></slot></div>);
   },
   computed: {
     classes() {
       const self = this;
-      return Utils.extend(
+      return Utils.classNames(
+        self.props.className,
         {
           'card-content': true,
           'card-content-padding': self.props.padding,

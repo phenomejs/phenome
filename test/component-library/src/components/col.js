@@ -30,7 +30,7 @@ export default {
     const ColTag = self.props.tag;
 
     return (
-      <ColTag className={self.classes}>
+      <ColTag id={this.props.id} style={this.props.style} className={self.classes}>
         <slot></slot>
       </ColTag>
     );
@@ -38,7 +38,8 @@ export default {
   computed: {
     classes() {
       const self = this;
-      return Utils.extend(
+      return Utils.classNames(
+        self.props.className,
         {
           col: self.props.width === 'auto',
           [`col-${self.props.width}`]: self.props.width !== 'auto',

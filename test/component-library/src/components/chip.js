@@ -7,6 +7,7 @@ const ChipProps = Utils.extend({
   deleteable: Boolean,
   mediaBgColor: String,
   mediaTextColor: String,
+  onDelete: Function,
 }, Mixins.colorProps);
 
 export default {
@@ -17,14 +18,14 @@ export default {
     let mediaEl;
     let labelEl;
     let deleteEl;
-    if (self.media || (self.$slots && self.$slots.media)) {
+    if (self.props.media || (self.slots && self.slots.media)) {
       mediaEl = (
         <div className={self.mediaClasses}>
           {self.props.media ? self.props.media : (<slot name="media"></slot>)}
         </div>
       )
     }
-    if (self.text || (self.$slots && self.$slots.text)) {
+    if (self.props.text || (self.slots && self.slots.text)) {
       labelEl = (
         <div className="chip-label">
           {self.props.text}
@@ -32,14 +33,14 @@ export default {
         </div>
       )
     }
-    if (self.deleteable) {
+    if (self.props.deleteable) {
       deleteEl = (
         <a href="#" className="chip-delete" onClick={self.onDeleteClick.bind(self)}></a>
       )
     }
 
     return (
-      <div className={classes} onClick={self.onClick.bind(self)}>
+      <div id={this.props.id} style={this.props.style} className={self.classes} onClick={self.onClick.bind(self)}>
         {mediaEl}
         {labelEl}
         {deleteEl}
@@ -49,9 +50,11 @@ export default {
   computed: {
     classes() {
       const self = this;
-      return Utils.extend({
-        chip: true,
-      }, Mixins.colorClasses(self));
+      return Utils.classNames(
+        self.props.className,{
+          chip: true,
+        }, Mixins.colorClasses(self)
+      );
     },
     mediaClasses() {
       const c = {
@@ -59,7 +62,7 @@ export default {
       };
       if (this.props.mediaTextColor) c[`text-color-${this.props.mediaTextColor}`] = true;
       if (this.props.mediaBgColor) c[`bg-color-${this.props.mediaBgColor}`] = true;
-      return c;
+      return Utils.classNames(c);
     },
   },
   methods: {
