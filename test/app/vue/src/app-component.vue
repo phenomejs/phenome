@@ -306,6 +306,64 @@
         <f7-col width="100" tablet-width="33">.col-100.tablet-33</f7-col>
       </f7-row>
     </f7-block>
+
+    <h1>Chips</h1>
+    <f7-block-title>Chips With Text</f7-block-title>
+    <f7-block strong>
+      <f7-chip text="Example Chip"></f7-chip>
+      <f7-chip text="Another Chip"></f7-chip>
+      <f7-chip text="One More Chip"></f7-chip>
+      <f7-chip text="Fourth Chip"></f7-chip>
+      <f7-chip text="Last One"></f7-chip>
+    </f7-block>
+    <f7-block-title>Icon Chips</f7-block-title>
+    <f7-block strong>
+      <f7-chip text="Add Contact" :media-bg-color="$theme.md ? 'blue' : undefined">
+        <f7-icon slot="media" if-ios="f7:add_round" if-md="material:add_circle"></f7-icon>
+      </f7-chip>
+      <f7-chip text="London" :media-bg-color="$theme.md ? 'green' : undefined">
+        <f7-icon slot="media" if-ios="f7:compass" if-md="material:location_on"></f7-icon>
+      </f7-chip>
+      <f7-chip text="John Doe" :media-bg-color="$theme.md ? 'red' : undefined">
+        <f7-icon slot="media" if-ios="f7:person" if-md="material:person"></f7-icon>
+      </f7-chip>
+    </f7-block>
+    <f7-block-title>Contact Chips</f7-block-title>
+    <f7-block strong>
+      <f7-chip text="Jane Doe">
+        <img slot="media" src="http://lorempixel.com/100/100/people/9/"/>
+      </f7-chip>
+      <f7-chip text="John Doe">
+        <img slot="media" src="http://lorempixel.com/100/100/people/3/"/>
+      </f7-chip>
+      <f7-chip text="Adam Smith">
+        <img slot="media" src="http://lorempixel.com/100/100/people/7/"/>
+      </f7-chip>
+      <f7-chip text="Jennifer" media-bg-color="pink" media="J"></f7-chip>
+      <f7-chip text="Chris" media-bg-color="yellow" media-text-color="black" media="C"></f7-chip>
+      <f7-chip text="Kate" media-bg-color="red" media="K"></f7-chip>
+    </f7-block>
+    <f7-block-title>Deletable Chips / Tags</f7-block-title>
+    <f7-block strong>
+      <f7-chip text="Example Chip" deleteable @delete="deleteChip"></f7-chip>
+      <f7-chip text="Chris" media="C" media-bg-color="orange" text-color="black" deleteable @delete="deleteChip"></f7-chip>
+      <f7-chip text="Jane Doe" deleteable @delete="deleteChip">
+        <img slot="media" src="http://lorempixel.com/100/100/people/9/"/>
+      </f7-chip>
+      <f7-chip text="One More Chip" deleteable @delete="deleteChip"></f7-chip>
+      <f7-chip text="Jennifer" media-bg-color="pink" media="J" deleteable @delete="deleteChip"></f7-chip>
+      <f7-chip text="Adam Smith" deleteable @delete="deleteChip">
+        <img slot="media" src="http://lorempixel.com/100/100/people/7/"/>
+      </f7-chip>
+    </f7-block>
+    <f7-block-title>Color Chips</f7-block-title>
+    <f7-block strong>
+      <f7-chip text="Red Chip" color="red"></f7-chip>
+      <f7-chip text="Green Chip" color="green"></f7-chip>
+      <f7-chip text="Blue Chip" color="blue"></f7-chip>
+      <f7-chip text="Orange Chip" color="orange"></f7-chip>
+      <f7-chip text="Pink Chip" color="pink"></f7-chip>
+    </f7-block>
   </div>
 </template>
 
@@ -321,6 +379,8 @@
   import F7CardContent from '../../../component-library/dist/vue/card-content';
   import F7Row from '../../../component-library/dist/vue/row';
   import F7Col from '../../../component-library/dist/vue/col';
+  import F7Chip from '../../../component-library/dist/vue/chip';
+  import F7Icon from '../../../component-library/dist/vue/icon';
 
   export default {
     components: {
@@ -335,6 +395,13 @@
       F7CardContent,
       F7Row,
       F7Col,
+      F7Chip,
+      F7Icon,
     },
+    methods: {
+      deleteChip() {
+        alert('Delete chip!');
+      }
+    }
   };
 </script>
