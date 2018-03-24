@@ -48,9 +48,11 @@ const addComputed = `
 const addMethods = `
   const obj = {
     methods: {
-      dispatchEvent(event, ...args) {
+      dispatchEvent(events, ...args) {
         const self = this;
-        self.$emit(event, ...args);
+        events.split(' ').forEach((event) => {
+          self.$emit(event, ...args);
+        });
       },
       setState(updater, callback) {
         const self = this;
