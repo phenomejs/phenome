@@ -174,7 +174,7 @@ const Mixins = {
       'login-screen-open': loginScreenOpen || loginScreenOpen === '',
       'sortable-enable': Utils.isTrueProp(sortableEnable),
       'sortable-disable': Utils.isTrueProp(sortableDisable),
-      'sortable-toggle': sortableToggle === true || sortableToggle.length,
+      'sortable-toggle': sortableToggle === true || (typeof sortableToggle === 'string' && sortableToggle.length),
     };
   },
 };

@@ -18,6 +18,7 @@ export default {
     const classNames = Utils.classNames(
       self.props.classNames,
       {
+        segmented: true,
         'segmented-raised': self.props.raised,
         'segmented-round': self.props.round,
       },

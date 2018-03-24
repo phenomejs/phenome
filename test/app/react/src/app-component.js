@@ -20,6 +20,8 @@ import F7Accordion from '../../../component-library/dist/react/components/accord
 import F7Fab from '../../../component-library/dist/react/components/fab';
 import F7FabButtons from '../../../component-library/dist/react/components/fab-buttons';
 import F7FabButton from '../../../component-library/dist/react/components/fab-button';
+import F7Button from '../../../component-library/dist/react/components/button';
+import F7Segmented from '../../../component-library/dist/react/components/segmented';
 
 class App extends React.Component {
   get $theme() {
@@ -347,7 +349,7 @@ class App extends React.Component {
         <F7BlockTitle>Icon Chips</F7BlockTitle>
         <F7Block strong>
           <F7Chip text="Add Contact" mediaBgColor={this.$theme.md ? 'blue' : undefined}>
-            <F7Icon size="50" slot="media" ifIos="f7:add_round" ifMd="material:add_circle"></F7Icon>
+            <F7Icon slot="media" ifIos="f7:add_round" ifMd="material:add_circle"></F7Icon>
           </F7Chip>
           <F7Chip text="London" mediaBgColor={this.$theme.md ? 'green' : undefined}>
             <F7Icon slot="media" ifIos="f7:compass" ifMd="material:location_on"></F7Icon>
@@ -416,6 +418,189 @@ class App extends React.Component {
             <F7FabButton>3</F7FabButton>
           </F7FabButtons>
         </F7Fab>
+
+        <h1>Buttons</h1>
+        <F7BlockTitle>Usual Buttons</F7BlockTitle>
+        <F7Block>
+          <F7Row>
+            <F7Col>
+              <F7Button>Button</F7Button>
+            </F7Col>
+            <F7Col>
+              <F7Button>Button</F7Button>
+            </F7Col>
+            <F7Col>
+              <F7Button round>Round</F7Button>
+            </F7Col>
+          </F7Row>
+        </F7Block>
+
+        <F7BlockTitle>Fill Buttons</F7BlockTitle>
+        <F7Block>
+          <F7Row>
+            <F7Col>
+              <F7Button fill>Button</F7Button>
+            </F7Col>
+            <F7Col>
+              <F7Button fill>Button</F7Button>
+            </F7Col>
+            <F7Col>
+              <F7Button fill round>Round</F7Button>
+            </F7Col>
+          </F7Row>
+        </F7Block>
+
+        <F7BlockTitle>Outline Buttons (MD-theme only)</F7BlockTitle>
+        <F7Block>
+          <F7Row>
+            <F7Col>
+              <F7Button outline>Button</F7Button>
+            </F7Col>
+            <F7Col>
+              <F7Button outline>Button</F7Button>
+            </F7Col>
+            <F7Col>
+              <F7Button outline round>Round</F7Button>
+            </F7Col>
+          </F7Row>
+        </F7Block>
+
+        <F7BlockTitle>Raised Buttons (MD-theme only)</F7BlockTitle>
+        <F7Block>
+          <F7Row tag="p">
+            <F7Col tag="span">
+              <F7Button raised>Button</F7Button>
+            </F7Col>
+            <F7Col tag="span">
+              <F7Button raised fill>Fill</F7Button>
+            </F7Col>
+            <F7Col tag="span">
+              <F7Button raised outline>Outline</F7Button>
+            </F7Col>
+          </F7Row>
+          <F7Row tag="p">
+            <F7Col tag="span">
+              <F7Button raised round>Round</F7Button>
+            </F7Col>
+            <F7Col tag="span">
+              <F7Button raised fill round>Fill</F7Button>
+            </F7Col>
+            <F7Col tag="span">
+              <F7Button raised outline round>Outline</F7Button>
+            </F7Col>
+          </F7Row>
+        </F7Block>
+
+        <F7BlockTitle>Segmented</F7BlockTitle>
+        <F7Block>
+          <F7Segmented raised tag="p">
+            <F7Button>Button</F7Button>
+            <F7Button>Button</F7Button>
+            <F7Button active>Active</F7Button>
+          </F7Segmented>
+          <F7Segmented raised tag="p">
+            <F7Button outline>Outline</F7Button>
+            <F7Button outline>Outline</F7Button>
+            <F7Button outline active>Active</F7Button>
+          </F7Segmented>
+          <F7Segmented raised round tag="p">
+            <F7Button round>Button</F7Button>
+            <F7Button round>Button</F7Button>
+            <F7Button round active>Active</F7Button>
+          </F7Segmented>
+          <F7Segmented round tag="p">
+            <F7Button round outline>Outline</F7Button>
+            <F7Button round outline>Outline</F7Button>
+            <F7Button round outline active>Active</F7Button>
+          </F7Segmented>
+        </F7Block>
+
+        <F7BlockTitle>Big Buttons</F7BlockTitle>
+        <F7Block>
+          <F7Row tag="p">
+            <F7Col tag="span">
+              <F7Button big>Button</F7Button>
+            </F7Col>
+            <F7Col tag="span">
+              <F7Button big fill>Fill</F7Button>
+            </F7Col>
+          </F7Row>
+          <F7Row tag="p">
+            <F7Col tag="span">
+              <F7Button big raised>Raised</F7Button>
+            </F7Col>
+            <F7Col tag="span">
+              <F7Button big raised fill>Raised Fill</F7Button>
+            </F7Col>
+          </F7Row>
+        </F7Block>
+
+        <F7BlockTitle>Small Buttons</F7BlockTitle>
+        <F7Block>
+          <F7Row tag="p">
+            <F7Col tag="span">
+              <F7Button big small>Button</F7Button>
+            </F7Col>
+            <F7Col tag="span">
+              <F7Button big small outline>Outline</F7Button>
+            </F7Col>
+            <F7Col tag="span">
+              <F7Button big small fill>Fill</F7Button>
+            </F7Col>
+          </F7Row>
+          <F7Row tag="p">
+            <F7Col tag="span">
+              <F7Button big small round>Button</F7Button>
+            </F7Col>
+            <F7Col tag="span">
+              <F7Button big small outline round>Outline</F7Button>
+            </F7Col>
+            <F7Col tag="span">
+              <F7Button big small fill round>Fill</F7Button>
+            </F7Col>
+          </F7Row>
+        </F7Block>
+
+        <F7BlockTitle>Color Buttons</F7BlockTitle>
+        <F7Block>
+          <F7Row>
+            <F7Col>
+              <F7Button color="red">Red</F7Button>
+            </F7Col>
+            <F7Col>
+              <F7Button color="green">Green</F7Button>
+            </F7Col>
+            <F7Col>
+              <F7Button color="blue">Blue</F7Button>
+            </F7Col>
+          </F7Row>
+        </F7Block>
+
+        <F7BlockTitle>Color Fill Buttons</F7BlockTitle>
+        <F7Block>
+          <F7Row>
+            <F7Col>
+              <F7Button fill color="red">Red</F7Button>
+            </F7Col>
+            <F7Col>
+              <F7Button fill color="green">Green</F7Button>
+            </F7Col>
+            <F7Col>
+              <F7Button fill color="blue">Blue</F7Button>
+            </F7Col>
+          </F7Row>
+        </F7Block>
+
+        {/* <!-- TODO -->
+        <!-- <F7BlockTitle>List-Block Buttons</F7BlockTitle>
+        <f7-list inset>
+          <f7-list-button title="List Button 1"></f7-list-button>
+          <f7-list-button title="List Button 2"></f7-list-button>
+          <f7-list-button title="List Button 3"></f7-list-button>
+        </f7-list>
+        <f7-list inset>
+          <f7-list-button title="Big Red Button" color="red"></f7-list-button>
+        </f7-list> --> */}
       </div>
     );
   }

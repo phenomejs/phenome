@@ -81,7 +81,9 @@ export default {
         onClick={self.onClick.bind(self)}
         // TODO ...attrs
       >
-        {[iconEl, textEl, self.slots.default]}
+        {iconEl}
+        {textEl}
+        <slot></slot>
       </a>
     );
   },
