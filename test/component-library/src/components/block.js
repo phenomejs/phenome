@@ -20,14 +20,22 @@ const BlockProps = Utils.extend(
 export default {
   name: 'f7-block',
   props: BlockProps,
+  componentDidMount() {
+    this.onTabShowBound = this.onTabShow.bind(this);
+    this.onTabHideBound = this.onTabHide.bind(this);
+    this.el.addEventListener('tab:show', this.onTabShowBound);
+    this.el.addEventListener('tab:hide', this.onTabHideBound);
+  },
+  componentWillUnmount() {
+    this.el.removeEventListener('tab:show', this.onTabShowBound);
+    this.el.removeEventListener('tab:hide', this.onTabHideBound);
+  },
   render() {
     return (
       <div
         id={this.props.id}
         style={this.props.style}
         className={this.classes}
-        onTabShow={this.onTabShow.bind(this)}
-        onTabHide={this.onTabHide.bind(this)}
       >
         <slot></slot>
       </div>
@@ -57,10 +65,10 @@ export default {
   },
   methods: {
     onTabShow(e) {
-      this.dispatchEvent('tab:show', e);
+      this.dispatchEvent('tabShow tab:show', e);
     },
     onTabHide(e) {
-      this.dispatchEvent('tab:hide', e);
+      this.dispatchEvent('tabShow tab:hide', e);
     },
   },
 };
