@@ -13,6 +13,10 @@ import F7Row from '../../../component-library/dist/react/components/row';
 import F7Col from '../../../component-library/dist/react/components/col';
 import F7Chip from '../../../component-library/dist/react/components/chip';
 import F7Icon from '../../../component-library/dist/react/components/icon';
+import F7AccordionItem from '../../../component-library/dist/react/components/accordion-item';
+import F7AccordionToggle from '../../../component-library/dist/react/components/accordion-toggle';
+import F7AccordionContent from '../../../component-library/dist/react/components/accordion-content';
+import F7Accordion from '../../../component-library/dist/vue/components/accordion';
 
 class App extends React.Component {
   get $theme() {
@@ -385,11 +389,28 @@ class App extends React.Component {
           <F7Chip text="Orange Chip" color="orange"></F7Chip>
           <F7Chip text="Pink Chip" color="pink"></F7Chip>
         </F7Block>
+
+        <h1>Accordion</h1>
+        <F7BlockTitle>Custom Collapsible</F7BlockTitle>
+        <F7Block inner accordion-list>
+          {[1,2,3].map((key) => (
+            <F7AccordionItem key={key} onAccordionOpened={this.onAccordionOpened} onAccordionClosed={this.onAccordionClosed}>
+              <F7AccordionToggle><b>Item {key}</b></F7AccordionToggle>
+              <F7AccordionContent>Content {key}</F7AccordionContent>
+            </F7AccordionItem>
+          ))}
+        </F7Block>
       </div>
     );
   }
   deleteChip() {
     alert('Delete chip!');
+  }
+  onAccordionOpened() {
+    alert('Accordion opened');
+  }
+  onAccordionClosed() {
+    alert('Accordion closed');
   }
 }
 export default App;

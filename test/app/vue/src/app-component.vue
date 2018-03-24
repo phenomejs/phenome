@@ -364,6 +364,15 @@
       <f7-chip text="Orange Chip" color="orange"></f7-chip>
       <f7-chip text="Pink Chip" color="pink"></f7-chip>
     </f7-block>
+
+    <h1>Accordion</h1>
+    <f7-block-title>Custom Collapsible</f7-block-title>
+    <f7-block inner accordion-list>
+      <f7-accordion-item v-for="n in 3" :key="n" @accordion:opened="onAccordionOpened" @accordion:closed="onAccordionClosed">
+        <f7-accordion-toggle><b>Item {{n}}</b></f7-accordion-toggle>
+        <f7-accordion-content>Content {{n}}</f7-accordion-content>
+      </f7-accordion-item>
+    </f7-block>
   </div>
 </template>
 
@@ -381,6 +390,10 @@
   import F7Col from '../../../component-library/dist/vue/components/col';
   import F7Chip from '../../../component-library/dist/vue/components/chip';
   import F7Icon from '../../../component-library/dist/vue/components/icon';
+  import F7AccordionItem from '../../../component-library/dist/vue/components/accordion-item';
+  import F7AccordionToggle from '../../../component-library/dist/vue/components/accordion-toggle';
+  import F7AccordionContent from '../../../component-library/dist/vue/components/accordion-content';
+  import F7Accordion from '../../../component-library/dist/vue/components/accordion';
 
   export default {
     components: {
@@ -397,10 +410,20 @@
       F7Col,
       F7Chip,
       F7Icon,
+      F7AccordionItem,
+      F7AccordionToggle,
+      F7AccordionContent,
+      F7Accordion,
     },
     methods: {
       deleteChip() {
         alert('Delete chip!');
+      },
+      onAccordionOpened() {
+        alert('Accordion opened');
+      },
+      onAccordionClosed() {
+        alert('Accordion closed');
       }
     }
   };
