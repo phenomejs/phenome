@@ -161,7 +161,7 @@ function modifyVueComponent(declaration) {
   };
 }
 
-function transform(componentNode, state) {
+function transform(name, componentNode, state) {
   const { hasProps } = modifyVueComponent(componentNode);
 
   // Add props
