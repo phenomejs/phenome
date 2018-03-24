@@ -39,12 +39,13 @@ const reactClassCode = `
       if (Array.isArray(self.props.children)) {
         self.props.children.forEach((child) => {
           const slotName = child.props && child.props.slot || 'default';
-          if (!slots[name]) slots[name] = [];
-          slots[name].push(child);
+          if (!slots[slotName]) slots[slotName] = [];
+          slots[slotName].push(child);
         });
-      } else if (self.props.children.props && self.props.children.props.slot === name) {
-        if (!slots[name]) slots[name] = [];
-        slots[name].push(child);
+      } else if (self.props.children.props && self.props.children.props.slot) {
+        const slotName = self.props.children.props.slot;
+        if (!slots[slotName]) slots[slotName] = [];
+        slots[slotName].push(self.props.children);
       } else if (self.props.children.props && !self.props.children.props.slot) {
         if (!slots.default) slots.default = [];
         slots.default.push(self.props.children)
