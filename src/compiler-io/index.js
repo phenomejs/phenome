@@ -59,13 +59,16 @@ const getFiles = globPatterns => getFilePathsFromGlobPatterns(globPatterns)
     return Promise.all(filePromises);
   });
 
-const processCompilation = (filesToProcess, outPath, compiler) => {
+const processCompilation = (compilerName = '', filesToProcess, outPath, compiler) => {
   const compiledFilesToWrite = filesToProcess.map((file) => {
     const compiledCode = compiler(file.contents, {
       filePath: file.path,
       outPath,
       relativePath: file.relativePath,
     });
+
+    compiledCode.replace(/process.env.COMPILER/g, compilerName);
+
     const outputPath = path.join(getBasePath(), outPath, file.path);
 
     return {
@@ -81,9 +84,9 @@ const processCompilation = (filesToProcess, outPath, compiler) => {
   return Promise.all(writeFilePromises);
 };
 
-const processReact = (reactConfig, filesToProcess) => processCompilation(filesToProcess, reactConfig.out, reactCompiler);
+const processReact = (reactConfig, filesToProcess) => processCompilation('react', filesToProcess, reactConfig.out, reactCompiler);
 
-const processVue = (vueConfig, filesToProcess) => processCompilation(filesToProcess, vueConfig.out, vueCompiler);
+const processVue = (vueConfig, filesToProcess) => processCompilation('vue', filesToProcess, vueConfig.out, vueCompiler);
 
 const compile = (config) => {
   if (!config) {
