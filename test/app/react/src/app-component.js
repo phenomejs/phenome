@@ -1,18 +1,18 @@
 import React from 'react';
 
-import F7Badge from '../../../component-library/dist/react/badge';
-import F7BlockTitle from '../../../component-library/dist/react/block-title';
-import F7Block from '../../../component-library/dist/react/block';
-import F7BlockHeader from '../../../component-library/dist/react/block-header';
-import F7BlockFooter from '../../../component-library/dist/react/block-footer';
-import F7Card from '../../../component-library/dist/react/card';
-import F7CardHeader from '../../../component-library/dist/react/card-header';
-import F7CardFooter from '../../../component-library/dist/react/card-footer';
-import F7CardContent from '../../../component-library/dist/react/card-content';
-import F7Row from '../../../component-library/dist/react/row';
-import F7Col from '../../../component-library/dist/react/col';
-import F7Chip from '../../../component-library/dist/react/chip';
-import F7Icon from '../../../component-library/dist/react/icon';
+import F7Badge from '../../../component-library/dist/react/components/badge';
+import F7BlockTitle from '../../../component-library/dist/react/components/block-title';
+import F7Block from '../../../component-library/dist/react/components/block';
+import F7BlockHeader from '../../../component-library/dist/react/components/block-header';
+import F7BlockFooter from '../../../component-library/dist/react/components/block-footer';
+import F7Card from '../../../component-library/dist/react/components/card';
+import F7CardHeader from '../../../component-library/dist/react/components/card-header';
+import F7CardFooter from '../../../component-library/dist/react/components/card-footer';
+import F7CardContent from '../../../component-library/dist/react/components/card-content';
+import F7Row from '../../../component-library/dist/react/components/row';
+import F7Col from '../../../component-library/dist/react/components/col';
+import F7Chip from '../../../component-library/dist/react/components/chip';
+import F7Icon from '../../../component-library/dist/react/components/icon';
 
 class App extends React.Component {
   get $theme() {

@@ -5,7 +5,7 @@ const rollupCommonJs = require('rollup-plugin-commonjs');
 const rollupReplace = require('rollup-plugin-replace');
 const rollupVue = require('rollup-plugin-vue');
 
-const compile = require('../compiler-io/');
+const compile = require('../src/compiler-io/');
 
 const buildComponentLibrary = async () => {
   await compile({
@@ -56,11 +56,11 @@ const buildApp = async (library) => {
     });
 
     // generate code and a sourcemap
-    const { code, map } = await bundle.generate(outputOptions);
+    await bundle.generate(outputOptions);
 
     // or write the bundle to disk
     await bundle.write(outputOptions);
-  }
+  };
 
   await buildBundle();
 };

@@ -368,19 +368,19 @@
 </template>
 
 <script>
-  import F7Badge from '../../../component-library/dist/vue/badge';
-  import F7BlockTitle from '../../../component-library/dist/vue/block-title';
-  import F7Block from '../../../component-library/dist/vue/block';
-  import F7BlockHeader from '../../../component-library/dist/vue/block-header';
-  import F7BlockFooter from '../../../component-library/dist/vue/block-footer';
-  import F7Card from '../../../component-library/dist/vue/card';
-  import F7CardHeader from '../../../component-library/dist/vue/card-header';
-  import F7CardFooter from '../../../component-library/dist/vue/card-footer';
-  import F7CardContent from '../../../component-library/dist/vue/card-content';
-  import F7Row from '../../../component-library/dist/vue/row';
-  import F7Col from '../../../component-library/dist/vue/col';
-  import F7Chip from '../../../component-library/dist/vue/chip';
-  import F7Icon from '../../../component-library/dist/vue/icon';
+  import F7Badge from '../../../component-library/dist/vue/components/badge';
+  import F7BlockTitle from '../../../component-library/dist/vue/components/block-title';
+  import F7Block from '../../../component-library/dist/vue/components/block';
+  import F7BlockHeader from '../../../component-library/dist/vue/components/block-header';
+  import F7BlockFooter from '../../../component-library/dist/vue/components/block-footer';
+  import F7Card from '../../../component-library/dist/vue/components/card';
+  import F7CardHeader from '../../../component-library/dist/vue/components/card-header';
+  import F7CardFooter from '../../../component-library/dist/vue/components/card-footer';
+  import F7CardContent from '../../../component-library/dist/vue/components/card-content';
+  import F7Row from '../../../component-library/dist/vue/components/row';
+  import F7Col from '../../../component-library/dist/vue/components/col';
+  import F7Chip from '../../../component-library/dist/vue/components/chip';
+  import F7Icon from '../../../component-library/dist/vue/components/icon';
 
   export default {
     components: {
