@@ -42,6 +42,9 @@ const addComputed = `
       el() {
         return this.$el;
       },
+      slots() {
+        return this.$slots;
+      },
     }
   }
 `;
