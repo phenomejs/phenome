@@ -1,6 +1,7 @@
 /* eslint no-param-reassign: "off" */
 /* eslint prefer-destructuring: "off" */
 const codeToAst = require('../compiler-utils/code-to-ast');
+const toCamelCase = require('../compiler-utils/to-camel-case');
 
 const propTypesImportCode = `
 import PropTypes from 'prop-types';
@@ -24,6 +25,30 @@ const reactClassCode = `
         .join('');
       const propName = 'on' + eventName;
       if (self.props[propName]) self.props[propName](...args);
+    }
+    get slots() {
+      const self = this;
+      const slots = {};
+      if (!self.props.children || self.props.children.length == 0) {
+        return slots;
+      }
+
+      let slotChildren;
+      if (Array.isArray(self.props.children)) {
+        self.props.children.forEach((child) => {
+          const slotName = child.props && child.props.slot || 'default';
+          if (!slots[name]) slots[name] = [];
+          slots[name].push(child);
+        });
+      } else if (self.props.children.props && self.props.children.props.slot === name) {
+        if (!slots[name]) slots[name] = [];
+        slots[name].push(child);
+      } else if (self.props.children.props && !self.props.children.props.slot) {
+        if (!slots.default) slots.default = [];
+        slots.default.push(self.props.children)
+      }
+
+      return slots;
     }
     get children() {
       const self = this;
@@ -81,8 +106,8 @@ const reactClassCode = `
       }
       return el;
     }
-  } 
-  
+  }
+
   return {{name}};
 })()
 
@@ -114,7 +139,6 @@ function __setComponentProps(component, props) {
   Object.keys(props).forEach((propName) => {
     const prop = props[propName];
     const required = typeof prop.required !== 'undefined';
-    const defaultValue = typeof prop.default !== 'undefined';
     const type = prop.type || prop;
 
     if (Array.isArray(type)) {
@@ -130,9 +154,9 @@ function __setComponentProps(component, props) {
         component.propTypes[propName] = propType(type)
       }
     }
-    if (defaultValue) {
+    if (typeof prop.default !== 'undefined') {
       if (!component.defaultProps) component.defaultProps = {};
-      component.defaultProps[propName] = defaultValue
+      component.defaultProps[propName] = prop.default
     }
   });
 }
@@ -226,15 +250,24 @@ function modifyReactClass(name, reactClassNode, componentObjectNode) {
   };
 }
 
-function transform(componentNode, state) {
-  // Default name
-  const name = 'MyComponent';
+function transform(name = 'MyComponent', componentNode, state) {
+  // Find name
+  componentNode.properties.forEach((prop) => {
+    if (prop.key && prop.key.name === 'name') {
+      name = toCamelCase(prop.value.value);
+    }
+  });
+
   const reactImportNode = codeToAst(reactImportCode).program.body[0];
-  const reactClassNode = codeToAst(reactClassCode.replace(/{{name}}/g, name)).program.body[0].expression;
+  const reactClassNode = codeToAst(reactClassCode.replace(/{{name}}/g, toCamelCase(name))).program.body[0].expression;
 
   state.imports.react = reactImportNode;
 
-  const { hasProps, propsNode } = modifyReactClass(name, reactClassNode.callee.body.body[0].declarations[0].init, componentNode);
+  const { hasProps, propsNode } = modifyReactClass(
+    name,
+    reactClassNode.callee.body.body[0].declarations[0].init,
+    componentNode,
+  );
 
   if (hasProps) {
     const propTypesImportNode = codeToAst(propTypesImportCode).program.body[0];
