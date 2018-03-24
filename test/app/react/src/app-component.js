@@ -99,7 +99,7 @@ class App extends React.Component {
           <F7CardHeader
             className="no-border"
             valign="bottom"
-            style={{'background-image':'url(http://lorempixel.com/1000/600/nature/3/)'}}
+            style={{backgroundImage:'url(http://lorempixel.com/1000/600/nature/3/)'}}
           >Journey To Mountains</F7CardHeader>
           <F7CardContent>
             <p className="date">Posted on January 21, 2015</p>
@@ -114,7 +114,7 @@ class App extends React.Component {
           <F7CardHeader
             className="no-border"
             valign="bottom"
-            style={{'background-image':'url(http://lorempixel.com/1000/600/people/6/)'}}
+            style={{backgroundImage:'url(http://lorempixel.com/1000/600/people/6/)'}}
             >Journey To Mountains</F7CardHeader>
           <F7CardContent>
             <p className="date">Posted on January 21, 2015</p>
