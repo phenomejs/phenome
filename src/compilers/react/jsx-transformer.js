@@ -31,11 +31,10 @@ function __getReactComponentSlot(self, name, defaultChildren) {
     return defaultChildren;
   }
 
-  let slotChildren;
   if (Array.isArray(self.props.children)) {
-    slotChildren = [];
+    const slotChildren = [];
     self.props.children.forEach((child) => {
-      const slotName = child.props.slot || 'default';
+      const slotName = child.props && child.props.slot || 'default';
       if (slotName === name) {
         slotChildren.push(child);
       }
@@ -47,6 +46,8 @@ function __getReactComponentSlot(self, name, defaultChildren) {
   } else if (self.props.children.props && self.props.children.props.slot === name) {
     return self.props.children;
   } else if (self.props.children.props && !self.props.children.props.slot && name === 'default') {
+    return self.props.children;
+  } else if (typeof self.props.children === 'string' && name === 'default') {
     return self.props.children;
   }
 
