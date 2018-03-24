@@ -24,7 +24,7 @@ export default {
     return (
       <i
         id={this.props.id}
-        style={Utils.extend({'font-size': self.sizeComputed}, this.props.style)}
+        style={Utils.extend({fontSize: self.sizeComputed}, this.props.style)}
         className={self.classes}
       ><slot></slot></i>
     );
@@ -42,6 +42,8 @@ export default {
       const self = this;
       const { material, f7, ifMd, ifIos } = self.props;
       let text = material || f7;
+      // TODO: disable it
+      if (!self.$theme) self.$theme = {md: true, ios: false};
       if (ifMd && self.$theme.md && (ifMd.indexOf('material:') >= 0 || ifMd.indexOf('f7:') >= 0)) {
         text = ifMd.split(':')[1];
       } else if (ifIos && self.$theme.ios && (ifIos.indexOf('material:') >= 0 || ifIos.indexOf('f7:') >= 0)) {
@@ -54,6 +56,8 @@ export default {
         icon: true,
       };
       const self = this;
+      // TODO: disable it
+      if (!self.$theme) self.$theme = {md: true, ios: false};
       const { ifMd, ifIos, material, f7, fa, ion, icon } = self.props;
       if (ifMd || ifIos) {
         const parts = (self.$theme.md ? ifMd : ifIos).split(':');

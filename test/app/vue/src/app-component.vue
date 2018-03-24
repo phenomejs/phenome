@@ -319,7 +319,7 @@
     <f7-block-title>Icon Chips</f7-block-title>
     <f7-block strong>
       <f7-chip text="Add Contact" :media-bg-color="$theme.md ? 'blue' : undefined">
-        <f7-icon slot="media" if-ios="f7:add_round" if-md="material:add_circle"></f7-icon>
+        <f7-icon size="50" slot="media" if-ios="f7:add_round" if-md="material:add_circle"></f7-icon>
       </f7-chip>
       <f7-chip text="London" :media-bg-color="$theme.md ? 'green' : undefined">
         <f7-icon slot="media" if-ios="f7:compass" if-md="material:location_on"></f7-icon>
@@ -367,12 +367,25 @@
 
     <h1>Accordion</h1>
     <f7-block-title>Custom Collapsible</f7-block-title>
-    <f7-block inner accordion-list>
+    <F7Block inner accordion-list>
       <f7-accordion-item v-for="n in 3" :key="n" @accordion:opened="onAccordionOpened" @accordion:closed="onAccordionClosed">
         <f7-accordion-toggle><b>Item {{n}}</b></f7-accordion-toggle>
         <f7-accordion-content>Content {{n}}</f7-accordion-content>
       </f7-accordion-item>
-    </f7-block>
+    </F7Block>
+
+    <!-- FAB -->
+    <f7-fab>
+      <i slot="link" class="icon f7-icons ios-only">add</i>
+      <i slot="link" class="icon f7-icons ios-only">close</i>
+      <i slot="link" class="icon material-icons md-only">add</i>
+      <i slot="link" class="icon material-icons md-only">close</i>
+      <f7-fab-buttons>
+        <f7-fab-button>1</f7-fab-button>
+        <f7-fab-button>2</f7-fab-button>
+        <f7-fab-button>3</f7-fab-button>
+      </f7-fab-buttons>
+    </f7-fab>
   </div>
 </template>
 
@@ -394,6 +407,9 @@
   import F7AccordionToggle from '../../../component-library/dist/vue/components/accordion-toggle';
   import F7AccordionContent from '../../../component-library/dist/vue/components/accordion-content';
   import F7Accordion from '../../../component-library/dist/vue/components/accordion';
+  import F7Fab from '../../../component-library/dist/vue/components/fab';
+  import F7FabButtons from '../../../component-library/dist/vue/components/fab-buttons';
+  import F7FabButton from '../../../component-library/dist/vue/components/fab-button';
 
   export default {
     components: {
@@ -414,6 +430,9 @@
       F7AccordionToggle,
       F7AccordionContent,
       F7Accordion,
+      F7Fab,
+      F7FabButtons,
+      F7FabButton,
     },
     methods: {
       deleteChip() {

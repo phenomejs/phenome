@@ -65,7 +65,7 @@ const Mixins = {
       ignoreCache,
       routeTabId,
       view,
-    } = self;
+    } = self.props;
 
     return {
       'data-force': force,
@@ -79,7 +79,7 @@ const Mixins = {
     };
   },
   linkRouterClasses(self) {
-    const { back, linkBack, external } = self;
+    const { back, linkBack, external } = self.props;
 
     return {
       back: back || linkBack,
@@ -127,7 +127,7 @@ const Mixins = {
       sortableEnable,
       sortableDisable,
       sortableToggle,
-    } = self;
+    } = self.props;
 
     return {
       'data-panel': (Utils.isStringProp(panelOpen) && panelOpen) ||
@@ -160,7 +160,7 @@ const Mixins = {
       sortableEnable,
       sortableDisable,
       sortableToggle,
-    } = self;
+    } = self.props;
     return {
       'panel-close': Utils.isTrueProp(panelClose),
       'panel-open': panelOpen || panelOpen === '',

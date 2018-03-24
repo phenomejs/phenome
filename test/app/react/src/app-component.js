@@ -16,7 +16,10 @@ import F7Icon from '../../../component-library/dist/react/components/icon';
 import F7AccordionItem from '../../../component-library/dist/react/components/accordion-item';
 import F7AccordionToggle from '../../../component-library/dist/react/components/accordion-toggle';
 import F7AccordionContent from '../../../component-library/dist/react/components/accordion-content';
-import F7Accordion from '../../../component-library/dist/vue/components/accordion';
+import F7Accordion from '../../../component-library/dist/react/components/accordion';
+import F7Fab from '../../../component-library/dist/react/components/fab';
+import F7FabButtons from '../../../component-library/dist/react/components/fab-buttons';
+import F7FabButton from '../../../component-library/dist/react/components/fab-button';
 
 class App extends React.Component {
   get $theme() {
@@ -344,7 +347,7 @@ class App extends React.Component {
         <F7BlockTitle>Icon Chips</F7BlockTitle>
         <F7Block strong>
           <F7Chip text="Add Contact" mediaBgColor={this.$theme.md ? 'blue' : undefined}>
-            <F7Icon slot="media" ifIos="f7:add_round" ifMd="material:add_circle"></F7Icon>
+            <F7Icon size="50" slot="media" ifIos="f7:add_round" ifMd="material:add_circle"></F7Icon>
           </F7Chip>
           <F7Chip text="London" mediaBgColor={this.$theme.md ? 'green' : undefined}>
             <F7Icon slot="media" ifIos="f7:compass" ifMd="material:location_on"></F7Icon>
@@ -400,6 +403,19 @@ class App extends React.Component {
             </F7AccordionItem>
           ))}
         </F7Block>
+
+        {/* <!-- FAB --> */}
+        <F7Fab>
+          <i slot="link" className="icon f7-icons ios-only">add</i>
+          <i slot="link" className="icon f7-icons ios-only">close</i>
+          <i slot="link" className="icon material-icons md-only">add</i>
+          <i slot="link" className="icon material-icons md-only">close</i>
+          <F7FabButtons>
+            <F7FabButton>1</F7FabButton>
+            <F7FabButton>2</F7FabButton>
+            <F7FabButton>3</F7FabButton>
+          </F7FabButtons>
+        </F7Fab>
       </div>
     );
   }
