@@ -21,14 +21,18 @@ export default {
   name: 'f7-block',
   props: BlockProps,
   componentDidMount() {
+    const el = this.el;
+    if (!el) return;
     this.onTabShowBound = this.onTabShow.bind(this);
     this.onTabHideBound = this.onTabHide.bind(this);
-    this.el.addEventListener('tab:show', this.onTabShowBound);
-    this.el.addEventListener('tab:hide', this.onTabHideBound);
+    el.addEventListener('tab:show', this.onTabShowBound);
+    el.addEventListener('tab:hide', this.onTabHideBound);
   },
   componentWillUnmount() {
-    this.el.removeEventListener('tab:show', this.onTabShowBound);
-    this.el.removeEventListener('tab:hide', this.onTabHideBound);
+    const el = this.el;
+    if (!el) return;
+    el.removeEventListener('tab:show', this.onTabShowBound);
+    el.removeEventListener('tab:hide', this.onTabHideBound);
   },
   render() {
     return (
