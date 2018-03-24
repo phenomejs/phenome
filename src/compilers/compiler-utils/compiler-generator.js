@@ -65,8 +65,13 @@ module.exports = (jsxTransformer, componentTransformer) => (componentString) => 
   const visitors = {
     ObjectExpression(path, state) {
       if (checkIfObjectIsUniversalComponent(path.node)) {
-        const result = componentTransformer(path.node, state);
-
+        let name;
+        path.node.properties.forEach((prop) => {
+          if (prop.key && prop.key.name === 'name') {
+            name = prop.value.value;
+          }
+        });
+        const result = componentTransformer(name, path.node, state);
         path.replaceWith(result);
       }
     },
