@@ -30,7 +30,7 @@ const getFilePathsFromGlobPatterns = (globPatterns) => {
             filePaths,
           });
         }
-      })
+      });
     }));
 
   return Promise.all(globPatternPromises);
@@ -54,25 +54,26 @@ const getFiles = globPatterns => getFilePathsFromGlobPatterns(globPatterns)
       });
 
       return [...allFilePromises, ...fileReadPromises];
-    }, [])
+    }, []);
 
     return Promise.all(filePromises);
   });
 
 const processCompilation = (compilerName = '', filesToProcess, outPath, compiler) => {
   const compiledFilesToWrite = filesToProcess.map((file) => {
-    const compiledCode = compiler(file.contents, {
+    const compilerOutput = compiler(file.contents, {
       filePath: file.path,
       outPath,
       relativePath: file.relativePath,
     });
 
-    compiledCode.replace(/process.env.COMPILER/g, compilerName);
+    compilerOutput.componentCode.replace(/process.env.COMPILER/g, compilerName);
 
     const outputPath = path.join(getBasePath(), outPath, file.path);
 
     return {
-      code: compiledCode,
+      code: compilerOutput.componentCode,
+      runtimeDependencies: compilerOutput.runtimeDependencies,
       outputPath,
     };
   });
