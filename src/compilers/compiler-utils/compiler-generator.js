@@ -1,5 +1,6 @@
 const traverse = require('@babel/traverse').default;
 const generate = require('@babel/generator').default;
+const CompilerState = require('./compiler-state');
 
 const checkIfObjectIsUniversalComponent = (objectExpressionPath) => {
   let hasNameProp = false;
@@ -49,39 +50,37 @@ const addImports = (moduleAst, imports) => {
   moduleAst.program.body.splice(getLastImportIndex(moduleAst), 0, ...importsList);
 };
 
-const addAfterComponentNodes = (moduleAst, afterComponentNodes) => {
-  moduleAst.program.body.push(...afterComponentNodes);
-};
-
-module.exports = (jsxTransformer, componentTransformer) => (componentString) => {
-  const initialState = {
-    imports: {},
-    declarations: {},
-    afterComponents: [],
-  };
-
-  const ast = jsxTransformer(componentString, initialState);
-
-  const visitors = {
+const getComponentVisitor = (componentTransformer) => {
+  return {
     ObjectExpression(path, state) {
       if (checkIfObjectIsUniversalComponent(path.node)) {
         let name;
+  
         path.node.properties.forEach((prop) => {
           if (prop.key && prop.key.name === 'name') {
             name = prop.value.value;
           }
         });
+  
         const result = componentTransformer(name, path.node, state);
+  
         path.replaceWith(result);
       }
-    },
-  };
+    },  
+  }
+};
 
-  traverse(ast, visitors, undefined, initialState);
+module.exports = (jsxTransformer, componentTransformer) => (componentString) => {
+  const state = new CompilerState();
+  const ast = jsxTransformer(componentString, state);
 
-  addDeclarations(ast, initialState.declarations);
-  addImports(ast, initialState.imports);
-  addAfterComponentNodes(ast, initialState.afterComponents);
+  traverse(ast, getComponentVisitor(componentTransformer), undefined, state);
 
-  return generate(ast, {}).code;
+  addDeclarations(ast, state.declarations);
+  addImports(ast, state.imports);
+
+  return {
+    componentCode: generate(ast, {}).code,
+    runtimeDependencies: state.runtimeDependencies
+  }
 };
