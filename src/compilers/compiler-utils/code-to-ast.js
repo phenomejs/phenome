@@ -1,3 +1,3 @@
 const babel = require('@babel/core');
 
-module.exports = code => babel.transform(code).ast;
+module.exports = (code, options) => babel.transform(code, options).ast;
