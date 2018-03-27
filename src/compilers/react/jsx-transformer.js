@@ -1,4 +1,3 @@
-const babel = require('@babel/core');
 const traverse = require('@babel/traverse').default;
 const codeToAst = require('../compiler-utils/code-to-ast');
 
@@ -56,7 +55,7 @@ function __getReactComponentSlot(self, name, defaultChildren) {
 `;
 
 const transform = (componentString, state) => {
-  const transformedJsx = babel.transform(componentString, {
+  const transformedJsx = codeToAst(componentString, {
     plugins: ['@babel/plugin-transform-react-jsx'],
   });
 

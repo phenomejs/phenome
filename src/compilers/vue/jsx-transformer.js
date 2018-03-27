@@ -1,4 +1,3 @@
-const babel = require('@babel/core');
 const traverse = require('@babel/traverse').default;
 const codeToAst = require('../compiler-utils/code-to-ast');
 
@@ -40,7 +39,7 @@ function __getVueComponentSlot(self, name, defaultChildren) {
 `;
 
 const transform = (componentString, state) => {
-  const transformedJsx = babel.transform(componentString, {
+  const transformedJsx = codeToAst(componentString, {
     plugins: [
       '@babel/plugin-syntax-jsx',
       'transform-vue-jsx',
@@ -49,7 +48,7 @@ const transform = (componentString, state) => {
 
   const { ast } = transformedJsx;
 
-  const transformVueJsxFunctionNode = codeToAst(transformVueJsxFunctionCode).program.body[0];  
+  const transformVueJsxFunctionNode = codeToAst(transformVueJsxFunctionCode).program.body[0];
   state.declarations.transformVueJsxFunction = transformVueJsxFunctionNode;
 
   traverse(ast, {
