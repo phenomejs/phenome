@@ -24,36 +24,6 @@ function __transformReactJSXProps (props) {
 };
 `;
 
-const getSlotFunctionCode = `
-function __getReactComponentSlot(self, name, defaultChildren) {
-  if (!self.props.children) {
-    return defaultChildren;
-  }
-
-  if (Array.isArray(self.props.children)) {
-    const slotChildren = [];
-    self.props.children.forEach((child) => {
-      const slotName = child.props && child.props.slot || 'default';
-      if (slotName === name) {
-        slotChildren.push(child);
-      }
-    });
-
-    if (slotChildren.length === 1) return slotChildren[0];
-    if (slotChildren.length > 1) return slotChildren;
-
-  } else if (self.props.children.props && self.props.children.props.slot === name) {
-    return self.props.children;
-  } else if (self.props.children.props && !self.props.children.props.slot && name === 'default') {
-    return self.props.children;
-  } else if (typeof self.props.children === 'string' && name === 'default') {
-    return self.props.children;
-  }
-
-  return defaultChildren;
-}
-`;
-
 const transform = (componentString, state) => {
   const transformedJsxAst = codeToAst(componentString, {
     plugins: ['@babel/plugin-transform-react-jsx'],
@@ -75,27 +45,28 @@ const transform = (componentString, state) => {
         node.arguments[1]
       ) {
         if (node.arguments[0] && node.arguments[0].type === 'StringLiteral' && node.arguments[0].value === 'slot') {
-          node.callee = {
-            type: 'Identifier',
-            name: '__getReactComponentSlot',
-          };
-          const newArguments = [
-            {
-              type: 'ThisExpression',
-            },
-            {
-              type: 'StringLiteral',
-              value: node.arguments[1].properties ? node.arguments[1].properties[0].value.value : 'default',
-            },
-          ];
-          if (node.arguments[2]) newArguments.push(node.arguments[2]);
-          node.arguments = newArguments;
+          const slotName = node.arguments[1].properties ? node.arguments[1].properties[0].value.value : 'default';
+          const slotNode = codeToAst(`this.slots.${slotName}`).program.body[0].expression;
 
-          if (!state.declarations.getSlotsFunction) {
-            const getSlotsFunctionNode = codeToAst(getSlotFunctionCode).program.body;
-            state.declarations.getSlotsFunction = getSlotsFunctionNode;
+          if (path.parent.arguments) {
+            path.parent.arguments[path.parent.arguments.indexOf(node)] = slotNode;
+          } else if (path.parent.type === 'ConditionalExpression') {
+            if (path.parent.alternate === node) path.parent.alternate = slotNode;
+            if (path.parent.consequent === node) path.parent.consequent = slotNode;
           }
-        } else if (node.arguments[1]) {
+
+          if (node.arguments.length > 2) {
+            // Pass slot default content
+            const slotChildren = node.arguments.slice(2);
+            slotChildren.forEach((slotChild, index) => {
+              const slotChildAst = codeToAst(`!this.slots.${slotName} && child`).program.body[0].expression;
+              slotChildAst.right = slotChild;
+              if (path.parent.arguments) {
+                path.parent.arguments.splice(path.parent.arguments.indexOf(slotNode) + index + 1, 0, slotChildAst);
+              }
+            });
+          }
+        } else if (node.arguments[1] && node.arguments[1].type !== 'NullLiteral') {
           node.arguments[1] = {
             type: 'CallExpression',
             callee: {
