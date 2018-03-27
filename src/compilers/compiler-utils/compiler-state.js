@@ -14,11 +14,11 @@ class CompilerState {
     const callingModuleFile = stackTrace.get()[1].getFileName();
     const fullPath = path.join(path.dirname(callingModuleFile), relativePath);
     this.runtimeDependencies.add(fullPath);
-    this.addImport(name, `./runtime-dependencies/${path.getFileName(fullPath)}`, false)
+    this.addImport(name, `../runtime-dependencies/${path.basename(fullPath)}`);
   }
 
   addImport(name, from, importDefault = true) {
-    const importCode = `import ${importDefault ? '' : '{'}${name}${importDefault ? '}' : ''} from '${from}'`;
+    const importCode = `import ${importDefault ? '' : '{'}${name}${importDefault ? '' : '}'} from '${from}'`;
     this.imports[name] = codeToAst(importCode).program.body[0];
   }
 
