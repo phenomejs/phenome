@@ -128,7 +128,7 @@ const emptyArrowFunctionCode = `
 `;
 
 const setPropsFunctionCode = `
-function __setComponentProps(component, props) {
+function __setReactComponentProps(component, props) {
   function propType(type) {
     if (type === String) return PropTypes.string;
     if (type === Boolean) return PropTypes.bool;
@@ -167,7 +167,7 @@ function __setComponentProps(component, props) {
     }
   });
 }
-__setComponentProps({{name}}, props);
+__setReactComponentProps({{name}}, props);
 `;
 
 
