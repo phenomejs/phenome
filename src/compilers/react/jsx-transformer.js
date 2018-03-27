@@ -55,16 +55,14 @@ function __getReactComponentSlot(self, name, defaultChildren) {
 `;
 
 const transform = (componentString, state) => {
-  const transformedJsx = codeToAst(componentString, {
+  const transformedJsxAst = codeToAst(componentString, {
     plugins: ['@babel/plugin-transform-react-jsx'],
   });
-
-  const { ast } = transformedJsx;
 
   const transformReactJsxFunctionNode = codeToAst(transformReactJsxFunctionCode).program.body[0];
   state.declarations.transformReactJsxFunctionNode = transformReactJsxFunctionNode;
 
-  traverse(ast, {
+  traverse(transformedJsxAst, {
     // eslint-disable-next-line
     CallExpression(path) {
       const { node } = path;
@@ -111,7 +109,7 @@ const transform = (componentString, state) => {
     },
   });
 
-  return ast;
+  return transformedJsxAst;
 };
 
 module.exports = transform;

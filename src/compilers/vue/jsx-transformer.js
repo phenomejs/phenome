@@ -39,19 +39,17 @@ function __getVueComponentSlot(self, name, defaultChildren) {
 `;
 
 const transform = (componentString, state) => {
-  const transformedJsx = codeToAst(componentString, {
+  const transformedJsxAst = codeToAst(componentString, {
     plugins: [
       '@babel/plugin-syntax-jsx',
       'transform-vue-jsx',
     ],
   });
 
-  const { ast } = transformedJsx;
-
   const transformVueJsxFunctionNode = codeToAst(transformVueJsxFunctionCode).program.body[0];
   state.declarations.transformVueJsxFunction = transformVueJsxFunctionNode;
 
-  traverse(ast, {
+  traverse(transformedJsxAst, {
     // eslint-disable-next-line
     CallExpression(path) {
       const { node } = path;
@@ -89,7 +87,7 @@ const transform = (componentString, state) => {
     },
   });
 
-  return ast;
+  return transformedJsxAst;
 };
 
 module.exports = transform;
