@@ -55,19 +55,19 @@ const getComponentVisitor = (componentTransformer) => {
     ObjectExpression(path, state) {
       if (checkIfObjectIsUniversalComponent(path.node)) {
         let name;
-  
+
         path.node.properties.forEach((prop) => {
           if (prop.key && prop.key.name === 'name') {
             name = prop.value.value;
           }
         });
-  
+
         const result = componentTransformer(name, path.node, state);
-  
+
         path.replaceWith(result);
       }
-    },  
-  }
+    },
+  };
 };
 
 module.exports = (jsxTransformer, componentTransformer) => (componentString) => {
@@ -81,6 +81,6 @@ module.exports = (jsxTransformer, componentTransformer) => (componentString) => 
 
   return {
     componentCode: generate(ast, {}).code,
-    runtimeDependencies: state.runtimeDependencies
-  }
+    runtimeDependencies: state.runtimeDependencies,
+  };
 };
