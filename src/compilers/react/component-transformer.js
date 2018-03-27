@@ -209,7 +209,22 @@ function modifyReactClass(name, reactClassNode, componentObjectNode) {
       });
     }
     if (prop.key && prop.key.name === 'computed') {
+
       prop.value.properties.forEach((method) => {
+        if (method.type === 'ObjectProperty') {
+          // separate get/set
+          method.value.properties.forEach((methodProp) => {
+            if (methodProp.key.name === 'get') {
+              methodProp.key.name = method.key.name;
+              addClassMethod(reactClassBody, methodProp, 'get');
+            }
+            if (methodProp.key.name === 'set') {
+              methodProp.key.name = method.key.name;
+              addClassMethod(reactClassBody, methodProp, 'set');
+            }
+          });
+          return;
+        }
         addClassMethod(reactClassBody, method, 'get');
       });
     }
