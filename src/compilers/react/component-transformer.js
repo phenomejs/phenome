@@ -213,7 +213,6 @@ function modifyReactClass(name, reactClassNode, componentObjectNode) {
       });
     }
     if (prop.key && prop.key.name === 'computed') {
-
       prop.value.properties.forEach((method) => {
         if (method.type === 'ObjectProperty') {
           // separate get/set
