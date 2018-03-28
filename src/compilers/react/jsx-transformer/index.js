@@ -22,7 +22,9 @@ const transform = (componentString, state) => {
           const slotName = node.arguments[1].properties ? node.arguments[1].properties[0].value.value : 'default';
           const slotNode = codeToAst(`this.slots.${slotName}`).program.body[0].expression;
 
-          if (path.parent.arguments) {
+          if (path.parent && path.parent.type === 'ArrayExpression') {
+            path.parent.elements[path.parent.elements.indexOf(node)] = slotNode;
+          } else if (path.parent.arguments) {
             path.parent.arguments[path.parent.arguments.indexOf(node)] = slotNode;
           } else if (path.parent.type === 'ConditionalExpression') {
             if (path.parent.alternate === node) path.parent.alternate = slotNode;

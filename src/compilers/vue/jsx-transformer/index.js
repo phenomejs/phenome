@@ -16,21 +16,34 @@ const transform = (componentString, state) => {
 
       if (node.callee && node.callee.name === 'h') {
         if (node.arguments[0] && node.arguments[0].type === 'StringLiteral' && node.arguments[0].value === 'slot') {
-          state.addRuntimeHelper('__getVueComponentSlot', './runtime-helpers/get-vue-component-slot.js');
 
-          node.callee.name = '__getVueComponentSlot';
-          const newArguments = [
-            {
-              type: 'ThisExpression',
-            },
-            {
-              type: 'StringLiteral',
-              value: node.arguments[1] && node.arguments[1].properties ? node.arguments[1].properties[0].value.properties[0].value.value : 'default',
-            },
-          ];
+          const slotName = node.arguments[1] && node.arguments[1].properties ?
+            node.arguments[1].properties[0].value.properties[0].value.value :
+            'default';
 
-          if (node.arguments[2]) newArguments.push(node.arguments[2]);
-          node.arguments = newArguments;
+          let slotChildren;
+          if (node.arguments[1] && node.arguments[1].type === 'ArrayExpression') {
+            slotChildren = node.arguments[1];
+          } else if (node.arguments[1] && node.arguments[1].type === 'ArrayExpression') {
+            slotChildren = node.arguments[2];
+          }
+
+          const slotNode = slotChildren ?
+            codeToAst(`this.slots.${slotName} || []`).program.body[0].expression :
+            codeToAst(`this.slots.${slotName}`).program.body[0].expression;
+
+          if (slotChildren) {
+            slotNode.right = slotChildren;
+          }
+
+          if (path.parent && path.parent.type === 'ArrayExpression') {
+            path.parent.elements[path.parent.elements.indexOf(node)] = slotNode;
+          } else if (path.parent.arguments) {
+            path.parent.arguments[path.parent.arguments.indexOf(node)] = slotNode;
+          } else if (path.parent.type === 'ConditionalExpression') {
+            if (path.parent.alternate === node) path.parent.alternate = slotNode;
+            if (path.parent.consequent === node) path.parent.consequent = slotNode;
+          }
         } else if (node.arguments[1]) {
           state.addRuntimeHelper('__transformVueJSXProps', './runtime-helpers/transform-vue-jsx-props.js');
 
