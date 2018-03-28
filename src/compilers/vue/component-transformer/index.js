@@ -1,7 +1,7 @@
 /* eslint no-param-reassign: "off" */
 /* eslint prefer-destructuring: "off" */
 /* eslint import/no-extraneous-dependencies: "off" */
-const codeToAst = require('../compiler-utils/code-to-ast');
+const codeToAst = require('../../compiler-utils/code-to-ast');
 
 const getPropsFunctionCode = `
 let __vueComponentPropKeys;
