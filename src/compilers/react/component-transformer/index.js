@@ -11,7 +11,7 @@ const emptyArrowFunctionCode = `
 `;
 
 const setPropsFunctionCallCode = `
-__setComponentProps({{name}}, props);
+__setReactComponentProps({{name}}, props);
 `;
 
 const reactClassCode = `
@@ -133,7 +133,7 @@ const transform = (name = 'MyComponent', componentNode, state) => {
   );
 
   if (hasProps) {
-    state.addRuntimeDependency('__setComponentProps', './runtime-dependencies/set-props.js');
+    state.addRuntimeDependency('__setReactComponentProps', './runtime-dependencies/set-react-component-props.js');
 
     const setPropsFunctionCall = codeToAst(setPropsFunctionCallCode.replace(/{{name}}/g, name));
 

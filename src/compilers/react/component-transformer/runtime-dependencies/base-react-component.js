@@ -4,26 +4,30 @@ export default class __BaseReactComponent extends React.Component {
   get slots() {
     const self = this;
     const slots = {};
+    const children = self.props.children;
 
-    if (!self.props.children || self.props.children.length == 0) {
+    if (!children || children.length == 0) {
       return slots;
     }
 
     let slotChildren;
 
-    if (Array.isArray(self.props.children)) {
-      self.props.children.forEach((child) => {
+    if (Array.isArray(children)) {
+      children.forEach((child) => {
         const slotName = child.props && child.props.slot || 'default';
         if (!slots[slotName]) slots[slotName] = [];
         slots[slotName].push(child);
       });
-    } else if (self.props.children.props && self.props.children.props.slot) {
+    } else if (children.props && children.props.slot) {
       const slotName = self.props.children.props.slot;
       if (!slots[slotName]) slots[slotName] = [];
       slots[slotName].push(self.props.children);
-    } else if (self.props.children.props && !self.props.children.props.slot) {
+    } else if (
+      (children.props && !children.props.slot) ||
+      (typeof children === 'string')
+    ) {
       if (!slots.default) slots.default = [];
-      slots.default.push(self.props.children);
+      slots.default.push(children);
     }
 
     return slots;

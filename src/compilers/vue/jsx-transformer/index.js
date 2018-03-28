@@ -1,17 +1,15 @@
-const babel = require('@babel/core');
 const traverse = require('@babel/traverse').default;
+const codeToAst = require('../../compiler-utils/code-to-ast');
 
 const transform = (componentString, state) => {
-  const transformedJsx = babel.transform(componentString, {
+  const transformedJsxAst = codeToAst(componentString, {
     plugins: [
       '@babel/plugin-syntax-jsx',
       'transform-vue-jsx',
     ],
   });
 
-  const { ast } = transformedJsx;
-
-  traverse(ast, {
+  traverse(transformedJsxAst, {
     // eslint-disable-next-line
     CallExpression(path) {
       const { node } = path;
@@ -49,7 +47,7 @@ const transform = (componentString, state) => {
     },
   });
 
-  return ast;
+  return transformedJsxAst;
 };
 
 module.exports = transform;

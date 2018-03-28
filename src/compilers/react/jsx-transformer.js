@@ -1,10 +1,36 @@
 const traverse = require('@babel/traverse').default;
-const codeToAst = require('../../compiler-utils/code-to-ast');
+const codeToAst = require('../compiler-utils/code-to-ast');
+
+const transformReactJsxFunctionCode = `
+function __transformReactJSXProps (props) {
+  if (!props) return props;
+
+  Object.keys(props).forEach(propName => {
+    let newPropName;
+
+    if (propName === 'class') {
+      newPropName = 'className';
+    } else {
+      newPropName = propName;
+    }
+
+    if (propName !== newPropName) {
+        props[newPropName] = props[propName];
+        delete props[propName];
+    }
+  });
+
+  return props;
+};
+`;
 
 const transform = (componentString, state) => {
   const transformedJsxAst = codeToAst(componentString, {
     plugins: ['@babel/plugin-transform-react-jsx'],
   });
+
+  const transformReactJsxFunctionNode = codeToAst(transformReactJsxFunctionCode).program.body[0];
+  state.declarations.transformReactJsxFunctionNode = transformReactJsxFunctionNode;
 
   traverse(transformedJsxAst, {
     // eslint-disable-next-line
@@ -41,8 +67,6 @@ const transform = (componentString, state) => {
             });
           }
         } else if (node.arguments[1] && node.arguments[1].type !== 'NullLiteral') {
-          state.addRuntimeDependency('__transformReactJSXProps', './runtime-dependencies/transform-react-jsx-props.js');
-
           node.arguments[1] = {
             type: 'CallExpression',
             callee: {
