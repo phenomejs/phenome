@@ -16,6 +16,8 @@ const defaultConfig = {
   },
 };
 
+const runtimeDependencyCache = {};
+
 const getBasePath = () => path.dirname(process.mainModule.filename);
 
 const getFilePathsFromGlobPatterns = (globPatterns) => {
@@ -30,7 +32,7 @@ const getFilePathsFromGlobPatterns = (globPatterns) => {
             filePaths,
           });
         }
-      })
+      });
     }));
 
   return Promise.all(globPatternPromises);
@@ -54,34 +56,76 @@ const getFiles = globPatterns => getFilePathsFromGlobPatterns(globPatterns)
       });
 
       return [...allFilePromises, ...fileReadPromises];
-    }, [])
+    }, []);
 
     return Promise.all(filePromises);
   });
 
-const processCompilation = (compilerName = '', filesToProcess, outPath, compiler) => {
-  const compiledFilesToWrite = filesToProcess.map((file) => {
-    const compiledCode = compiler(file.contents, {
-      filePath: file.path,
-      outPath,
-      relativePath: file.relativePath,
-    });
+const compileAllFiles = (compilerName = '', filesToProcess, outPath, compiler) => {
+  return filesToProcess.map((file) => {
+    const compilerOutput = compiler(file.contents);
 
-    compiledCode.replace(/process.env.COMPILER/g, compilerName);
+    compilerOutput.componentCode.replace(/process.env.COMPILER/g, compilerName);
 
     const outputPath = path.join(getBasePath(), outPath, file.path);
 
     return {
-      code: compiledCode,
+      componentCode: compilerOutput.componentCode,
+      runtimeDependencies: compilerOutput.runtimeDependencies,
       outputPath,
     };
   });
+};
 
-  const writeFilePromises = compiledFilesToWrite
-    .map(compiledFileInfo => fs.ensureDir(path.dirname(compiledFileInfo.outputPath))
-      .then(() => fs.writeFile(compiledFileInfo.outputPath, compiledFileInfo.code)));
+const writeCompiledFiles = (filesToWrite) => {
+  const writeFilePromises = filesToWrite
+    .map(fileInfo => fs.ensureDir(path.dirname(fileInfo.outputPath))
+      .then(() => fs.writeFile(fileInfo.outputPath, fileInfo.contents)));
 
   return Promise.all(writeFilePromises);
+};
+
+const getDependencyFilesToWrite = (compiledFileOutputs, outPath) => {
+  const dependencyFileMap = compiledFileOutputs.reduce((allAccumulatedFiles, nextCompilerOutput) => {
+    const newFilesToWrite = [...nextCompilerOutput.runtimeDependencies].reduce((accumulatedNewFiles, dependencyPath) => {
+      let contents = runtimeDependencyCache[dependencyPath];
+
+      if (!contents) {
+        contents = fs.readFileSync(dependencyPath, 'utf8');
+      }
+
+      const outputPath = path.join(getBasePath(), outPath, 'runtime-dependencies', path.basename(dependencyPath));
+
+      return {
+        ...accumulatedNewFiles,
+        [outputPath]: contents,
+      };
+    }, {});
+
+    return { ...allAccumulatedFiles, ...newFilesToWrite };
+  }, {});
+
+  return Object.keys(dependencyFileMap).map((outputPath) => {
+    return {
+      outputPath,
+      contents: dependencyFileMap[outputPath]
+    };
+  });
+};
+
+const processCompilation = (compilerName = '', filesToProcess, outPath, compiler) => {
+  const compiledFileOutputs = compileAllFiles(compilerName, filesToProcess, outPath, compiler);
+
+  const compiledFilesToWrite = compiledFileOutputs.map((compilerOutput) => {
+    return {
+      contents: compilerOutput.componentCode,
+      outputPath: compilerOutput.outputPath,
+    };
+  });
+
+  const dependencyFilesToWrite = getDependencyFilesToWrite(compiledFileOutputs, outPath);
+
+  return writeCompiledFiles([...compiledFilesToWrite, ...dependencyFilesToWrite]);
 };
 
 const processReact = (reactConfig, filesToProcess) => processCompilation('react', filesToProcess, reactConfig.out, reactCompiler);
