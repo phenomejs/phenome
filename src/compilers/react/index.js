@@ -1,5 +1,5 @@
 const compilerGenerator = require('../compiler-utils/compiler-generator');
 const reactJsxTransformer = require('./jsx-transformer');
-const reactUniversalComponentTransformer = require('./component-transformer');
+const reactComponentTransformer = require('./component-transformer');
 
-module.exports = compilerGenerator(reactJsxTransformer, reactUniversalComponentTransformer);
+module.exports = compilerGenerator(reactJsxTransformer, reactComponentTransformer);

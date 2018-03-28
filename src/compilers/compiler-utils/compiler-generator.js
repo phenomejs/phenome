@@ -2,7 +2,7 @@ const traverse = require('@babel/traverse').default;
 const generate = require('@babel/generator').default;
 const CompilerState = require('./compiler-state');
 
-const checkIfObjectIsUniversalComponent = (objectExpressionPath) => {
+const checkIfObjectIsPhenomeComponent = (objectExpressionPath) => {
   let hasNameProp = false;
   let hasRenderFunction = false;
 
@@ -53,7 +53,7 @@ const addImports = (moduleAst, imports) => {
 const getComponentVisitor = (componentTransformer) => {
   return {
     ObjectExpression(path, state) {
-      if (checkIfObjectIsUniversalComponent(path.node)) {
+      if (checkIfObjectIsPhenomeComponent(path.node)) {
         let name;
 
         path.node.properties.forEach((prop) => {
