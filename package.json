@@ -1,23 +1,34 @@
 {
-  "name": "universal-component",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "name": "phenome",
+  "version": "0.0.1",
+  "description": "Coming soon",
+  "main": "src/compiler-io/index.js",
+  "directories": {
+    "test": "test"
+  },
   "scripts": {
     "serve": "http-server ./test/app/ -o -c 1 -a localhost",
     "build-test": "node ./test/build",
-    "test": "npm run build-test && npm run serve"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/nolimits4web/universal-component.git"
+    "url": "git+https://github.com/phenomejs/phenome.git"
   },
-  "author": "",
+  "keywords": [
+    "vue",
+    "react",
+    "component",
+    "webcomponent",
+    "universal",
+    "compiler"
+  ],
+  "author": "Phenomejs.org",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/nolimits4web/universal-component/issues"
+    "url": "https://github.com/phenomejs/phenome/issues"
   },
-  "homepage": "https://github.com/nolimits4web/universal-component#readme",
+  "homepage": "https://github.com/phenomejs/phenome#readme",
   "dependencies": {
     "@babel/core": "7.0.0-beta.39",
     "@babel/generator": "7.0.0-beta.39",
