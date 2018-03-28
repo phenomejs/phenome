@@ -122,7 +122,7 @@ const transform = (name = 'MyComponent', componentNode, state) => {
 
   state.addImport('React', 'react');
 
-  state.addRuntimeDependency('__BaseReactComponent', './runtime-dependencies/base-react-component.js');
+  state.addRuntimeHelper('__BaseReactComponent', './runtime-helpers/base-react-component.js');
 
   const reactClassNode = codeToAst(reactClassCode.replace(/{{name}}/g, toCamelCase(name))).program.body[0].expression;
 
@@ -133,7 +133,7 @@ const transform = (name = 'MyComponent', componentNode, state) => {
   );
 
   if (hasProps) {
-    state.addRuntimeDependency('__setReactComponentProps', './runtime-dependencies/set-react-component-props.js');
+    state.addRuntimeHelper('__setReactComponentProps', './runtime-helpers/set-react-component-props.js');
 
     const setPropsFunctionCall = codeToAst(setPropsFunctionCallCode.replace(/{{name}}/g, name));
 

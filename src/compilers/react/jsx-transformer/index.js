@@ -41,7 +41,7 @@ const transform = (componentString, state) => {
             });
           }
         } else if (node.arguments[1] && node.arguments[1].type !== 'NullLiteral') {
-          state.addRuntimeDependency('__transformReactJSXProps', './runtime-dependencies/transform-react-jsx-props.js');
+          state.addRuntimeHelper('__transformReactJSXProps', './runtime-helpers/transform-react-jsx-props.js');
 
           node.arguments[1] = {
             type: 'CallExpression',

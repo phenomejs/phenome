@@ -16,7 +16,7 @@ const transform = (componentString, state) => {
 
       if (node.callee && node.callee.name === 'h') {
         if (node.arguments[0] && node.arguments[0].type === 'StringLiteral' && node.arguments[0].value === 'slot') {
-          state.addRuntimeDependency('__getVueComponentSlot', './runtime-dependencies/get-vue-component-slot.js');
+          state.addRuntimeHelper('__getVueComponentSlot', './runtime-helpers/get-vue-component-slot.js');
 
           node.callee.name = '__getVueComponentSlot';
           const newArguments = [
@@ -32,7 +32,7 @@ const transform = (componentString, state) => {
           if (node.arguments[2]) newArguments.push(node.arguments[2]);
           node.arguments = newArguments;
         } else if (node.arguments[1]) {
-          state.addRuntimeDependency('__transformVueJSXProps', './runtime-dependencies/transform-vue-jsx-props.js');
+          state.addRuntimeHelper('__transformVueJSXProps', './runtime-helpers/transform-vue-jsx-props.js');
 
           node.arguments[1] = {
             type: 'CallExpression',

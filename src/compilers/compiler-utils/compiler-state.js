@@ -5,16 +5,16 @@ const codeToAst = require('./code-to-ast');
 
 class CompilerState {
   constructor() {
-    this.runtimeDependencies = new Set();
+    this.runtimeHelpers = new Set();
     this.imports = {};
     this.declarations = {};
   }
 
-  addRuntimeDependency(name, relativePath) {
+  addRuntimeHelper(name, relativePath) {
     const callingModuleFile = stackTrace.get()[1].getFileName();
     const fullPath = path.join(path.dirname(callingModuleFile), relativePath);
-    this.runtimeDependencies.add(fullPath);
-    this.addImport(name, `../runtime-dependencies/${path.basename(fullPath)}`);
+    this.runtimeHelpers.add(fullPath);
+    this.addImport(name, `../runtime-helpers/${path.basename(fullPath)}`);
   }
 
   addImport(name, from, importDefault = true) {

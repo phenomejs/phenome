@@ -81,6 +81,6 @@ module.exports = (jsxTransformer, componentTransformer) => (componentString) => 
 
   return {
     componentCode: generate(ast, {}).code,
-    runtimeDependencies: state.runtimeDependencies,
+    runtimeHelpers: state.runtimeHelpers,
   };
 };
