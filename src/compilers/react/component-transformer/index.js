@@ -22,11 +22,8 @@ const reactClassCode = `
 })
 `;
 
-
-const reactWatcherCode = `
-if (this.{{watcherType}}{{watcherPath}} !== {{watcherArg}}{{watcherPath}}) {
-  (() => {})(this.{{watcherType}}{{watcherPath}}, {{watcherArg}}{{watcherPath}});
-}
+const watchFunctionCode = `
+__reactComponentWatch(this, {{watchFor}}, {{prevProps}}, {{prevState}}, () => {});
 `;
 
 function addClassMethod(classNode, method, forceKind) {
@@ -68,23 +65,15 @@ function addWatchers(watchers, propNode) {
   const methodArguments = [propNode.params[0].name, propNode.params[1].name];
   const newWatchers = [];
   watchers.forEach((watcher) => {
-    let watcherCode;
-    const watcherPath = watcher.key.value.slice(5); // 'props' and 'state' has 5 letters
-    if (watcher.key.value.indexOf('props') === 0) {
-      watcherCode = reactWatcherCode
-        .replace(/{{watcherType}}/g, 'props')
-        .replace(/{{watcherPath}}/g, watcherPath)
-        .replace(/{{watcherArg}}/g, methodArguments[0]);
-    }
-    if (watcher.key.value.indexOf('state') === 0) {
-      watcherCode = reactWatcherCode
-        .replace(/{{watcherType}}/g, 'state')
-        .replace(/{{watcherPath}}/g, watcherPath)
-        .replace(/{{watcherArg}}/g, methodArguments[1]);
-    }
-    const watcherNode = codeToAst(watcherCode).program.body[0];
-    watcherNode.consequent.body[0].expression.callee.body = watcher.value.body;
-    watcherNode.consequent.body[0].expression.callee.params = watcher.value.params;
+    const watcherCode = watchFunctionCode
+      .replace(/{{watchFor}}/g, `'${watcher.key.value}'`)
+      .replace(/{{prevProps}}/g, methodArguments[0])
+      .replace(/{{prevState}}/g, methodArguments[1]);
+
+    const watcherNode = codeToAst(watcherCode).program.body[0].expression;
+    watcherNode.arguments[4].params = watcher.value.params;
+    watcherNode.arguments[4].body = watcher.value.body;
+
     newWatchers.push(watcherNode)
   });
   propNode.body.body.unshift(...newWatchers);
@@ -100,6 +89,7 @@ function modifyReactClass(name, reactClassNode, componentObjectNode) {
   let hasProps;
   let propsNode;
   let watchers;
+  let hasWatchers;
 
   componentObjectNode.properties.forEach((prop) => {
     if (prop.key && prop.key.name === 'componentWillCreate') {
@@ -109,6 +99,7 @@ function modifyReactClass(name, reactClassNode, componentObjectNode) {
     }
     if (prop.key && prop.key.name === 'watch') {
       watchers = prop.value.properties;
+      hasWatchers = true;
     }
   });
   componentObjectNode.properties.forEach((prop) => {
@@ -149,7 +140,6 @@ function modifyReactClass(name, reactClassNode, componentObjectNode) {
       addClassMethod(reactClassBody, prop);
     }
     if (prop.key && prop.key.name === 'componentDidUpdate') {
-
       if (watchers) {
         addWatchers(watchers, prop);
         watchers = undefined;
@@ -182,6 +172,7 @@ function modifyReactClass(name, reactClassNode, componentObjectNode) {
   return {
     hasProps,
     propsNode,
+    hasWatchers,
   };
 }
 
@@ -199,11 +190,15 @@ const transform = (name = 'MyComponent', componentNode, state) => {
 
   const reactClassNode = codeToAst(reactClassCode.replace(/{{name}}/g, toCamelCase(name))).program.body[0].expression;
 
-  const { hasProps, propsNode } = modifyReactClass(
+  const { hasProps, propsNode, hasWatchers } = modifyReactClass(
     name,
     reactClassNode,
     componentNode,
   );
+
+  if (hasWatchers) {
+    state.addRuntimeHelper('__reactComponentWatch', './runtime-helpers/react-component-watch.js');
+  }
 
   if (hasProps) {
     state.addRuntimeHelper('__setReactComponentProps', './runtime-helpers/set-react-component-props.js');
