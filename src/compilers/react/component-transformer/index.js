@@ -15,15 +15,11 @@ __setReactComponentProps({{name}}, props);
 `;
 
 const reactClassCode = `
-(() => {
-  const {{name}} = class {{name}} extends __BaseReactComponent {
-    constructor(props, context) {
-      super(props, context);
-    }
+(class {{name}} extends __BaseReactComponent {
+  constructor(props, context) {
+    super(props, context);
   }
-
-  return {{name}};
-})()
+})
 `;
 
 function addClassMethod(classNode, method, forceKind) {
@@ -128,7 +124,7 @@ const transform = (name = 'MyComponent', componentNode, state) => {
 
   const { hasProps, propsNode } = modifyReactClass(
     name,
-    reactClassNode.callee.body.body[0].declarations[0].init,
+    reactClassNode,
     componentNode,
   );
 
@@ -138,7 +134,8 @@ const transform = (name = 'MyComponent', componentNode, state) => {
     const setPropsFunctionCall = codeToAst(setPropsFunctionCallCode.replace(/{{name}}/g, name));
 
     setPropsFunctionCall.program.body[0].expression.arguments[1] = propsNode;
-    reactClassNode.callee.body.body.splice(1, 0, setPropsFunctionCall);
+
+    state.addDeclaration('set-props-function-call', setPropsFunctionCall, true);
   }
 
   return reactClassNode;

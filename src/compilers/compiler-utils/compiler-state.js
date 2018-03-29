@@ -22,8 +22,11 @@ class CompilerState {
     this.imports[name] = codeToAst(importCode).program.body[0];
   }
 
-  addDeclaration(name, node) {
-    this.declarations[name] = node;
+  addDeclaration(name, node, afterComponent = false) {
+    this.declarations[name] = {
+      node,
+      afterComponent,
+    };
   }
 }
 

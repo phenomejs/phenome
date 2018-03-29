@@ -1,6 +1,8 @@
 const traverse = require('@babel/traverse').default;
 const generate = require('@babel/generator').default;
 const CompilerState = require('./compiler-state');
+const codeToAst = require('./code-to-ast');
+const toCamelCase = require('./to-camel-case');
 
 const checkIfObjectIsPhenomeComponent = (objectExpressionPath) => {
   let hasNameProp = false;
@@ -30,7 +32,7 @@ const getLastImportIndex = (moduleAst) => {
 };
 
 const addDeclarations = (moduleAst, declarations) => {
-  const declarationList = Object.keys(declarations)
+  const allFlattenedDeclarations = Object.keys(declarations)
     .reduce((currentList, nextKey) => {
       const declarationsForKey = declarations[nextKey];
 
@@ -41,7 +43,17 @@ const addDeclarations = (moduleAst, declarations) => {
       return [...currentList, declarationsForKey];
     }, []);
 
-  moduleAst.program.body.splice(getLastImportIndex(moduleAst), 0, ...declarationList);
+  const beforeComponentDeclarations = allFlattenedDeclarations
+    .filter(declaration => !declaration.afterComponent)
+    .map(declaration => declaration.node);
+
+  moduleAst.program.body.splice(getLastImportIndex(moduleAst), 0, ...beforeComponentDeclarations);
+
+  const afterComponentDeclarations = allFlattenedDeclarations
+    .filter(declaration => declaration.afterComponent)
+    .map(declaration => declaration.node);
+
+  moduleAst.program.body.push(...afterComponentDeclarations);
 };
 
 const addImports = (moduleAst, imports) => {
@@ -64,7 +76,21 @@ const getComponentVisitor = (componentTransformer) => {
 
         const result = componentTransformer(name, path.node, state);
 
-        path.replaceWith(result);
+        if (path.parent.type === 'ExportDefaultDeclaration') {
+          const componentName = toCamelCase(name);
+
+          path.parentPath.replaceWithMultiple(codeToAst(`const ${componentName} = 1; export default ${componentName};`).program.body);
+
+          path.parentPath.parentPath.node.body.forEach((node) => {
+            if (node.type === 'VariableDeclaration') {
+              if (node.declarations[0].id.name === componentName) {
+                node.declarations[0].init = result;
+              }
+            }
+          });
+        } else {
+          path.replaceWith(result);
+        }
       }
     },
   };

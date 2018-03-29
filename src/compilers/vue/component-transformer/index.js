@@ -172,8 +172,11 @@ function transform(name, componentNode, state) {
   // Add props
   if (hasProps) {
     wrapComponentProps(componentNode);
-    const getPropsFunctionNode = codeToAst(getPropsFunctionCode).program.body;
-    state.declarations.propsFunctions = getPropsFunctionNode;
+    const getPropsFunctionNodes = codeToAst(getPropsFunctionCode).program.body;
+
+    state.addDeclaration('__vueComponentPropKeys', getPropsFunctionNodes[0]);
+    state.addDeclaration('__getVueComponentPropKeys', getPropsFunctionNodes[1]);
+    state.addDeclaration('__getVueComponentProps', getPropsFunctionNodes[2]);
   }
 
   return componentNode;
