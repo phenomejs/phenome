@@ -22,6 +22,13 @@ const reactClassCode = `
 })
 `;
 
+
+const reactWatcherCode = `
+if (this.{{watcherType}}{{watcherPath}} !== {{watcherArg}}{{watcherPath}}) {
+  (() => {})(this.{{watcherType}}{{watcherPath}}, {{watcherArg}}{{watcherPath}});
+}
+`;
+
 function addClassMethod(classNode, method, forceKind) {
   const {
     key, computed, kind, id, generator, async, params, body,
@@ -40,6 +47,49 @@ function addClassMethod(classNode, method, forceKind) {
   });
 }
 
+function addWatchers(watchers, propNode) {
+  if (!propNode.params || propNode.params.length === 0) {
+    propNode.params = [
+      {
+        type: 'Identifier',
+        name: 'prevProps',
+      },
+      {
+        type: 'Identifier',
+        name: 'prevState',
+      },
+    ];
+  } else if (propNode.params.length === 1) {
+    propNode.params.push({
+      type: 'Identifier',
+      name: 'prevState',
+    });
+  }
+  const methodArguments = [propNode.params[0].name, propNode.params[1].name];
+  const newWatchers = [];
+  watchers.forEach((watcher) => {
+    let watcherCode;
+    const watcherPath = watcher.key.value.slice(5); // 'props' and 'state' has 5 letters
+    if (watcher.key.value.indexOf('props') === 0) {
+      watcherCode = reactWatcherCode
+        .replace(/{{watcherType}}/g, 'props')
+        .replace(/{{watcherPath}}/g, watcherPath)
+        .replace(/{{watcherArg}}/g, methodArguments[0]);
+    }
+    if (watcher.key.value.indexOf('state') === 0) {
+      watcherCode = reactWatcherCode
+        .replace(/{{watcherType}}/g, 'state')
+        .replace(/{{watcherPath}}/g, watcherPath)
+        .replace(/{{watcherArg}}/g, methodArguments[1]);
+    }
+    const watcherNode = codeToAst(watcherCode).program.body[0];
+    watcherNode.consequent.body[0].expression.callee.body = watcher.value.body;
+    watcherNode.consequent.body[0].expression.callee.params = watcher.value.params;
+    newWatchers.push(watcherNode)
+  });
+  propNode.body.body.unshift(...newWatchers);
+}
+
 function modifyReactClass(name, reactClassNode, componentObjectNode) {
   const reactClassBody = reactClassNode.body.body;
   let reactClassConstructor;
@@ -49,12 +99,16 @@ function modifyReactClass(name, reactClassNode, componentObjectNode) {
 
   let hasProps;
   let propsNode;
+  let watchers;
 
   componentObjectNode.properties.forEach((prop) => {
     if (prop.key && prop.key.name === 'componentWillCreate') {
       const emptyArrowFunction = codeToAst(emptyArrowFunctionCode).program.body[0];
       emptyArrowFunction.expression.callee.body.body.push(...prop.body.body);
       reactClassConstructor.body.body.push(emptyArrowFunction);
+    }
+    if (prop.key && prop.key.name === 'watch') {
+      watchers = prop.value.properties;
     }
   });
   componentObjectNode.properties.forEach((prop) => {
@@ -95,12 +149,35 @@ function modifyReactClass(name, reactClassNode, componentObjectNode) {
       addClassMethod(reactClassBody, prop);
     }
     if (prop.key && prop.key.name === 'componentDidUpdate') {
+
+      if (watchers) {
+        addWatchers(watchers, prop);
+        watchers = undefined;
+      }
       addClassMethod(reactClassBody, prop);
     }
     if (prop.key && prop.key.name === 'componentWillUnmount') {
       addClassMethod(reactClassBody, prop);
     }
   });
+
+  if (watchers) {
+    // there was no componentDidUpdate, lets add it with watchers
+    const componentDidUpdateNode = {
+      type: 'ObjectMethod',
+      key: {
+        type: 'Identifier',
+        name: 'componentDidUpdate',
+      },
+      body: {
+        type: 'BlockStatement',
+        body: [],
+      },
+      params: [],
+    };
+    addWatchers(watchers, componentDidUpdateNode);
+    addClassMethod(reactClassBody, componentDidUpdateNode);
+  }
 
   return {
     hasProps,
