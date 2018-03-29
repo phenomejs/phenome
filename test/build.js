@@ -66,11 +66,15 @@ const buildApp = async (library) => {
 };
 
 const buildAll = async () => {
-  await buildComponentLibrary();
-  await [
-    await buildApp('vue'),
-    await buildApp('react'),
-  ];
+  try {
+    await buildComponentLibrary();
+    await [
+      await buildApp('vue'),
+      await buildApp('react'),
+    ];
+  } catch (err) {
+    console.error(err);
+  }
 };
 
 buildAll();
