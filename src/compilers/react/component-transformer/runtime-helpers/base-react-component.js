@@ -10,24 +10,20 @@ export default class __BaseReactComponent extends React.Component {
       return slots;
     }
 
-    let slotChildren;
+    function addChildToSlot(name, child) {
+      if (!slots[name]) slots[name] = [];
+      slots[name].push(child);
+    }
 
     if (Array.isArray(children)) {
       children.forEach((child) => {
-        const slotName = child.props && child.props.slot || 'default';
-        if (!slots[slotName]) slots[slotName] = [];
-        slots[slotName].push(child);
+        const slotName = (child.props && child.props.slot) || 'default';
+        addChildToSlot(slotName, child);
       });
-    } else if (children.props && children.props.slot) {
-      const slotName = self.props.children.props.slot;
-      if (!slots[slotName]) slots[slotName] = [];
-      slots[slotName].push(self.props.children);
-    } else if (
-      (children.props && !children.props.slot) ||
-      (typeof children === 'string')
-    ) {
-      if (!slots.default) slots.default = [];
-      slots.default.push(children);
+    } else {
+      let slotName = 'default';
+      if (children.props && children.props.slot) slotName = children.props.slot;
+      addChildToSlot(slotName, children);
     }
 
     return slots;
@@ -83,7 +79,7 @@ export default class __BaseReactComponent extends React.Component {
 
     return parent;
   }
-  
+
   get el() {
     const self = this;
     let el;
@@ -103,7 +99,7 @@ export default class __BaseReactComponent extends React.Component {
   dispatchEvent(events, ...args) {
     const self = this;
 
-    if (!events || !events.trim().length) return;
+    if (!events || !events.trim().length || typeof events !== 'string') return;
 
     events.trim().split(' ').forEach((event) => {
       const eventName = (event || '')
