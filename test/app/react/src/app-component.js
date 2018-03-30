@@ -28,8 +28,6 @@ class App extends React.Component {
     return {}
   }
   render() {
-    const a = { className: "test", id: "test2" }
-
     return (
       <div id="#app">
         <h1>Block</h1>
