@@ -1,37 +1,23 @@
 const readSrcFiles = require('./file-io/read-src-files');
 const processVue = require('./compilation-processing/process-vue');
 const processReact = require('./compilation-processing/process-react');
+const getConfig = require('./config/get-config');
 
-const defaultConfig = {
-  paths: ['./src/**/*.js', './src/**/*.jsx'],
-  react: {
-    out: './dist/react/',
-  },
-  vue: {
-    out: './dist/vue/',
-  },
-};
+const phenomeCompiler = async (overrideConfig) => {
+  const config = await getConfig(overrideConfig);
 
-const phenomeCompiler = (config) => {
-  if (!config) {
-    config = defaultConfig;
+  const files = await readSrcFiles(config.paths);
+  const compilerPromises = [];
+
+  if (config.vue) {
+    compilerPromises.push(processVue(config.vue, files));
   }
 
-  return readSrcFiles(config.paths)
-    .then((files) => {
-      const compilerPromises = [];
+  if (config.react) {
+    compilerPromises.push(processReact(config.react, files));
+  }
 
-      if (config.vue) {
-        compilerPromises.push(processVue(config.vue, files));
-      }
-
-      if (config.react) {
-        compilerPromises.push(processReact(config.react, files));
-      }
-
-      return Promise.all(compilerPromises);
-    })
-    .then(() => {});
+  await Promise.all(compilerPromises);
 };
 
 module.exports = phenomeCompiler;

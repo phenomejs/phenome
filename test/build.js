@@ -5,18 +5,10 @@ const rollupCommonJs = require('rollup-plugin-commonjs');
 const rollupReplace = require('rollup-plugin-replace');
 const rollupVue = require('rollup-plugin-vue');
 
-const compile = require('../src/compiler-io/');
+const phenomeCompiler = require('../src/compiler-io/');
 
 const buildComponentLibrary = async () => {
-  await compile({
-    paths: ['./component-library/src/**/*.js'],
-    vue: {
-      out: './component-library/dist/vue/',
-    },
-    react: {
-      out: './component-library/dist/react/',
-    },
-  });
+  await phenomeCompiler();
 };
 
 let cache;
