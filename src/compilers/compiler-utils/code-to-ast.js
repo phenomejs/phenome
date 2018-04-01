@@ -1,6 +1,6 @@
 const babel = require('@babel/core');
 
-let config = { plugins: ['@babel/plugin-proposal-object-rest-spread'] };
+let config = { };
 
 module.exports = (code, options) => {
   options = options || { };
@@ -16,4 +16,6 @@ module.exports = (code, options) => {
   return babel.transform(code, settings).ast;
 };
 
-// module.exports = (code, options) => babel.transform(code, options).ast;
+module.exports.setBabelConfig = (babelConfig) => {
+  config = babelConfig;
+};

@@ -6,4 +6,7 @@ module.exports = {
   react: {
     out: './component-library/dist/react/',
   },
+  babelConfig: {
+    plugins: ['@babel/plugin-proposal-object-rest-spread'],
+  },
 };

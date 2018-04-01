@@ -1,4 +1,5 @@
 const readConfigFromFile = require('../file-io/read-config-file');
+const { setBabelConfig } = require('../../compilers/compiler-utils/code-to-ast');
 
 const defaultConfig = {
   paths: ['./src/**/*.js', './src/**/*.jsx'],
@@ -19,6 +20,10 @@ module.exports = async (overrideConfig = null) => {
 
   if (!config) {
     config = defaultConfig;
+  }
+
+  if (config.babelConfig) {
+    setBabelConfig(config.babelConfig);
   }
 
   return config;
