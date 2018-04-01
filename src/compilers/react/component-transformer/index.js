@@ -3,6 +3,8 @@
 const codeToAst = require('../../compiler-utils/code-to-ast');
 const toCamelCase = require('../../compiler-utils/to-camel-case');
 
+const traversePhenomeComponent = require('../../compiler-utils/traverse-phenome-component');
+
 const stateFunctionCode = `
 this.state = (() => {})();
 `;
@@ -82,6 +84,7 @@ function addWatchers(watchers, propNode) {
 function modifyReactClass(name, reactClassNode, componentObjectNode) {
   const reactClassBody = reactClassNode.body.body;
   let reactClassConstructor;
+
   reactClassBody.forEach((node) => {
     if (node.kind === 'constructor') reactClassConstructor = node;
   });
@@ -91,64 +94,63 @@ function modifyReactClass(name, reactClassNode, componentObjectNode) {
   let watchers;
   let hasWatchers;
 
-  componentObjectNode.properties.forEach((prop) => {
-    if (prop.key && prop.key.name === 'componentWillCreate') {
-      const emptyArrowFunction = codeToAst(emptyArrowFunctionCode).program.body[0];
-      emptyArrowFunction.expression.callee.body.body.push(...prop.body.body);
-      reactClassConstructor.body.body.push(emptyArrowFunction);
-    }
-    if (prop.key && prop.key.name === 'watch') {
-      watchers = prop.value.properties;
-      hasWatchers = true;
-    }
-  });
-  componentObjectNode.properties.forEach((prop) => {
-    if (prop.key && prop.key.name === 'methods') {
-      prop.value.properties.forEach((method) => {
+  traversePhenomeComponent(componentObjectNode, {
+    state(node) {
+      const stateSetterBody = codeToAst(stateFunctionCode).program.body[0];
+      stateSetterBody.expression.right.callee.body.body.push(...node.body.body);
+      reactClassConstructor.body.body.push(stateSetterBody);
+    },
+    methods(node) {
+      node.value.properties.forEach((method) => {
         addClassMethod(reactClassBody, method);
       });
-    }
-    if (prop.key && prop.key.name === 'computed') {
-      prop.value.properties.forEach((method) => {
+    },
+    computed(node) {
+      node.value.properties.forEach((method) => {
         addClassMethod(reactClassBody, method, 'get');
       });
-    }
-    if (prop.key && prop.key.name === 'render') {
-      addClassMethod(reactClassBody, prop);
-    }
-    if (prop.key && prop.key.name === 'props') {
+    },
+    render(node) {
+      addClassMethod(reactClassBody, node);
+    },
+    props(node) {
       hasProps = true;
-      propsNode = prop.value;
-    }
-    if (prop.key && prop.key.name === 'state') {
-      const stateSetterBody = codeToAst(stateFunctionCode).program.body[0];
-      stateSetterBody.expression.right.callee.body.body.push(...prop.body.body);
-      reactClassConstructor.body.body.push(stateSetterBody);
-    }
-    if (prop.key && prop.key.name === 'componentDidCreate') {
+      propsNode = node.value;
+    },
+    watch(node) {
+      watchers = node.value.properties;
+      hasWatchers = true;
+    },
+    componentWillCreate(node) {
       const emptyArrowFunction = codeToAst(emptyArrowFunctionCode).program.body[0];
-      emptyArrowFunction.expression.callee.body.body.push(...prop.body.body);
+      emptyArrowFunction.expression.callee.body.body.push(...node.body.body);
       reactClassConstructor.body.body.push(emptyArrowFunction);
-    }
-    if (prop.key && prop.key.name === 'componentWillMount') {
-      addClassMethod(reactClassBody, prop);
-    }
-    if (prop.key && prop.key.name === 'componentDidMount') {
-      addClassMethod(reactClassBody, prop);
-    }
-    if (prop.key && prop.key.name === 'componentWillUpdate') {
-      addClassMethod(reactClassBody, prop);
-    }
-    if (prop.key && prop.key.name === 'componentDidUpdate') {
+    },
+    componentDidCreate(node) {
+      const emptyArrowFunction = codeToAst(emptyArrowFunctionCode).program.body[0];
+      emptyArrowFunction.expression.callee.body.body.push(...node.body.body);
+      reactClassConstructor.body.body.push(emptyArrowFunction);
+    },
+    componentWillMount(node) {
+      addClassMethod(reactClassBody, node);
+    },
+    componentDidMount(node) {
+      addClassMethod(reactClassBody, node);
+    },
+    componentWillUpdate(node) {
+      addClassMethod(reactClassBody, node);
+    },
+    componentDidUpdate(node) {
       if (watchers) {
-        addWatchers(watchers, prop);
+        addWatchers(watchers, node);
         watchers = undefined;
       }
-      addClassMethod(reactClassBody, prop);
-    }
-    if (prop.key && prop.key.name === 'componentWillUnmount') {
-      addClassMethod(reactClassBody, prop);
-    }
+
+      addClassMethod(reactClassBody, node);
+    },
+    componentWillUnmount(node) {
+      addClassMethod(reactClassBody, node);
+    },
   });
 
   if (watchers) {

@@ -2,6 +2,7 @@
 /* eslint prefer-destructuring: "off" */
 /* eslint import/no-extraneous-dependencies: "off" */
 const codeToAst = require('../../compiler-utils/code-to-ast');
+const traversePhenomeComponent = require('../../compiler-utils/traverse-phenome-component');
 
 const getPropsFunctionCode = `
 let __vueComponentPropKeys;
@@ -99,48 +100,50 @@ function wrapComponentProps(declaration) {
 function modifyVueComponent(declaration) {
   let computed;
   let methods;
-
   let hasProps;
 
-  declaration.properties.forEach((prop) => {
-    if (prop.key && prop.key.name === 'props') {
+  traversePhenomeComponent(declaration, {
+    props() {
       hasProps = true;
-    }
-    // Rename/Modify State
-    if (prop.key && prop.key.name === 'state') {
-      prop.key.name = 'data';
-      if (prop.params && prop.params.length > 0) {
-        prop.params.splice(0, 1);
-      }
-      const stateFunctionNode = codeToAst(stateFunctionCode).program.body[0];
-      stateFunctionNode.body.body[1].declarations[0].init.callee.body.body.push(...prop.body.body);
-      prop.body.body = stateFunctionNode.body.body;
-    }
-    if (prop.key && prop.key.name === 'computed') computed = prop;
-    if (prop.key && prop.key.name === 'methods') methods = prop;
+    },
+    state(node) {
+      node.key.name = 'data';
 
-    // Lifecycle
-    if (prop.key && prop.key.name === 'componentWillCreate') {
-      prop.key.name = 'beforeCreate';
-    }
-    if (prop.key && prop.key.name === 'componentDidCreate') {
-      prop.key.name = 'created';
-    }
-    if (prop.key && prop.key.name === 'componentWillMount') {
-      prop.key.name = 'beforeMount';
-    }
-    if (prop.key && prop.key.name === 'componentDidMount') {
-      prop.key.name = 'mounted';
-    }
-    if (prop.key && prop.key.name === 'componentWillUpdate') {
-      prop.key.name = 'beforeUpdate';
-    }
-    if (prop.key && prop.key.name === 'componentDidUpdate') {
-      prop.key.name = 'updated';
-    }
-    if (prop.key && prop.key.name === 'componentWillUnmount') {
-      prop.key.name = 'beforeDestroy';
-    }
+      if (node.params && node.params.length > 0) {
+        node.params.splice(0, 1);
+      }
+
+      const stateFunctionNode = codeToAst(stateFunctionCode).program.body[0];
+      stateFunctionNode.body.body[1].declarations[0].init.callee.body.body.push(...node.body.body);
+      node.body.body = stateFunctionNode.body.body;
+    },
+    computed(node) {
+      computed = node;
+    },
+    methods(node) {
+      methods = node;
+    },
+    componentWillCreate(node) {
+      node.key.name = 'beforeCreate';
+    },
+    componentDidCreate(node) {
+      node.key.name = 'created';
+    },
+    componentWillMount(node) {
+      node.key.name = 'beforeMount';
+    },
+    componentDidMount(node) {
+      node.key.name = 'mounted';
+    },
+    componentWillUpdate(node) {
+      node.key.name = 'beforeUpdate';
+    },
+    componentDidUpdate(node) {
+      node.key.name = 'updated';
+    },
+    componentWillUnmount(node) {
+      node.key.name = 'beforeDestroy';
+    },
   });
 
   // Add/Modify Computed Props
