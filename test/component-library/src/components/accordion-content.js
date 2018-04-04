@@ -18,7 +18,7 @@ export default {
     const objectWithSpread = { ...someObject, baz: 'test3' };
 
     return (
-      <div {...propsObj}>
+      <div id="blah" {...propsObj}>
         <slot></slot>
       </div>
     );

@@ -1,4 +1,4 @@
-const babel = require('@babel/core');
+const ts = require('typescript');
 
 let config = { };
 
@@ -13,7 +13,25 @@ module.exports = (code, options) => {
     presets: [...(options.presets || []), ...(config.presets || [])],
   };
 
-  return babel.transform(code, settings).ast;
+  const sourceFile = ts.createSourceFile(
+    'test.ts', code, ts.ScriptTarget.ES2018, true, ts.ScriptKind.JSX
+  );
+
+  // Options may be passed to transform
+  const result = ts.transform(
+    sourceFile, []
+  );
+
+  const transformedSourceFile = result.transformed[0];
+
+  // Options may be passed to createPrinter
+  const printer = ts.createPrinter();
+
+  const generated = printer.printFile(transformedSourceFile);
+
+  result.dispose();
+
+  return generated;
 };
 
 module.exports.setBabelConfig = (babelConfig) => {
