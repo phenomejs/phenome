@@ -10,6 +10,12 @@
             "request": "launch",
             "name": "Launch Program",
             "program": "${workspaceFolder}/test/build.js"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Acorn",
+            "program": "${workspaceFolder}/test-acorn/compile.js"
         }
     ]
 }

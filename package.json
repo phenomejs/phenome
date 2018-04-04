@@ -35,6 +35,8 @@
     "@babel/plugin-syntax-jsx": "7.0.0-beta.39",
     "@babel/plugin-transform-react-jsx": "7.0.0-beta.39",
     "@babel/traverse": "7.0.0-beta.39",
+    "acorn": "^5.5.3",
+    "acorn-jsx": "^4.1.1",
     "babel-helper-vue-jsx-merge-props": "^2.0.3",
     "babel-plugin-syntax-jsx": "^6.18.0",
     "babel-plugin-transform-vue-jsx": "^3.7.0",
