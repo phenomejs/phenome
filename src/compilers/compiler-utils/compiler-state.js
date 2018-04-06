@@ -19,7 +19,7 @@ class CompilerState {
 
   addImport(name, from, importDefault = true) {
     const importCode = `import ${importDefault ? '' : '{'}${name}${importDefault ? '' : '}'} from '${from}'`;
-    this.imports[name] = codeToAst(importCode).program.body[0];
+    this.imports[name] = codeToAst(importCode).body[0];
   }
 
   addDeclaration(name, node, afterComponent = false) {

@@ -16,11 +16,11 @@ module.exports = (moduleAst, declarations) => {
     .filter(declaration => !declaration.afterComponent)
     .map(declaration => declaration.node);
 
-  moduleAst.program.body.splice(getLastImportIndex(moduleAst), 0, ...beforeComponentDeclarations);
+  moduleAst.body.splice(getLastImportIndex(moduleAst), 0, ...beforeComponentDeclarations);
 
   const afterComponentDeclarations = allFlattenedDeclarations
     .filter(declaration => declaration.afterComponent)
     .map(declaration => declaration.node);
 
-  moduleAst.program.body.push(...afterComponentDeclarations);
+  moduleAst.body.push(...afterComponentDeclarations);
 };
