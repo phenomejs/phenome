@@ -1,21 +1,10 @@
-const babel = require('@babel/core');
+const acorn = require('acorn-jsx');
 
-let config = { };
-
-module.exports = (code, options) => {
-  options = options || { };
-  config = config || { };
-
-  const settings = {
+module.exports = function parse(code, options = {}) {
+  return acorn.parse(code, {
+    sourceType: 'module',
+    ecmaVersion: '9',
+    plugins: { jsx: true },
     ...options,
-    ...config,
-    plugins: [...(options.plugins || []), ...(config.plugins || [])],
-    presets: [...(options.presets || []), ...(config.presets || [])],
-  };
-
-  return babel.transform(code, settings).ast;
-};
-
-module.exports.setBabelConfig = (babelConfig) => {
-  config = babelConfig;
+  });
 };
