@@ -1,12 +1,31 @@
 module.exports = {
   paths: ['./component-library/src/**/*.js'],
-  vue: {
-    out: './component-library/dist/vue/',
-  },
   react: {
     out: './component-library/dist/react/',
+    helpers: {
+      el: 'auto',
+      slots: 'auto',
+      props: 'auto',
+      children: 'auto',
+      parent: 'auto',
+      dispatchEvent: 'auto',
+      watch: 'auto',
+      forceUpdate: 'auto',
+    },
   },
-  babelConfig: {
-    plugins: ['@babel/plugin-proposal-object-rest-spread'],
+  vue: {
+    out: './component-library/dist/vue/',
+    helpers: {
+      el: 'auto',
+      slots: 'auto',
+      props: 'auto',
+      children: 'auto',
+      parent: 'auto',
+      refs: 'auto',
+      dispatchEvent: 'auto',
+      state: 'auto',
+      setState: 'auto',
+      forceUpdate: 'auto',
+    },
   },
 };
