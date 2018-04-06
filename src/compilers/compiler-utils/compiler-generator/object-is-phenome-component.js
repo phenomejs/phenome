@@ -1,16 +1,22 @@
-module.exports = (objectExpressionPath) => {
+const walk = require('../walk');
+
+module.exports = (ast) => {
   let hasNameProp = false;
   let hasRenderFunction = false;
-
-  objectExpressionPath.properties.forEach((prop) => {
-    if (prop.type === 'ObjectProperty' && prop.key.name === 'name') {
-      hasNameProp = true;
-    }
-
-    if (prop.type === 'ObjectMethod' && prop.key.name === 'render') {
-      hasRenderFunction = true;
-    }
+  walk(ast, {
+    ObjectExpression(node) {
+      if (!node.properties) {
+        return;
+      }
+      node.properties.forEach((prop) => {
+        if (prop.type === 'Property' && prop.key.name === 'name' && !prop.method) {
+          hasNameProp = true;
+        }
+        if (prop.type === 'Property' && prop.key.name === 'render' && prop.method) {
+          hasRenderFunction = true;
+        }
+      });
+    },
   });
-
   return hasNameProp && hasRenderFunction;
 };
