@@ -1,34 +1,34 @@
-export default (data) => {
-  if (!data) return data;
+export default (props) => {
+  if (!props) return props;
   const nestedPropsKeys = ('style class domProps slot key ref').split(' ');
-  Object.keys(data).forEach((key) => {
+  Object.keys(props).forEach((key) => {
     if (key === 'className') {
-      data.class = data.className;
-      delete data.className;
+      props.class = props.className;
+      delete props.className;
       return;
     } else if (key === 'dangerouslySetInnerHTML') {
-      if (!data.domProps) data.domProps = {};
-      data.domProps.innerHTML = data[key];
-      delete data.dangerouslySetInnerHTML;
+      if (!props.domProps) props.domProps = {};
+      props.domProps.innerHTML = props[key];
+      delete props.dangerouslySetInnerHTML;
       return;
     } else if (key.match(/^on?([A-Z])/)) {
-      if (!data.on) data.on = {};
+      if (!props.on) props.on = {};
       const newKey = key.replace(/(^on?)([A-Z])/, (found, first, second) => second.toLowerCase());
-      data.on[newKey] = data[key];
-      delete data.key;
+      props.on[newKey] = props[key];
+      delete props.key;
       return;
     }
     if (nestedPropsKeys.indexOf(key) >= 0) {
       return;
     }
-    if (!data.attrs) {
-      data.attrs = {};
+    if (!props.attrs) {
+      props.attrs = {};
     }
-    if (!data.attrs[key]) {
-      data.attrs[key] = data[key];
-      delete data.key;
+    if (!props.attrs[key]) {
+      props.attrs[key] = props[key];
+      delete props.key;
     }
   });
 
-  return data;
+  return props;
 };
