@@ -1,13 +1,34 @@
 const readConfigFromFile = require('../file-io/read-config-file');
-const { setBabelConfig } = require('../../compilers/compiler-utils/code-to-ast');
 
 const defaultConfig = {
   paths: ['./src/**/*.js', './src/**/*.jsx'],
   react: {
     out: './dist/react/',
+    helpers: {
+      el: 'auto',
+      slots: 'auto',
+      props: 'auto',
+      children: 'auto',
+      parent: 'auto',
+      dispatchEvent: 'auto',
+      watch: 'auto',
+      forceUpdate: 'auto',
+    },
   },
   vue: {
     out: './dist/vue/',
+    helpers: {
+      el: 'auto',
+      slots: 'auto',
+      props: 'auto',
+      children: 'auto',
+      parent: 'auto',
+      refs: 'auto',
+      dispatchEvent: 'auto',
+      state: 'auto',
+      setState: 'auto',
+      forceUpdate: 'auto',
+    },
   },
 };
 
@@ -21,11 +42,6 @@ module.exports = async (overrideConfig = null) => {
   if (!config) {
     config = defaultConfig;
   }
-
-  if (config.babelConfig) {
-    setBabelConfig(config.babelConfig);
-  }
-
   return config;
 };
 
