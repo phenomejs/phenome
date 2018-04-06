@@ -220,6 +220,9 @@ function findHelpers(ast, componentNode, config, jsxHelpers) {
   });
 
   traversePhenomeComponent(componentNode, {
+    data() {
+      if (foundHelpers.indexOf('state') < 0) foundHelpers.push('state');
+    },
     props() {
       if (foundHelpers.indexOf('props') < 0) foundHelpers.push('props');
     },
@@ -251,7 +254,6 @@ function transform(ast, name, componentNode, state, config, jsxHelpers) {
   }
   // Add props
   if (requiredHelpers.props) {
-    // wrapComponentProps(componentNode);
     const getPropsFunctionsNodes = codeToAst(getPropsFunctionCode).body;
 
     state.addDeclaration('__vueComponentPropKeys', getPropsFunctionsNodes[0]);

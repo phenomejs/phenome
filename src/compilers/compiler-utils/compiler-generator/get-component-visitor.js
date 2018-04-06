@@ -1,4 +1,3 @@
-const toCamelCase = require('../to-camel-case');
 const walk = require('../walk');
 
 module.exports = (ast) => {
@@ -9,7 +8,7 @@ module.exports = (ast) => {
       componentNode = node.declaration;
       componentNode.properties.forEach((prop) => {
         if (prop.type === 'Property' && prop.key.name === 'name' && !prop.method) {
-          name = toCamelCase(prop.value.value);
+          name = prop.value.value;
         }
       });
     },
