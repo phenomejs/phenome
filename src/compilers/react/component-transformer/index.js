@@ -1,7 +1,6 @@
 /* eslint no-param-reassign: "off" */
 /* eslint prefer-destructuring: "off" */
 const codeToAst = require('../../compiler-utils/code-to-ast');
-const astToCode = require('../../compiler-utils/ast-to-code');
 const toCamelCase = require('../../compiler-utils/to-camel-case');
 const walk = require('../../compiler-utils/walk');
 
@@ -168,7 +167,6 @@ function modifyReactClass(name, componentNode, config, requiredHelpers) {
     if (node.kind === 'constructor') reactClassConstructor = node;
   });
 
-  let hasProps;
   let propsNode;
   let watchers;
 
@@ -192,7 +190,6 @@ function modifyReactClass(name, componentNode, config, requiredHelpers) {
       addClassMethod(reactClassBody, node);
     },
     props(node) {
-      hasProps = true;
       propsNode = node.value;
     },
     watch(node) {
@@ -255,18 +252,18 @@ function modifyReactClass(name, componentNode, config, requiredHelpers) {
   }
 
   return {
-    hasProps,
     propsNode,
+    reactClassNode,
   };
 }
 
 function transform(ast, name = 'MyComponent', componentNode, state, config, jsxHelpers) {
-  state.addImport('React', 'react');
+  state.addImport('React', 'react', true, true);
 
   const camelCaseName = toCamelCase(name);
   const requiredHelpers = findHelpers(ast, componentNode, config, jsxHelpers);
 
-  const { hasProps, propsNode } = modifyReactClass(camelCaseName, componentNode, config, requiredHelpers);
+  const { reactClassNode, propsNode } = modifyReactClass(camelCaseName, componentNode, config, requiredHelpers);
 
   if (requiredHelpers.watch) {
     state.addRuntimeHelper('__reactComponentWatch', './runtime-helpers/react-component-watch.js');
@@ -286,12 +283,18 @@ function transform(ast, name = 'MyComponent', componentNode, state, config, jsxH
   if (requiredHelpers.slots) {
     state.addRuntimeHelper('__reactComponentSlots', './runtime-helpers/react-component-slots.js');
   }
+
+  // Replace component
+  state.replaceComponentNode(reactClassNode);
+
   if (requiredHelpers.props) {
     state.addRuntimeHelper('__setReactComponentProps', './runtime-helpers/set-react-component-props.js');
     const setPropsFunctionCall = codeToAst(setPropsFunctionCallCode.replace(/{{name}}/g, camelCaseName));
     setPropsFunctionCall.body[0].expression.arguments[1] = propsNode;
     state.addDeclaration('set-props-function-call', setPropsFunctionCall, true);
   }
+
+  state.addExport(camelCaseName);
 }
 
 module.exports = transform;
