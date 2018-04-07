@@ -6,6 +6,8 @@ const CompilerState = require('../compiler-state');
 const getComponentVisitor = require('./get-component-visitor');
 const processDeclarations = require('./process-declarations');
 const processImports = require('./process-imports');
+const porcessReplaceComponentNode = require('./process-replace-component-node');
+const processExports = require('./process-exports');
 
 function generator(jsxTransformer, componentTransformer) {
   function generate(componentString, config) {
@@ -18,12 +20,14 @@ function generator(jsxTransformer, componentTransformer) {
         runtimeHelpers: [],
       };
     }
-    const { name, componentNode } = getComponentVisitor(ast);
+    const { name, componentNode, componentExportNode } = getComponentVisitor(ast);
     const { helpers: jsxHelpers } = jsxTransformer(ast, name, componentNode, state, config);
     componentTransformer(ast, name, componentNode, state, config, jsxHelpers);
 
     processDeclarations(ast, state.declarations);
     processImports(ast, state.imports);
+    porcessReplaceComponentNode(ast, componentExportNode, state.newComponentNode);
+    processExports(ast, state.exports);
 
     return {
       componentCode: astToCode(ast),
