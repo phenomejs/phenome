@@ -43,7 +43,7 @@ const buildApp = async (library) => {
 
   const buildBundle = async () => {
     // create a bundle
-    const bundle = await rollup.rollup(inputOptions).catch((error)=> {
+    const bundle = await rollup.rollup(inputOptions).catch((error) => {
       console.log(error);
     });
 
