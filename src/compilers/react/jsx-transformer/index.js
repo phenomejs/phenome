@@ -98,6 +98,10 @@ function transformJSXElement(node, parentNode, helpers, state) {
     node.openingElement.attributes.forEach((attr) => {
       let prop;
       if (attr.type === 'JSXAttribute') {
+        const namespaced = attr.name.type === 'JSXNamespacedName';
+        const propKeyName = namespaced ? `${attr.name.namespace.name}:${attr.name.name.name}` : attr.name.name;
+        const isStringName = propKeyName.indexOf('-') >= 0;
+
         prop = {
           type: 'Property',
           computed: false,
@@ -105,8 +109,10 @@ function transformJSXElement(node, parentNode, helpers, state) {
           method: false,
           shorthand: false,
           key: {
-            type: 'Identifier',
-            name: attr.name.name,
+            type: namespaced || isStringName ? 'Literal' : 'Identifier',
+            name: propKeyName,
+            raw: namespaced || isStringName ? `'${propKeyName}'` : propKeyName,
+            value: propKeyName,
           },
         };
         if (!attr.value) {
