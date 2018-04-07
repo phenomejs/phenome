@@ -26,7 +26,7 @@ class CompilerState {
       this.imports[name] = {
         absolute: true,
         ast: importAst,
-      }
+      };
     } else {
       this.imports[name] = importAst;
     }
