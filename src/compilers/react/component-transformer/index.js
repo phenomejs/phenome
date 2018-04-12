@@ -74,6 +74,21 @@ function findHelpers(ast, componentNode, config, jsxHelpers) {
         foundHelpers.push('state');
       }
     },
+    VariableDeclarator(node) {
+      const isDistructuring = node.id.type === 'ObjectPattern';
+      if (!isDistructuring) return;
+      const props = node.id.properties;
+      const init = node.init.name;
+      if (thisAliases.indexOf(init) < 0) return;
+      props.forEach((prop) => {
+        if (
+          lookForHelpers.indexOf(prop.key.name) >= 0 &&
+          foundHelpers.indexOf(prop.key.name) < 0
+        ) {
+          foundHelpers.push(prop.key.name)
+        }
+      });
+    },
   });
 
   lookForHelpers.push('props');
