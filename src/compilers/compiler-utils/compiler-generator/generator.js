@@ -4,7 +4,7 @@ const objectIsPhenomeComponent = require('./object-is-phenome-component');
 
 const CompilerState = require('../compiler-state');
 const getComponentVisitor = require('./get-component-visitor');
-const parseComments = require('./parse-comments');
+const parseCommentCommands = require('./parse-comment-commands');
 const processDeclarations = require('./process-declarations');
 const processImports = require('./process-imports');
 const porcessReplaceComponentNode = require('./process-replace-component-node');
@@ -15,7 +15,7 @@ function generator(jsxTransformer, componentTransformer) {
     const state = new CompilerState();
 
     let modifiedComponentString;
-    modifiedComponentString = parseComments(componentString, config);
+    modifiedComponentString = parseCommentCommands(componentString, config);
 
     const ast = codeToAst(modifiedComponentString);
 
