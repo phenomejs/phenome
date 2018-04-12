@@ -10,11 +10,21 @@ const phenomeCompiler = async (overrideConfig) => {
   const compilerPromises = [];
 
   if (config.vue) {
-    compilerPromises.push(processVue(config.vue, files));
+    const vueConfig = {
+      env: config.env || {},
+      compiler: 'vue',
+      ...config.vue,
+    };
+    compilerPromises.push(processVue(vueConfig, files));
   }
 
   if (config.react) {
-    compilerPromises.push(processReact(config.react, files));
+    const reactConfig = {
+      env: config.env || {},
+      compiler: 'react',
+      ...config.react,
+    };
+    compilerPromises.push(processReact(reactConfig, files));
   }
 
   await Promise.all(compilerPromises);
