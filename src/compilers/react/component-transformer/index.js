@@ -183,6 +183,15 @@ function modifyReactClass(name, componentNode, config, requiredHelpers) {
     },
     computed(node) {
       node.value.properties.forEach((method) => {
+        if (method.value.type === 'ObjectExpression') {
+          // Suppose to be get/set
+          method.value.properties.forEach((subMethod) => {
+            const kind = subMethod.key.name;
+            subMethod.key.name = method.key.name;
+            addClassMethod(reactClassBody, subMethod, kind);
+          });
+          return;
+        }
         addClassMethod(reactClassBody, method, 'get');
       });
     },
