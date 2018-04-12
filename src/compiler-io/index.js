@@ -12,6 +12,7 @@ const phenomeCompiler = async (overrideConfig) => {
   if (config.vue) {
     const vueConfig = {
       env: config.env || {},
+      replace: config.replace || {},
       compiler: 'vue',
       ...config.vue,
     };
@@ -21,6 +22,7 @@ const phenomeCompiler = async (overrideConfig) => {
   if (config.react) {
     const reactConfig = {
       env: config.env || {},
+      replace: config.replace || {},
       compiler: 'react',
       ...config.react,
     };
