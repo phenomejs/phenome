@@ -12,7 +12,7 @@ const IconProps = Utils.extend(
     ifIos: String,
     size: [String, Number],
   },
-  Mixins.colorProps
+  Mixins.colorProps,
 );
 
 export default {

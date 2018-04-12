@@ -10,7 +10,7 @@ const FabProps = Utils.extend(
       default: 'right-bottom',
     },
   },
-  Mixins.colorProps
+  Mixins.colorProps,
 );
 
 export default {
@@ -18,7 +18,7 @@ export default {
   props: FabProps,
   render(c) {
     const self = this;
-    const { morphTo, position } = self.props;
+    const { morphTo } = self.props;
 
     let href = self.props.href;
     if (href === true) href = '#';
@@ -52,7 +52,7 @@ export default {
           'fab-morph': self.morphTo,
           [`fab-${self.props.position}`]: true,
         },
-        Mixins.colorClasses(self)
+        Mixins.colorClasses(self),
       );
     },
   },

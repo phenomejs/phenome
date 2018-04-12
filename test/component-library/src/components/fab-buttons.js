@@ -9,7 +9,7 @@ const FabButtonsProps = Utils.extend(
       default: 'top',
     },
   },
-  Mixins.colorProps
+  Mixins.colorProps,
 );
 
 export default {

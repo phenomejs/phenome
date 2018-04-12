@@ -5,7 +5,7 @@ const FabButtonProps = Utils.extend(
   {
     fabClose: Boolean,
   },
-  Mixins.colorProps
+  Mixins.colorProps,
 );
 
 export default {
