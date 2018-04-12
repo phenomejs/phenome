@@ -4,6 +4,7 @@ const objectIsPhenomeComponent = require('./object-is-phenome-component');
 
 const CompilerState = require('../compiler-state');
 const getComponentVisitor = require('./get-component-visitor');
+const parseComments = require('./parse-comments');
 const processDeclarations = require('./process-declarations');
 const processImports = require('./process-imports');
 const porcessReplaceComponentNode = require('./process-replace-component-node');
@@ -12,7 +13,11 @@ const processExports = require('./process-exports');
 function generator(jsxTransformer, componentTransformer) {
   function generate(componentString, config) {
     const state = new CompilerState();
-    const ast = codeToAst(componentString);
+
+    let modifiedComponentString;
+    modifiedComponentString = parseComments(componentString, config);
+
+    const ast = codeToAst(modifiedComponentString);
 
     if (!objectIsPhenomeComponent(ast)) {
       return {
@@ -20,6 +25,7 @@ function generator(jsxTransformer, componentTransformer) {
         runtimeHelpers: [],
       };
     }
+
     const { name, componentNode, componentExportNode } = getComponentVisitor(ast);
     const { helpers: jsxHelpers } = jsxTransformer(ast, name, componentNode, state, config);
     componentTransformer(ast, name, componentNode, state, config, jsxHelpers);
