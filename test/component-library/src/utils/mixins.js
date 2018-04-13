@@ -67,15 +67,24 @@ const Mixins = {
       view,
     } = self.props;
 
+    let dataAnimate;
+    if (self.$options && 'propsData' in self.$options) {
+      if ('animate' in self.$options.propsData) {
+        dataAnimate = animate.toString();
+      }
+    } else if ('animate' in self.props) {
+      dataAnimate = animate.toString();
+    }
+
     return {
-      'data-force': force,
-      'data-reload-current': reloadCurrent,
-      'data-reload-all': reloadAll,
-      'data-reload-previous': reloadPrevious,
-      'data-animate': ('animate' in self.$options.propsData) ? animate.toString() : undefined,
-      'data-ignore-cache': ignoreCache,
-      'data-route-tab-id': routeTabId,
-      'data-view': Utils.isStringProp(view) ? view : false,
+      'data-force': force || undefined,
+      'data-reload-current': reloadCurrent || undefined,
+      'data-reload-all': reloadAll || undefined,
+      'data-reload-previous': reloadPrevious || undefined,
+      'data-animate': dataAnimate,
+      'data-ignore-cache': ignoreCache || undefined,
+      'data-route-tab-id': routeTabId || undefined,
+      'data-view': Utils.isStringProp(view) ? view : undefined,
     };
   },
   linkRouterClasses(self) {
@@ -131,18 +140,18 @@ const Mixins = {
 
     return {
       'data-panel': (Utils.isStringProp(panelOpen) && panelOpen) ||
-                    (Utils.isStringProp(panelClose) && panelClose),
+                    (Utils.isStringProp(panelClose) && panelClose) || undefined,
       'data-popup': (Utils.isStringProp(popupOpen) && popupOpen) ||
-                    (Utils.isStringProp(popupClose) && popupClose),
+                    (Utils.isStringProp(popupClose) && popupClose) || undefined,
       'data-popover': (Utils.isStringProp(popoverOpen) && popoverOpen) ||
-                      (Utils.isStringProp(popoverClose) && popoverClose),
+                      (Utils.isStringProp(popoverClose) && popoverClose) || undefined,
       'data-sheet': (Utils.isStringProp(sheetOpen) && sheetOpen) ||
-                    (Utils.isStringProp(sheetClose) && sheetClose),
+                    (Utils.isStringProp(sheetClose) && sheetClose) || undefined,
       'data-login-screen': (Utils.isStringProp(loginScreenOpen) && loginScreenOpen) ||
-                           (Utils.isStringProp(loginScreenClose) && loginScreenClose),
+                           (Utils.isStringProp(loginScreenClose) && loginScreenClose) || undefined,
       'data-sortable': (Utils.isStringProp(sortableEnable) && sortableEnable) ||
                        (Utils.isStringProp(sortableDisable) && sortableDisable) ||
-                       (Utils.isStringProp(sortableToggle) && sortableToggle),
+                       (Utils.isStringProp(sortableToggle) && sortableToggle) || undefined,
     };
   },
   linkActionsClasses(self) {

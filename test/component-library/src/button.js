@@ -33,7 +33,7 @@ const ButtonProps = Utils.extend(
   Mixins.colorProps,
   Mixins.linkIconProps,
   Mixins.linkRouterProps,
-  Mixins.linkActionsProps
+  Mixins.linkActionsProps,
 );
 
 export default {
@@ -79,7 +79,7 @@ export default {
         style={self.props.style}
         className={self.classes}
         onClick={self.onClick.bind(self)}
-        {...attrs}
+        {...self.attrs}
       >
         {iconEl}
         {textEl}
@@ -90,7 +90,7 @@ export default {
   computed: {
     attrs() {
       const self = this;
-      const { href, target, tabLink } = self;
+      const { href, target, tabLink } = self.props;
       let hrefComputed = href;
       if (href === true) hrefComputed = '#';
       if (href === false) hrefComputed = undefined; // no href attribute
@@ -98,10 +98,10 @@ export default {
         {
           href: hrefComputed,
           target,
-          'data-tab': Utils.isStringProp(tabLink) && tabLink,
+          'data-tab': Utils.isStringProp(tabLink) && tabLink || undefined,
         },
         Mixins.linkRouterAttrs(self),
-        Mixins.linkActionsAttrs(self)
+        Mixins.linkActionsAttrs(self),
       );
     },
     classes() {
