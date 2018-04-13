@@ -16,7 +16,7 @@ export default {
   render(c) {
     const self = this;
     const classNames = Utils.classNames(
-      self.props.classNames,
+      self.props.className,
       {
         segmented: true,
         'segmented-raised': self.props.raised,
