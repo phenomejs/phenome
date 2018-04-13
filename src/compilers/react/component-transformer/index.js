@@ -14,7 +14,7 @@ const emptyArrowFunctionCode = `
 `;
 
 const setPropsFunctionCallCode = `
-__setReactComponentProps({{name}}, props);
+__reactComponentSetProps({{name}}, props);
 `;
 
 const reactClassCode = `
@@ -312,7 +312,7 @@ function transform(ast, name = 'MyComponent', componentNode, state, config, jsxH
   state.replaceComponentNode(reactClassNode);
 
   if (requiredHelpers.props) {
-    state.addRuntimeHelper('__setReactComponentProps', './runtime-helpers/set-react-component-props.js');
+    state.addRuntimeHelper('__reactComponentSetProps', './runtime-helpers/react-component-set-props.js');
     const setPropsFunctionCall = codeToAst(setPropsFunctionCallCode.replace(/{{name}}/g, camelCaseName));
     setPropsFunctionCall.body[0].expression.arguments[1] = propsNode;
     state.addDeclaration('set-props-function-call', setPropsFunctionCall, true);
