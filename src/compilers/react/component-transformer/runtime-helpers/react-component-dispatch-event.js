@@ -6,7 +6,7 @@ export default function (component, events, ...args) {
   events.trim().split(' ').forEach((event) => {
     const eventName = (event || '')
       .trim()
-      .split(/[ -_:]/)
+      .split(/[ \-_:]/)
       .map(word => word[0].toUpperCase() + word.substring(1))
       .join('');
 
