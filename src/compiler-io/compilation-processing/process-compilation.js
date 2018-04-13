@@ -7,10 +7,13 @@ const readRuntimeHelpers = require('../file-io/read-runtime-helpers');
 const compileAllFiles = (compilerName = '', filesToProcess, config, compiler) => {
   const { out: outPath } = config;
   return filesToProcess.map((file) => {
-    const compilerOutput = compiler(file.contents, config);
-
-    compilerOutput.componentCode.replace(/process.env.COMPILER/g, compilerName);
+    const outputBase = path.join(getBasePath(), outPath);
     const outputPath = path.join(getBasePath(), outPath, file.path);
+    const output = {
+      basePath: outputBase,
+      filePath: outputPath,
+    }
+    const compilerOutput = compiler(file.contents, config, output);
 
     return {
       componentCode: compilerOutput.componentCode,

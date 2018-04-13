@@ -12,8 +12,8 @@ const porcessReplaceComponentNode = require('./process-replace-component-node');
 const processExports = require('./process-exports');
 
 function generator(jsxTransformer, componentTransformer) {
-  function generate(componentString, config) {
-    const state = new CompilerState();
+  function generate(componentString, config, output) {
+    const state = new CompilerState(config, output);
 
     let modifiedComponentString;
     modifiedComponentString = parseCommentCommands(componentString, config);
