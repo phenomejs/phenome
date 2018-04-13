@@ -15,9 +15,9 @@ function generator(jsxTransformer, componentTransformer) {
   function generate(componentString, config, output) {
     const state = new CompilerState(config, output);
 
-    let modifiedComponentString;
-    modifiedComponentString = parseCommentCommands(componentString, config);
-    modifiedComponentString = replaceEnvironmentVars(componentString, config);
+    let modifiedComponentString = componentString;
+    modifiedComponentString = parseCommentCommands(modifiedComponentString, config);
+    modifiedComponentString = replaceEnvironmentVars(modifiedComponentString, config);
 
     const ast = codeToAst(modifiedComponentString);
 
