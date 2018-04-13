@@ -16,7 +16,9 @@ let cache;
 const buildApp = async (library) => {
   const plugins = [
     rollupResolve({ jsnext: true, browser: true }),
-    rollupBuble(),
+    rollupBuble({
+      objectAssign: 'Object.assign',
+    }),
     rollupCommonJs(),
     rollupReplace({
       delimiters: ['', ''],
