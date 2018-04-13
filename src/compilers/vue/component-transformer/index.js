@@ -6,23 +6,9 @@ const walk = require('../../compiler-utils/walk');
 const traversePhenomeComponent = require('../../compiler-utils/traverse-phenome-component');
 
 const getPropsFunctionCode = `
-let __vueComponentPropKeys;
-function __getVueComponentPropKeys(props) {
-  __vueComponentPropKeys = Object.keys(props);
-  return props;
-}
-function __getVueComponentProps(component) {
-  const props = {};
-  __vueComponentPropKeys.forEach((propKey) => {
-    if (typeof component[propKey] !== 'undefined') props[propKey] = component[propKey];
-  });
-
-  const children = [];
-  Object.keys(component.$slots).forEach((slotName) => {
-    children.push(...component.$slots[slotName]);
-  });
-  props.children = children;
-
+let __vueComponentPropsKeys;
+function __vueComponentGetPropKeys(props) {
+  __vueComponentPropsKeys = Object.keys(props);
   return props;
 }
 `;
@@ -33,7 +19,7 @@ const addComputed = `
         return this.$refs;
       },
       props() {
-        return __getVueComponentProps(this);
+        return __vueComponentGetProps(this, __vueComponentPropsKeys);
       },
       children() {
         return this.$children;
@@ -67,7 +53,7 @@ const addMethods = `
 `;
 const stateFunctionCode = `
 function state() {
-  const props = __getVueComponentProps(this);
+  const props = __vueComponentGetProps(this, __vueComponentPropsKeys);
   const state = (() => {})();
   return { state };
 }
@@ -84,7 +70,7 @@ function modifyVueComponent(componentNode, config, requiredHelpers) {
         type: 'CallExpression',
         callee: {
           type: 'Identifier',
-          name: '__getVueComponentPropKeys',
+          name: '__vueComponentGetPropKeys',
         },
         arguments: [node.value],
       };
@@ -255,10 +241,10 @@ function transform(ast, name, componentNode, state, config, jsxHelpers) {
   // Add props
   if (requiredHelpers.props) {
     const getPropsFunctionsNodes = codeToAst(getPropsFunctionCode).body;
+    state.addRuntimeHelper('__vueComponentGetProps', './runtime-helpers/vue-component-get-props.js');
 
-    state.addDeclaration('__vueComponentPropKeys', getPropsFunctionsNodes[0]);
-    state.addDeclaration('__getVueComponentPropKeys', getPropsFunctionsNodes[1]);
-    state.addDeclaration('__getVueComponentProps', getPropsFunctionsNodes[2]);
+    state.addDeclaration('__vueComponentPropsKeys', getPropsFunctionsNodes[0]);
+    state.addDeclaration('__vueComponentGetPropKeys', getPropsFunctionsNodes[1]);
   }
 
   return componentNode;
