@@ -1,6 +1,6 @@
 export default (props) => {
   if (!props) return props;
-  const nestedPropsKeys = ('style class domProps slot key ref').split(' ');
+  const nestedPropsKeys = ('style class domProps slot key ref attrs on').split(' ');
   Object.keys(props).forEach((key) => {
     if (key === 'className') {
       props.class = props.className;
@@ -15,7 +15,7 @@ export default (props) => {
       if (!props.on) props.on = {};
       const newKey = key.replace(/(^on?)([A-Z])/, (found, first, second) => second.toLowerCase());
       props.on[newKey] = props[key];
-      delete props.key;
+      delete props[key];
       return;
     }
     if (nestedPropsKeys.indexOf(key) >= 0) {
@@ -26,7 +26,7 @@ export default (props) => {
     }
     if (!props.attrs[key]) {
       props.attrs[key] = props[key];
-      delete props.key;
+      delete props[key];
     }
   });
 
