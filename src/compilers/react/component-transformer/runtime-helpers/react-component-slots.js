@@ -14,6 +14,7 @@ export default function (component) {
 
   if (Array.isArray(children)) {
     children.forEach((child) => {
+      if (!child) return;
       const slotName = (child.props && child.props.slot) || 'default';
       addChildToSlot(slotName, child);
     });
