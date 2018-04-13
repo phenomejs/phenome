@@ -1,5 +1,5 @@
-import Utils from '../utils/utils';
-import Mixins from '../utils/mixins';
+import Utils from './utils/utils';
+import Mixins from './utils/mixins';
 
 import F7CardHeader from './card-header'; // @keep-import-path
 import F7CardContent from './card-content'; // @keep-import-path

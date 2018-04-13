@@ -573,28 +573,28 @@
 </template>
 
 <script>
-  import F7Badge from '../../../component-library/dist/vue/components/badge';
-  import F7BlockTitle from '../../../component-library/dist/vue/components/block-title';
-  import F7Block from '../../../component-library/dist/vue/components/block';
-  import F7BlockHeader from '../../../component-library/dist/vue/components/block-header';
-  import F7BlockFooter from '../../../component-library/dist/vue/components/block-footer';
-  import F7Card from '../../../component-library/dist/vue/components/card';
-  import F7CardHeader from '../../../component-library/dist/vue/components/card-header';
-  import F7CardFooter from '../../../component-library/dist/vue/components/card-footer';
-  import F7CardContent from '../../../component-library/dist/vue/components/card-content';
-  import F7Row from '../../../component-library/dist/vue/components/row';
-  import F7Col from '../../../component-library/dist/vue/components/col';
-  import F7Chip from '../../../component-library/dist/vue/components/chip';
-  import F7Icon from '../../../component-library/dist/vue/components/icon';
-  import F7AccordionItem from '../../../component-library/dist/vue/components/accordion-item';
-  import F7AccordionToggle from '../../../component-library/dist/vue/components/accordion-toggle';
-  import F7AccordionContent from '../../../component-library/dist/vue/components/accordion-content';
-  import F7Accordion from '../../../component-library/dist/vue/components/accordion';
-  import F7Fab from '../../../component-library/dist/vue/components/fab';
-  import F7FabButtons from '../../../component-library/dist/vue/components/fab-buttons';
-  import F7FabButton from '../../../component-library/dist/vue/components/fab-button';
-  import F7Button from '../../../component-library/dist/vue/components/button';
-  import F7Segmented from '../../../component-library/dist/vue/components/segmented';
+  import F7Badge from '../../../component-library/dist/vue/badge';
+  import F7BlockTitle from '../../../component-library/dist/vue/block-title';
+  import F7Block from '../../../component-library/dist/vue/block';
+  import F7BlockHeader from '../../../component-library/dist/vue/block-header';
+  import F7BlockFooter from '../../../component-library/dist/vue/block-footer';
+  import F7Card from '../../../component-library/dist/vue/card';
+  import F7CardHeader from '../../../component-library/dist/vue/card-header';
+  import F7CardFooter from '../../../component-library/dist/vue/card-footer';
+  import F7CardContent from '../../../component-library/dist/vue/card-content';
+  import F7Row from '../../../component-library/dist/vue/row';
+  import F7Col from '../../../component-library/dist/vue/col';
+  import F7Chip from '../../../component-library/dist/vue/chip';
+  import F7Icon from '../../../component-library/dist/vue/icon';
+  import F7AccordionItem from '../../../component-library/dist/vue/accordion-item';
+  import F7AccordionToggle from '../../../component-library/dist/vue/accordion-toggle';
+  import F7AccordionContent from '../../../component-library/dist/vue/accordion-content';
+  import F7Accordion from '../../../component-library/dist/vue/accordion';
+  import F7Fab from '../../../component-library/dist/vue/fab';
+  import F7FabButtons from '../../../component-library/dist/vue/fab-buttons';
+  import F7FabButton from '../../../component-library/dist/vue/fab-button';
+  import F7Button from '../../../component-library/dist/vue/button';
+  import F7Segmented from '../../../component-library/dist/vue/segmented';
 
   export default {
     components: {

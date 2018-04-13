@@ -1,5 +1,5 @@
-import Utils from '../utils/utils';
-import Mixins from '../utils/mixins';
+import Utils from './utils/utils';
+import Mixins from './utils/mixins';
 
 const ChipProps = Utils.extend({
   media: String,

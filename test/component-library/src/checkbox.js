@@ -1,7 +1,7 @@
-import Utils from '../utils/utils';
-import Mixins from '../utils/mixins';
+import Utils from './utils/utils';
+import Mixins from './utils/mixins';
 
-const RadioProps = Utils.extend({
+const CheckboxProps = Utils.extend({
   checked: Boolean,
   name: [Number, String],
   value: [Number, String, Boolean],
@@ -10,15 +10,15 @@ const RadioProps = Utils.extend({
 }, Mixins.colorProps);
 
 export default {
-  name: 'f7-radio',
-  props: RadioProps,
+  name: 'f7-checkbox',
+  props: CheckboxProps,
   render(c) {
     const self = this;
     const { name, value, disabled, readonly, checked } = self;
 
     const inputEl = (
       <input
-        type="radio"
+        type="checkbox"
         name={name}
         value={value}
         disabled={disabled}
@@ -27,7 +27,7 @@ export default {
         onChange={self.onChange.bind(self)}
       />
     )
-    const iconEl = (<i className="icon-radio"></i>)
+    const iconEl = (<i className="icon-checkbox"></i>)
 
     return (
       <label id={self.props.id} style={self.props.style} className={classes}>
@@ -35,7 +35,7 @@ export default {
         {iconEl}
         <slot></slot>
       </label>
-    );
+    )
   },
   computed: {
     classes() {
@@ -43,7 +43,7 @@ export default {
       return Utils.classNames(
         self.props.className,
         {
-          radio: true,
+          checkbox: true,
           disabled: self.disabled,
         },
         Mixins.colorClasses(self)

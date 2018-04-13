@@ -1,6 +1,6 @@
 
-import Utils from '../utils/utils';
-import Mixins from '../utils/mixins';
+import Utils from './utils/utils';
+import Mixins from './utils/mixins';
 
 const FabButtonsProps = Utils.extend(
   {

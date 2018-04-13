@@ -1,5 +1,5 @@
-import Utils from '../utils/utils';
-import Mixins from '../utils/mixins';
+import Utils from './utils/utils';
+import Mixins from './utils/mixins';
 import F7Icon from './icon.js';
 
 const ButtonProps = Utils.extend(
@@ -79,11 +79,11 @@ export default {
         style={self.props.style}
         className={self.classes}
         onClick={self.onClick.bind(self)}
-        // TODO ...attrs
+        {...attrs}
       >
         {iconEl}
         {textEl}
-        <slot></slot>
+        <slot />
       </a>
     );
   },

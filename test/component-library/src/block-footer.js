@@ -1,8 +1,8 @@
-import Utils from '../utils/utils';
-import Mixins from '../utils/mixins';
+import Utils from './utils/utils';
+import Mixins from './utils/mixins';
 
 export default {
-  name: 'f7-block-header',
+  name: 'f7-block-footer',
   props: Mixins.colorProps,
   render() {
     return (<div id={this.props.id} style={this.props.style} className={this.classes}><slot></slot></div>);
@@ -13,7 +13,7 @@ export default {
       return Utils.classNames(
         self.props.className,
         {
-          'block-header': true,
+          'block-footer': true,
         },
         Mixins.colorClasses(self)
       );

@@ -1,11 +1,11 @@
-import Utils from '../utils/utils';
-import Mixins from '../utils/mixins';
+import Utils from './utils/utils';
+import Mixins from './utils/mixins';
 
 export default {
-  name: 'f7-block-footer',
+  name: 'f7-badge',
   props: Mixins.colorProps,
   render() {
-    return (<div id={this.props.id} style={this.props.style} className={this.classes}><slot></slot></div>);
+    return <span id={this.props.id} style={this.props.style} className={this.classes}><slot></slot></span>;
   },
   computed: {
     classes() {
@@ -13,7 +13,7 @@ export default {
       return Utils.classNames(
         self.props.className,
         {
-          'block-footer': true,
+          badge: true,
         },
         Mixins.colorClasses(self)
       );
