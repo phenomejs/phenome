@@ -215,7 +215,7 @@ function transformJSXElement(node, parentNode, helpers, state) {
           type: 'CallExpression',
           callee: {
             type: 'Identifier',
-            name: '__transformVueJSXProps',
+            name: '__vueComponentTransformJSXProps',
           },
           arguments: [propsObj],
         });
@@ -292,7 +292,7 @@ function transform(ast, name, componentNode, state, config) {
   });
 
   if (helpers.transformJSXProps) {
-    state.addRuntimeHelper('__transformVueJSXProps', './runtime-helpers/transform-vue-jsx-props.js');
+    state.addRuntimeHelper('__vueComponentTransformJSXProps', './runtime-helpers/vue-component-transform-jsx-props.js');
   }
 
   return { ast, helpers };
