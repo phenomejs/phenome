@@ -12,5 +12,9 @@ module.exports = {
       props: false,
     }],
     'prefer-destructuring': 'off',
+    'object-curly-newline': ['error', {
+      ObjectExpression: { minProperties: 8, multiline: true, consistent: true },
+      ObjectPattern: { minProperties: 8, multiline: true, consistent: true }
+    }],
   }
 };
