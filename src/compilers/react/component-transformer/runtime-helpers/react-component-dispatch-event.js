@@ -4,11 +4,9 @@ export default function (component, events, ...args) {
   if (!events || !events.trim().length || typeof events !== 'string') return;
 
   events.trim().split(' ').forEach((event) => {
-    const eventName = (event || '')
-      .trim()
-      .split(/[ \-_:]/)
-      .map(word => word[0].toUpperCase() + word.substring(1))
-      .join('');
+    let eventName = (event || '').trim();
+    if (!eventName) return;
+    eventName = eventName.charAt(0).toUpperCase() + eventName.slice(1);
 
     const propName = `on${eventName}`;
 
