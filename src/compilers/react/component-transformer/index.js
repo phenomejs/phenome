@@ -91,7 +91,7 @@ function findHelpers(ast, componentNode, config, jsxHelpers) {
     },
   });
 
-  lookForHelpers.push('props');
+  lookForHelpers.push('props', 'watch');
 
   traversePhenomeComponent(componentNode, {
     state() {
@@ -104,7 +104,6 @@ function findHelpers(ast, componentNode, config, jsxHelpers) {
       if (foundHelpers.indexOf('watch') < 0) foundHelpers.push('watch');
     },
   });
-
   const helpers = {};
   const configHelpers = config.helpers;
   lookForHelpers.forEach((helper) => {
@@ -137,8 +136,8 @@ function addClassMethod(classBody, method, forceKind) {
 }
 
 function addWatchers(watchers, propNode) {
-  if (!propNode.params || propNode.params.length === 0) {
-    propNode.params = [
+  if (!propNode.value.params || propNode.value.params.length === 0) {
+    propNode.value.params = [
       {
         type: 'Identifier',
         name: 'prevProps',
@@ -148,13 +147,13 @@ function addWatchers(watchers, propNode) {
         name: 'prevState',
       },
     ];
-  } else if (propNode.params.length === 1) {
-    propNode.params.push({
+  } else if (propNode.value.params.length === 1) {
+    propNode.value.params.push({
       type: 'Identifier',
       name: 'prevState',
     });
   }
-  const methodArguments = [propNode.params[0].name, propNode.params[1].name];
+  const methodArguments = [propNode.value.params[0].name, propNode.value.params[1].name];
   const newWatchers = [];
   watchers.forEach((watcher) => {
     const watcherCode = watchFunctionCode
@@ -168,7 +167,7 @@ function addWatchers(watchers, propNode) {
 
     newWatchers.push(watcherNode);
   });
-  propNode.body.body.unshift(...newWatchers);
+  propNode.value.body.body.unshift(...newWatchers);
 }
 
 function modifyReactClass(name, componentNode, config, requiredHelpers) {
@@ -260,16 +259,25 @@ function modifyReactClass(name, componentNode, config, requiredHelpers) {
   if (watchers && requiredHelpers.watch) {
     // there was no componentDidUpdate, lets add it with watchers
     const componentDidUpdateNode = {
-      type: 'ObjectMethod',
+      type: 'Property',
+      method: true,
+      computed: false,
+      kind: 'init',
+      shorthand: false,
       key: {
         type: 'Identifier',
         name: 'componentDidUpdate',
       },
-      body: {
-        type: 'BlockStatement',
-        body: [],
+      value: {
+        async: false,
+        type: 'FunctionExpression',
+        expression: false,
+        body: {
+          type: 'BlockStatement',
+          body: [],
+        },
+        params: [],
       },
-      params: [],
     };
     addWatchers(watchers, componentDidUpdateNode);
     addClassMethod(reactClassBody, componentDidUpdateNode);
@@ -286,7 +294,6 @@ function transform(ast, name = 'MyComponent', componentNode, state, config, jsxH
 
   const camelCaseName = toCamelCase(name);
   const requiredHelpers = findHelpers(ast, componentNode, config, jsxHelpers);
-
   const { reactClassNode, propsNode } = modifyReactClass(camelCaseName, componentNode, config, requiredHelpers);
 
   if (requiredHelpers.watch) {
@@ -307,7 +314,6 @@ function transform(ast, name = 'MyComponent', componentNode, state, config, jsxH
   if (requiredHelpers.slots) {
     state.addRuntimeHelper('__reactComponentSlots', './runtime-helpers/react-component-slots.js');
   }
-
   // Replace component
   state.replaceComponentNode(reactClassNode);
 
