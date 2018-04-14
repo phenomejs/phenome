@@ -18,7 +18,7 @@ const ColProps = Utils.extend(
       type: [Number, String],
     },
   },
-  Mixins.colorProps
+  Mixins.colorProps,
 );
 
 export default {
@@ -46,7 +46,7 @@ export default {
           [`tablet-${self.props.tabletWidth}`]: self.props.tabletWidth,
           [`desktop-${self.props.desktopWidth}`]: self.props.desktopWidth,
         },
-        Mixins.colorClasses(self)
+        Mixins.colorClasses(self),
       );
     },
   },

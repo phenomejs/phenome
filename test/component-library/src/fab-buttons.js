@@ -33,7 +33,7 @@ export default {
           'fab-buttons': true,
           [`fab-buttons-${self.props.position}`]: true,
         },
-        Mixins.colorClasses(self)
+        Mixins.colorClasses(self),
       );
     },
   },

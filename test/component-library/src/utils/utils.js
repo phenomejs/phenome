@@ -58,6 +58,6 @@ const Utils = {
       } else if (arg) classes.push(arg);
     });
     return classes.join(' ');
-  }
+  },
 };
 export default Utils;

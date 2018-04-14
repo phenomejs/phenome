@@ -30,12 +30,15 @@ const LinkProps = Utils.extend(
 export default {
   name: 'f7-link',
   props: LinkProps,
+  state(props) {
+    return {
+      isTabbarLabel: props.tabbarLabel,
+    };
+  },
   render() {
     const self = this;
     const props = self.props;
     const {
-      tabbarLabel,
-      tabLink,
       text,
       badge,
       badgeColor,
@@ -55,7 +58,6 @@ export default {
     } = props;
 
     const defaultSlots = self.slots.default;
-    const isTabbarLabel = false; // self.props.tabbarLabel || ((self.props.tabLink || self.props.tabLink === '') && self.$parent && self.$parent.tabbar && self.$parent.labels);
 
     let iconEl;
     let textEl;
@@ -65,7 +67,7 @@ export default {
     if (text) {
       if (badge) badgeEl = (<F7Badge color={badgeColor}>{badge}</F7Badge>);
       textEl = (
-        <span className={isTabbarLabel ? 'tabbar-label' : ''}>
+        <span className={self.state.isTabbarLabel ? 'tabbar-label' : ''}>
           {text}
           {badgeEl}
         </span>
@@ -92,7 +94,7 @@ export default {
     if (
       iconOnly ||
       (!text && defaultSlots && defaultSlots.length === 0) ||
-      (!self.text && !defaultSlots)
+      (!text && !defaultSlots)
     ) {
       self.iconOnlyComputed = true;
     } else {
@@ -101,6 +103,7 @@ export default {
 
     return (
       <a
+        ref="el"
         id={id}
         style={style}
         className={self.classes}
@@ -112,6 +115,21 @@ export default {
         {defaultSlots}
       </a>
     );
+  },
+  componentDidMount() {
+    const self = this;
+    const el = self.refs.el;
+    const { tabbarLabel, tabLink } = self.props;
+    let isTabbarLabel = false;
+    if (tabbarLabel ||
+      (
+        (tabLink || tabLink === '') &&
+        self.$$(el).parents('.tabbar-labels').length
+      )
+    ) {
+      isTabbarLabel = true;
+    }
+    self.setState({ isTabbarLabel });
   },
   computed: {
     attrs() {
@@ -144,7 +162,7 @@ export default {
       return Utils.classNames(
         className,
         {
-          link: !(noLinkClass || self.isTabbarLabel),
+          link: !(noLinkClass || self.state.isTabbarLabel),
           'icon-only': self.iconOnlyComputed,
           'tab-link': tabLink || tabLink === '',
           'tab-link-active': tabLinkActive,

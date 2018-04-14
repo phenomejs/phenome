@@ -29,7 +29,7 @@ export default {
         {
           'fab-close': self.fabClose,
         },
-        Mixins.colorClasses(self)
+        Mixins.colorClasses(self),
       );
     },
   },

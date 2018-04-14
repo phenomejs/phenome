@@ -134,7 +134,7 @@ export default {
     el.removeEventListener('tab:show', self.onTabShow);
     el.removeEventListener('tab:hide', self.onTabHide);
 
-    if (!self.init) return;
+    if (!self.props.init) return;
     if (self.f7View && self.f7View.destroy) self.f7View.destroy();
     routers.views.splice(routers.views.indexOf(self.routerData), 1);
     delete self.routerData;

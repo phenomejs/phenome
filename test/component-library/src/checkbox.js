@@ -46,7 +46,7 @@ export default {
           checkbox: true,
           disabled: self.disabled,
         },
-        Mixins.colorClasses(self)
+        Mixins.colorClasses(self),
       );
     },
   },

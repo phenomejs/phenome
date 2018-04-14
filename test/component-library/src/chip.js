@@ -51,9 +51,11 @@ export default {
     classes() {
       const self = this;
       return Utils.classNames(
-        self.props.className,{
+        self.props.className,
+        {
           chip: true,
-        }, Mixins.colorClasses(self)
+        },
+        Mixins.colorClasses(self),
       );
     },
     mediaClasses() {
