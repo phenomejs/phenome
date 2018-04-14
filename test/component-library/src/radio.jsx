@@ -22,18 +22,18 @@ export default {
         name={name}
         value={value}
         disabled={disabled}
-        readonly={readonly}
+        readOnly={readonly}
         checked={checked}
         onChange={self.onChange.bind(self)}
       />
-    )
-    const iconEl = (<i className="icon-radio"></i>)
+    );
+    const iconEl = (<i className="icon-radio" />);
 
     return (
       <label id={self.props.id} style={self.props.style} className={classes}>
         {inputEl}
         {iconEl}
-        <slot></slot>
+        <slot />
       </label>
     );
   },
@@ -46,7 +46,7 @@ export default {
           radio: true,
           disabled: self.disabled,
         },
-        Mixins.colorClasses(self)
+        Mixins.colorClasses(self),
       );
     },
   },

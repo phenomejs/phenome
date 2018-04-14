@@ -47,7 +47,7 @@ export default {
             backLink={backLink}
             backLinkUrl={backLinkUrl}
             onBackClick={self.onBackClick.bind(self)}
-          ></F7NavLeft>
+          />
         );
       }
       if (title || subtitle) {
@@ -55,7 +55,7 @@ export default {
           <F7NavTitle
             title={title}
             subtitle={subtitle}
-          ></F7NavTitle>
+          />
         );
       }
       innerEl = (
@@ -65,15 +65,15 @@ export default {
         >
           {leftEl}
           {titleEl}
-          <slot></slot>
+          <slot />
         </div>
       );
     }
     return (
       <div ref="el" id={this.props.id} style={this.props.style} className={this.classes}>
-        <slot name="before-inner"></slot>
+        <slot name="before-inner" />
         {innerEl}
-        <slot name="after-inner"></slot>
+        <slot name="after-inner" />
       </div>
     );
   },

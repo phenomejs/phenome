@@ -24,9 +24,9 @@ export default {
     return (
       <i
         id={this.props.id}
-        style={Utils.extend({fontSize: self.sizeComputed}, this.props.style)}
+        style={Utils.extend({ fontSize: self.sizeComputed }, this.props.style)}
         className={self.classes}
-      ><slot></slot></i>
+      ><slot /></i>
     );
   },
   computed: {

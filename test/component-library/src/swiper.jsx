@@ -22,26 +22,26 @@ export default {
     let buttonNextEl;
     let buttonPrevEl;
     if (self.paginationComputed) {
-      paginationEl = <div className="swiper-pagination"></div>;
+      paginationEl = <div className="swiper-pagination" />;
     }
     if (self.scrollbarComputed) {
-      scrollbarEl = <div className="swiper-scrollbar"></div>
+      scrollbarEl = <div className="swiper-scrollbar" />;
     }
     if (self.navigationComputed) {
-      buttonNextEl = <div className="swiper-button-next"></div>
-      buttonPrevEl = <div className="swiper-button-prev"></div>
+      buttonNextEl = <div className="swiper-button-next" />;
+      buttonPrevEl = <div className="swiper-button-prev" />;
     }
     return (
       <div id={self.props.id} style={self.props.style} ref="el" className={self.classes}>
-        <slot name="before-wrapper"></slot>
+        <slot name="before-wrapper" />
         <div className="swiper-wrapper">
-          <slot></slot>
+          <slot />
         </div>
         {paginationEl}
         {scrollbarEl}
         {buttonPrevEl}
         {buttonNextEl}
-        <slot name="after-wrapper"></slot>
+        <slot name="after-wrapper" />
       </div>
     );
   },

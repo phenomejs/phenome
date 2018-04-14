@@ -31,7 +31,9 @@ export default {
         id={self.props.id}
         style={self.props.style}
         className={classNames}
-      ><slot></slot></SegmentedTag>
-    )
+      >
+        <slot />
+      </SegmentedTag>
+    );
   },
 };

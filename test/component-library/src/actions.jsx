@@ -28,7 +28,7 @@ export default {
     );
     return (
       <div id={this.props.id} style={this.props.style} ref="el" className={classes}>
-        <slot></slot>
+        <slot />
       </div>
     );
   },

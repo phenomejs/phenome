@@ -12,8 +12,8 @@ export default {
 
     return (
       <div id={self.props.id} style={self.props.style} className={classes}>
-        <slot></slot>
+        <slot />
       </div>
-    )
+    );
   },
 };

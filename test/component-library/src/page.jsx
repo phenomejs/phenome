@@ -93,7 +93,7 @@ export default {
             }
           }
         }
-        if (needsPageContent)  {
+        if (needsPageContent) {
           if (isFixedTag) fixedList.push(child);
           else staticList.push(child);
         }

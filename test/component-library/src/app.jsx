@@ -25,7 +25,7 @@ export default {
 
     return (
       <div ref="el" id="framework7-root" className={classes}>
-        <slot></slot>
+        <slot />
       </div>
     );
   },

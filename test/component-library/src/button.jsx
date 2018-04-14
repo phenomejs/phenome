@@ -63,7 +63,7 @@ export default {
     if (icon || iconMaterial || iconIon || iconFa || iconF7 || iconIfMd || iconIfIos) {
       iconEl = (
         <F7Icon
-          material={material}
+          material={iconMaterial}
           ion={iconIon}
           fa={iconFa}
           f7={iconF7}
@@ -72,7 +72,7 @@ export default {
           ifIos={iconIfIos}
           color={iconColor}
           size={iconSize}
-        ></F7Icon>
+        />
       );
     }
     return (

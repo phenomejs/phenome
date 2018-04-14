@@ -71,7 +71,9 @@ export default {
   props: StepperProps,
   render() {
     const self = this;
-    const { input, buttonsOnly, inputType, value, inputReadonly } = self.props;
+    const {
+      input, buttonsOnly, inputType, value, inputReadonly, min, max, step,
+    } = self.props;
 
     let inputWrapEl;
     let valueEl;
@@ -85,7 +87,8 @@ export default {
             step={inputType === 'number' ? step : undefined}
             value={value}
             readOnly={inputReadonly}
-            onInput={self.onInput.bind(self)} />
+            onInput={self.onInput.bind(self)}
+          />
         </div>
       );
     }
@@ -96,10 +99,10 @@ export default {
     }
     return (
       <div ref="el" id={self.props.id} style={self.props.style} className={self.classes}>
-        <div className="stepper-button-minus" onClick={self.onMinusClick.bind(self)}></div>
+        <div className="stepper-button-minus" onClick={self.onMinusClick.bind(self)} />
         {inputWrapEl}
         {valueEl}
-        <div className="stepper-button-plus" onClick={self.onPlusClick.bind(self)}></div>
+        <div className="stepper-button-plus" onClick={self.onPlusClick.bind(self)} />
       </div>
     );
   },

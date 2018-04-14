@@ -12,7 +12,7 @@ const PanelProps = Utils.extend(
     right: Boolean,
     opened: Boolean,
   },
-  Mixins.colorProps
+  Mixins.colorProps,
 );
 
 export default {

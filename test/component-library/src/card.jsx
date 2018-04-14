@@ -31,7 +31,7 @@ export default {
       headerEl = (
         <F7CardHeader>
           {self.props.title}
-          <slot name="header"></slot>
+          <slot name="header" />
         </F7CardHeader>
       );
     }
@@ -39,7 +39,7 @@ export default {
       contentEl = (
         <F7CardContent padding={this.props.padding}>
           {self.props.content}
-          <slot name="content"></slot>
+          <slot name="content" />
         </F7CardContent>
       );
     }
@@ -47,7 +47,7 @@ export default {
       footerEl = (
         <F7CardFooter>
           {self.props.title}
-          <slot name="footer"></slot>
+          <slot name="footer" />
         </F7CardFooter>
       );
     }
@@ -57,9 +57,9 @@ export default {
         {headerEl}
         {contentEl}
         {footerEl}
-        <slot></slot>
+        <slot />
       </div>
-    )
+    );
   },
   computed: {
     classes() {
@@ -68,7 +68,7 @@ export default {
         self.props.className,
         {
           card: true,
-        }, Mixins.colorClasses(self)
+        }, Mixins.colorClasses(self),
       );
     },
   },

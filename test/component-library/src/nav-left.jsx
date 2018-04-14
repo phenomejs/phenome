@@ -25,18 +25,18 @@ export default {
           href={backLinkUrl || '#'}
           back
           icon="icon-back"
-          className={ (backLink === true || backLink && this.$theme.md) ? 'icon-only' : undefined }
-          text={ backLink !== true && !this.$theme.md ? backLink : undefined }
+          className={(backLink === true || (backLink && this.$theme.md)) ? 'icon-only' : undefined}
+          text={backLink !== true && !this.$theme.md ? backLink : undefined}
           onClick={this.onBackClick.bind(this)}
-        ></F7Link>
-      )
+        />
+      );
     }
     return (
       <div id={this.props.id} style={this.props.style} className={this.classes}>
         {linkEl}
-        <slot></slot>
+        <slot />
       </div>
-    )
+    );
   },
   computed: {
     classes() {

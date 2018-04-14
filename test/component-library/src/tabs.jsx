@@ -12,20 +12,20 @@ export default {
   props: TabsProps,
   render() {
     const self = this;
-    const { animated, swipeable, id, style, className } = self.props;
+    const { animated, swipeable, id, style } = self.props;
 
     if (animated || swipeable) {
       return (
         <div className={self.classes}>
           <div className="tabs">
-            <slot></slot>
+            <slot />
           </div>
         </div>
       );
     }
     return (
       <div id={id} style={style} className={Utils.classNames('tabs', this.classes)}>
-        <slot></slot>
+        <slot />
       </div>
     );
   },

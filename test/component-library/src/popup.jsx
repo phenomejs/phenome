@@ -21,7 +21,7 @@ export default {
         style={self.props.style}
         className={self.classes}
       >
-        <slot></slot>
+        <slot />
       </div>
     );
   },

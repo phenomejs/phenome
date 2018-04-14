@@ -21,8 +21,8 @@ export default {
         id={this.props.id}
         style={this.props.style}
         className={this.classes}
-      ><slot></slot></div>
-    )
+      ><slot /></div>
+    );
   },
   computed: {
     classes() {

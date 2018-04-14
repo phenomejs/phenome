@@ -36,7 +36,7 @@ export default {
   render() {
     return (
       <div id={this.props.id} style={this.props.style} className={this.classes}>
-        <slot></slot>
+        <slot />
       </div>
     );
   },
@@ -49,7 +49,7 @@ export default {
           'accordion-item': true,
           'accordion-item-opened': self.props.opened,
         },
-        Mixins.colorClasses(self)
+        Mixins.colorClasses(self),
       );
     },
   },

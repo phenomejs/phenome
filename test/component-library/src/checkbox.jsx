@@ -22,20 +22,20 @@ export default {
         name={name}
         value={value}
         disabled={disabled}
-        readonly={readonly}
+        readOnly={readonly}
         checked={checked}
         onChange={self.onChange.bind(self)}
       />
-    )
-    const iconEl = (<i className="icon-checkbox"></i>)
+    );
+    const iconEl = (<i className="icon-checkbox" />);
 
     return (
       <label id={self.props.id} style={self.props.style} className={classes}>
         {inputEl}
         {iconEl}
-        <slot></slot>
+        <slot />
       </label>
-    )
+    );
   },
   computed: {
     classes() {

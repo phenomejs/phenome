@@ -6,7 +6,7 @@ export default {
   props: Mixins.colorProps,
   render() {
     return (
-      <div id={this.props.id} style={this.props.style} className={this.classes}></div>
+      <div id={this.props.id} style={this.props.style} className={this.classes} />
     );
   },
   computed: {

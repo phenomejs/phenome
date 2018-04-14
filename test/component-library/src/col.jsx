@@ -31,7 +31,7 @@ export default {
 
     return (
       <ColTag id={this.props.id} style={this.props.style} className={self.classes}>
-        <slot></slot>
+        <slot />
       </ColTag>
     );
   },

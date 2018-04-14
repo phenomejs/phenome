@@ -19,5 +19,7 @@ module.exports = {
     'react/react-in-jsx-scope': 'off',
     'react/jsx-filename-extension': 'off',
     'react/no-string-refs': 'off',
+    'react/jsx-no-bind': 'off',
+    'react/jsx-closing-tag-location': 'off',
   }
 };

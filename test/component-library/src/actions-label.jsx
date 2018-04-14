@@ -23,7 +23,7 @@ export default {
     );
     return (
       <div id={self.props.id} style={self.props.style} className={classes} onClick={self.onClick.bind(self)}>
-        <slot></slot>
+        <slot />
       </div>
     );
   },

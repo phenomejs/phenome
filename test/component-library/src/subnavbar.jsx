@@ -15,16 +15,16 @@ export default {
   props: SubnavbarProps,
   render() {
     const self = this;
-    const { inner, title } = self;
+    const { inner, title } = self.props;
     return (
-      <div className={classes}>
-        {this.props.inner ? (
+      <div className={self.classes}>
+        {inner ? (
           <div className="subnavbar-inner">
             {title && <div className="title">{title}</div>}
-            <slot></slot>
+            <slot />
           </div>
         ) : (
-          <slot></slot>
+          <slot />
         )}
       </div>
     );
@@ -35,7 +35,7 @@ export default {
         this.props.className,
         {
           subnavbar: true,
-          sliding: this.sliding,
+          sliding: this.props.sliding,
         },
         Mixins.colorClasses(this),
       );

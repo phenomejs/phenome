@@ -5,7 +5,7 @@ export default {
   name: 'f7-block-header',
   props: Mixins.colorProps,
   render() {
-    return (<div id={this.props.id} style={this.props.style} className={this.classes}><slot></slot></div>);
+    return (<div id={this.props.id} style={this.props.style} className={this.classes}><slot /></div>);
   },
   computed: {
     classes() {
@@ -15,7 +15,7 @@ export default {
         {
           'block-header': true,
         },
-        Mixins.colorClasses(self)
+        Mixins.colorClasses(self),
       );
     },
   },

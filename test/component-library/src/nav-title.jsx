@@ -12,13 +12,13 @@ export default {
   props: NavTitleProps,
   render() {
     const self = this;
-    const { title, subtitle } = self.props;
+    const { title, subtitle, id, style } = self.props;
     let subtitleEl;
     if (self.subtitle) {
-      subtitleEl = (<span className="subtitle">{subtitle}</span>)
+      subtitleEl = (<span className="subtitle">{subtitle}</span>);
     }
     return (
-      <div id={this.props.id} style={this.props.style} className={self.classes}>
+      <div id={id} style={style} className={self.classes}>
         <slot>{title}{subtitleEl}</slot>
       </div>
     );

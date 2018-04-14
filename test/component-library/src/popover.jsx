@@ -21,9 +21,9 @@ export default {
         style={self.props.style}
         className={self.classes}
       >
-        <div className="popover-angle"></div>
+        <div className="popover-angle" />
         <div className="popover-inner">
-          <slot></slot>
+          <slot />
         </div>
       </div>
     );

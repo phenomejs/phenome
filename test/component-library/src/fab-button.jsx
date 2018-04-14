@@ -18,7 +18,7 @@ export default {
         style={this.props.style}
         className={this.classes}
         onClick={this.onClick.bind(this)}
-      ><slot></slot></a>
+      ><slot /></a>
     );
   },
   computed: {

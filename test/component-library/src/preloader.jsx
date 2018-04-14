@@ -22,13 +22,13 @@ export default {
     let innerEl;
     if (this.$theme.md) {
       innerEl = (
-        <span class="preloader-inner">
-          <span class="preloader-inner-gap"></span>
-          <span class="preloader-inner-left">
-            <span class="preloader-inner-half-circle"></span>
+        <span className="preloader-inner">
+          <span className="preloader-inner-gap" />
+          <span className="preloader-inner-left">
+            <span className="preloader-inner-half-circle" />
           </span>
-          <span class="preloader-inner-right">
-            <span class="preloader-inner-half-circle"></span>
+          <span className="preloader-inner-right">
+            <span className="preloader-inner-half-circle" />
           </span>
         </span>
       );

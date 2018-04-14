@@ -39,9 +39,9 @@ export default {
           value={self.props.value}
           onChange={self.onChange.bind(self)}
         />
-        <span className="toggle-icon"></span>
+        <span className="toggle-icon" />
       </label>
-    )
+    );
   },
   watch: {
     'props.checked': function watchChecked(newValue) {

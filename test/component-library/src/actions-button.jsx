@@ -22,7 +22,7 @@ export default {
     if (self.slots.media && self.slots.media.length) {
       mediaEl = (
         <div className="actions-button-media">
-          <slot name="media"></slot>
+          <slot name="media" />
         </div>
       );
     }
@@ -31,7 +31,7 @@ export default {
       <div id={self.props.id} style={self.props.style} className={self.className} onClick={self.onClick.bind(self)}>
         { mediaEl }
         <div className="actions-button-text">
-          <slot></slot>
+          <slot />
         </div>
       </div>
     );

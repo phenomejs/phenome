@@ -5,7 +5,7 @@ export default {
   name: 'f7-badge',
   props: Mixins.colorProps,
   render() {
-    return <span id={this.props.id} style={this.props.style} className={this.classes}><slot></slot></span>;
+    return <span id={this.props.id} style={this.props.style} className={this.classes}><slot /></span>;
   },
   computed: {
     classes() {
@@ -15,7 +15,7 @@ export default {
         {
           badge: true,
         },
-        Mixins.colorClasses(self)
+        Mixins.colorClasses(self),
       );
     },
   },

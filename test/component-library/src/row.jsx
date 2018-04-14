@@ -22,7 +22,7 @@ export default {
 
     return (
       <RowTag id={this.props.id} style={this.props.style} className={self.classes}>
-        <slot></slot>
+        <slot />
       </RowTag>
     );
   },
@@ -35,7 +35,7 @@ export default {
           row: true,
           'no-gap': self.props.noGap,
         },
-        Mixins.colorClasses(self)
+        Mixins.colorClasses(self),
       );
     },
   },

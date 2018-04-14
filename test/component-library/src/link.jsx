@@ -71,11 +71,11 @@ export default {
           {text}
           {badgeEl}
         </span>
-      )
+      );
     }
     if (icon || iconMaterial || iconIon || iconFa || iconF7 || (iconIfMd && self.$theme.md) || (iconIfIos && self.$theme.ios)) {
       if (iconBadge) {
-        iconBadgeEl = <F7Badge color={badgeColor}>{iconBadge}</F7Badge>
+        iconBadgeEl = <F7Badge color={badgeColor}>{iconBadge}</F7Badge>;
       }
       iconEl = (
         <F7Icon

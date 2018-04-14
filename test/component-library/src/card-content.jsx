@@ -15,7 +15,7 @@ export default {
   name: 'f7-card-content',
   props: CardContentProps,
   render() {
-    return (<div id={this.props.id} style={this.props.style} className={this.classes}><slot></slot></div>);
+    return (<div id={this.props.id} style={this.props.style} className={this.classes}><slot /></div>);
   },
   computed: {
     classes() {
@@ -26,7 +26,7 @@ export default {
           'card-content': true,
           'card-content-padding': self.props.padding,
         },
-        Mixins.colorClasses(self)
+        Mixins.colorClasses(self),
       );
     },
   },

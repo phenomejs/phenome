@@ -21,22 +21,22 @@ export default {
     if (self.props.media || (self.slots && self.slots.media)) {
       mediaEl = (
         <div className={self.mediaClasses}>
-          {self.props.media ? self.props.media : (<slot name="media"></slot>)}
+          {self.props.media ? self.props.media : (<slot name="media" />)}
         </div>
-      )
+      );
     }
     if (self.props.text || (self.slots && self.slots.text)) {
       labelEl = (
         <div className="chip-label">
           {self.props.text}
-          <slot name="text"></slot>
+          <slot name="text" />
         </div>
-      )
+      );
     }
     if (self.props.deleteable) {
       deleteEl = (
-        <a href="#" className="chip-delete" onClick={self.onDeleteClick.bind(self)}></a>
-      )
+        <a href="#" className="chip-delete" onClick={self.onDeleteClick.bind(self)} />
+      );
     }
 
     return (

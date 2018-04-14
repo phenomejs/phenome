@@ -26,7 +26,7 @@ export default {
       >
         <slot>{this.props.text}</slot>
       </a>
-    )
+    );
   },
   computed: {
     classes() {

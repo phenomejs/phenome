@@ -36,14 +36,14 @@ export default {
     if (self.props.ptr && (self.props.ptrPreloader)) {
       ptrEl = (
         <div className="ptr-preloader">
-          <div className="preloader"></div>
-          <div className="ptr-arrow"></div>
+          <div className="preloader" />
+          <div className="ptr-arrow" />
         </div>
       );
     }
     if ((self.props.infinite) && self.props.infinitePreloader) {
       infiniteEl = (
-        <div className="preloader infinite-scroll-preloader"></div>
+        <div className="preloader infinite-scroll-preloader" />
       );
     }
     return (

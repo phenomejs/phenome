@@ -41,7 +41,7 @@ export default {
         style={this.props.style}
         className={this.classes}
       >
-        <slot></slot>
+        <slot />
       </div>
     );
   },

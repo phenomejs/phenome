@@ -7,7 +7,7 @@ export default {
   render() {
     return (
       <div id={this.props.id} style={this.props.style} className={this.classes}>
-        <slot></slot>
+        <slot />
       </div>
     );
   },
@@ -19,7 +19,7 @@ export default {
         {
           'accordion-item-content': true,
         },
-        Mixins.colorClasses(self)
+        Mixins.colorClasses(self),
       );
     },
   },
