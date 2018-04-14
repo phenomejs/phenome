@@ -1,7 +1,7 @@
 /* eslint no-param-reassign: "off" */
 /* eslint no-underscore-dangle: "off" */
 import Utils from './utils';
-import VueRouter from './f7-vue-router';
+import ComponentsRouter from './f7-components-router';
 
 import routers from './routers';
 import events from './events';
@@ -78,7 +78,7 @@ const f7 = {
     });
 
     // Extend F7 Router
-    Framework7.Router.use(VueRouter);
+    Framework7.Router.use(ComponentsRouter);
   },
   init(Framework7, rootEl, params = {}, routes) {
     const f7Params = Utils.extend({}, params, { root: rootEl });
