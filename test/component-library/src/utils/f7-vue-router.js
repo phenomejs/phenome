@@ -56,7 +56,7 @@ export default {
       routerComponent.state.pages.push(pageData);
       routerComponent.setState({ pages: routerComponent.state.pages });
     },
-    removePage($pageEl, b, c) {
+    removePage($pageEl) {
       if (!$pageEl) return;
       const router = this;
       let routerComponent;
@@ -91,52 +91,64 @@ export default {
     tabComponentLoader(tabEl, component, componentUrl, options, resolve, reject) {
       if (!tabEl) reject();
 
-      let tabVue;
+      let tabComponent;
       routers.tabs.forEach((tabData) => {
         if (tabData.el && tabData.el === tabEl) {
-          tabVue = tabData.component;
+          tabComponent = tabData.component;
         }
       });
-      if (!tabVue) {
+      if (!tabComponent) {
         reject();
         return;
       }
 
       const id = `${Utils.now()}_${(routerComponentIdCounter += 1)}`;
-      tabVue.$set(tabVue, 'tabContent', {
+      const tabContent = {
         id,
         component,
         params: Utils.extend({}, options.route.params),
-      });
+      };
 
-      let tabEvents;
-      if (component.on) {
-        tabEvents = Utils.extend({}, component.on);
-        Object.keys(tabEvents).forEach((pageEvent) => {
-          tabEvents[pageEvent] = tabEvents[pageEvent].bind(tabVue);
-        });
-      }
+      tabComponent.$f7route = options.route;
 
-      tabVue.$nextTick(() => {
+      let resolved;
+      function onDidUpdate(componentRouterData) {
+        if (componentRouterData.component !== tabComponent || resolved) return;
+        events.off('tabRouterDidUpdate', onDidUpdate);
+
+        let tabEvents;
+        if (component.on) {
+          tabEvents = Utils.extend({}, component.on);
+          Object.keys(tabEvents).forEach((pageEvent) => {
+            tabEvents[pageEvent] = tabEvents[pageEvent].bind(tabComponent);
+          });
+        }
+
         const tabContentEl = tabEl.children[0];
         resolve(tabContentEl, { on: tabEvents });
-      });
+
+        resolved = true;
+      }
+
+      events.on('tabRouterDidUpdate', onDidUpdate);
+
+      tabComponent.setState({ tabContent });
     },
     removeTabContent(tabEl) {
       if (!tabEl) return;
 
-      let tabVue;
+      let tabComponent;
       routers.tabs.forEach((tabData) => {
         if (tabData.el && tabData.el === tabEl) {
-          tabVue = tabData.component;
+          tabComponent = tabData.component;
         }
       });
-      const hasComponent = !!tabVue.tabContent;
-      if (!tabVue || !hasComponent) {
+      const hasComponent = !!tabComponent.state.tabContent;
+      if (!tabComponent || !hasComponent) {
         tabEl.innerHTML = ''; // eslint-disable-line
         return;
       }
-      tabVue.$set(tabVue, 'tabContent', null);
+      tabComponent.setState({ tabContent: null });
     },
     modalComponentLoader(rootEl, component, componentUrl, options, resolve, reject) {
       const router = this;

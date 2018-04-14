@@ -9,12 +9,13 @@ import F7Toggle from '../../../component-library/dist/react/toggle';
 import F7Range from '../../../component-library/dist/react/range';
 import F7Swiper from '../../../component-library/dist/react/swiper';
 import F7SwiperSlide from '../../../component-library/dist/react/swiper-slide';
+import F7Tabs from '../../../component-library/dist/react/tabs';
+import F7Tab from '../../../component-library/dist/react/tab';
 
 export default class TestPage extends React.Component {
   constructor(props, context) {
     super(props, context);
     this.state = {
-      hasNavRight: false,
       priceMin: 200,
       priceMax: 400,
     }
@@ -23,27 +24,20 @@ export default class TestPage extends React.Component {
     return (
       <F7Page>
         <F7Navbar backLink="Go back" title="Test Page" onBackClick={this.onBackClick.bind(this)}>
-          {this.state.hasNavRight && (
-            <F7NavRight>Right</F7NavRight>
-          )}
+          <F7NavRight>Right</F7NavRight>
         </F7Navbar>
-        <F7Toolbar tabbar>
+        <F7Toolbar tabbar labels>
           <F7Link icon="icon-back" text="Tab link 1" tabLink tabLinkActive></F7Link>
           <F7Link icon="icon-back" text="Tab link 2" tabLink="#tab2"></F7Link>
         </F7Toolbar>
-        <F7Block strong>Hello</F7Block>
         <F7Block>
           <F7Swiper navigation pagination scrollbar style={{height: '300px'}} params={{spaceBetween: 50}}>
             <F7SwiperSlide>Slide 1</F7SwiperSlide>
             <F7SwiperSlide>Slide 2</F7SwiperSlide>
           </F7Swiper>
         </F7Block>
-        <p>Button</p>
         <p>
-          <F7Link>Hello</F7Link>
-          <F7Link icon="icon-back"></F7Link>
           <F7Link href="/test2/">Test page 2</F7Link>
-          <F7Link onClick={this.toggleNavRight.bind(this)}>Hello</F7Link>
         </p>
         <F7Block>
           <p>
@@ -85,6 +79,18 @@ export default class TestPage extends React.Component {
               onRangeChange={this.onPriceChange.bind(this)}
             ></F7Range>
           </div>
+        </F7Block>
+        <F7Block>
+          <F7Link href="/" routeTabId="tab1">Tab 1</F7Link>
+          <F7Link href="/tab2/" routeTabId="tab2">Tab 2</F7Link>
+          <F7Link href="/tab3/" routeTabId="tab3">Tab 3</F7Link>
+        </F7Block>
+        <F7Block>
+          <F7Tabs routable>
+            <F7Tab id="tab1" tabActive></F7Tab>
+            <F7Tab id="tab2"></F7Tab>
+            <F7Tab id="tab3"></F7Tab>
+          </F7Tabs>
         </F7Block>
       </F7Page>
     );

@@ -1,19 +1,20 @@
 <template>
-  <f7-page :disabled="hasNavRight" :pageContent="false">
+  <f7-page>
     <f7-navbar backLink="Go back" title="Test Page" @click:back="onBackClick">
-      <f7-nav-right v-if="hasNavRight">Right</f7-nav-right>
+      <f7-nav-right>Right</f7-nav-right>
     </f7-navbar>
-    <f7-toolbar tabbar labels v-if="hasNavRight">
+    <f7-toolbar tabbar labels>
       <f7-link icon="icon-back" text="Tab link 1" tabLink tabLinkActive></f7-link>
       <f7-link icon="icon-back" text="Tab link 2" tabLink="#tab2"></f7-link>
     </f7-toolbar>
-    <f7-block strong>Hello</f7-block>
-    <p>Button</p>
+    <f7-block>
+      <f7-swiper navigation pagination scrollbar :style="{height: '300px'}" :params="{spaceBetween: 50}">
+        <f7-swiper-slide>Slide 1</f7-swiper-slide>
+        <f7-swiper-slide>Slide 2</f7-swiper-slide>
+      </f7-swiper>
+    </f7-block>
     <p>
-      <f7-link>Hello</f7-link>
-      <f7-link icon="icon-back"></f7-link>
       <f7-link href="/test2/">Test page 2</f7-link>
-      <f7-link @click="toggleNavRight">Hello</f7-link>
     </p>
     <f7-block>
       <p>
@@ -56,6 +57,18 @@
         ></f7-range>
       </p>
     </f7-block>
+    <f7-block>
+      <f7-link href="/" routeTabId="tab1">Tab 1</f7-link>
+      <f7-link href="/tab2/" routeTabId="tab2">Tab 2</f7-link>
+      <f7-link href="/tab3/" routeTabId="tab3">Tab 3</f7-link>
+    </f7-block>
+    <f7-block>
+      <f7-tabs routable>
+        <f7-tab id="tab1" tabActive></f7-tab>
+        <f7-tab id="tab2"></f7-tab>
+        <f7-tab id="tab3"></f7-tab>
+      </f7-tabs>
+    </f7-block>
   </f7-page>
 </template>
 <script>
@@ -68,6 +81,10 @@ import f7NavRight from '../../../component-library/dist/vue/nav-right';
 import f7Toolbar from '../../../component-library/dist/vue/toolbar';
 import f7Toggle from '../../../component-library/dist/vue/toggle';
 import f7Range from '../../../component-library/dist/vue/range';
+import f7Tabs from '../../../component-library/dist/vue/tabs';
+import f7Tab from '../../../component-library/dist/vue/tab';
+import f7Swiper from '../../../component-library/dist/vue/swiper';
+import f7SwiperSlide from '../../../component-library/dist/vue/swiper-slide';
 
 export default {
   components: {
@@ -80,6 +97,10 @@ export default {
     f7Toolbar,
     f7Toggle,
     f7Range,
+    f7Swiper,
+    f7SwiperSlide,
+    f7Tabs,
+    f7Tab,
   },
   data() {
     return {
@@ -91,10 +112,6 @@ export default {
   methods: {
     onBackClick() {
       console.log('onbackclick');
-    },
-    toggleNavRight() {
-      console.log('toggle');
-      this.$set(this, 'hasNavRight', !this.hasNavRight);
     },
     onPriceChange(values) {
       console.log(values);

@@ -1,6 +1,6 @@
 <template>
   <f7-app :framework7="Framework7" :vue="Vue" :routes="routes">
-    <f7-view :main="true" color="red" url="/" @swipeback:move="onSwipeBackMove"></f7-view>
+    <f7-view :main="true" url="/" @swipeback:move="onSwipeBackMove"></f7-view>
   </f7-app>
 </template>
 
@@ -12,6 +12,7 @@
   import F7View from '../../../component-library/dist/vue/view';
 
   import TestPage from './test-page.vue';
+  import TestTab from './test-tab.vue';
 
   export default {
     components: {
@@ -31,6 +32,23 @@
           {
             path: '/',
             component: TestPage,
+            tabs: [
+              {
+                id: 'tab1',
+                path: '/',
+                component: TestTab,
+              },
+              {
+                id: 'tab2',
+                path: 'tab2/',
+                component: TestTab,
+              },
+              {
+                id: 'tab3',
+                path: 'tab3/',
+                component: TestTab,
+              },
+            ]
           },
           {
             path: '/test2/',
