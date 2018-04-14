@@ -1,5 +1,5 @@
 module.exports = {
-  paths: ['./component-library/src/**/*.js'],
+  paths: ['./component-library/src/**/*.js', './component-library/src/**/*.jsx'],
   react: {
     out: './component-library/dist/react/',
     helpers: {
