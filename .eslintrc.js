@@ -16,5 +16,7 @@ module.exports = {
       ObjectExpression: { minProperties: 8, multiline: true, consistent: true },
       ObjectPattern: { minProperties: 8, multiline: true, consistent: true }
     }],
+    'react/react-in-jsx-scope': 'off',
+    'react/jsx-filename-extension': 'off',
   }
 };
