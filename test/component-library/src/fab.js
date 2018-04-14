@@ -24,11 +24,35 @@ export default {
     if (href === true) href = '#';
     if (href === false) href = undefined; // no href attribute
 
-    const linkEl = (
-      <a href={href} onClick={self.onClick.bind(self)} key="f7-fab-link">
-        <slot name="link"></slot>
-      </a>
-    );
+    const linkChildren = [];
+    const rootChildren = [];
+
+    const { link: linkSlots, default: defaultSlots, root: rootSlots } = self.slots;
+
+    if (defaultSlots) {
+      for (let i = 0; i < defaultSlots.length; i += 1) {
+        const child = defaultSlots[i];
+        let isRoot;
+        if (process.env.COMPILER === 'react') {
+          const tag = child.type && child.type.name;
+          if (tag === 'F7FabButtons') isRoot = true;
+        }
+        if (process.env.COMPILER === 'vue') {
+          if (child.tag && child.tag.indexOf('fab-buttons') >= 0) isRoot = true;
+        }
+        if (isRoot) rootChildren.push(child);
+        else linkChildren.push(child);
+      }
+    }
+    let linkEl;
+    if (linkChildren.length || linkSlots.length) {
+      linkEl = (
+        <a href={href} onClick={self.onClick.bind(self)} key="f7-fab-link">
+          {linkChildren}
+          {linkSlots}
+        </a>
+      );
+    }
 
     return (
       <div
@@ -38,7 +62,8 @@ export default {
         data-morph-to={morphTo}
       >
         {linkEl}
-        <slot></slot>
+        {rootChildren}
+        {rootSlots}
       </div>
     );
   },

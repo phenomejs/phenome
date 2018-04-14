@@ -1,7 +1,7 @@
-import Utils from '../utils/utils';
-import Mixins from '../utils/mixins';
-import f7Badge from './badge.vue';
-import f7Icon from './icon.vue';
+import Utils from './utils/utils';
+import Mixins from './utils/mixins';
+import F7Badge from './badge';
+import F7Icon from './icon';
 
 const LinkProps = Utils.extend(
   {
@@ -11,6 +11,7 @@ const LinkProps = Utils.extend(
     text: String,
     tabLink: [Boolean, String],
     tabLinkActive: Boolean,
+    tabbarLabel: Boolean,
     iconOnly: Boolean,
     badge: [String, Number],
     badgeColor: [String],
@@ -23,66 +24,99 @@ const LinkProps = Utils.extend(
   Mixins.colorProps,
   Mixins.linkIconProps,
   Mixins.linkRouterProps,
-  Mixins.linkActionsProps
+  Mixins.linkActionsProps,
 );
 
 export default {
   name: 'f7-link',
-  components: {
-    f7Badge,
-    f7Icon,
-  },
   props: LinkProps,
-  render(c) {
+  render() {
     const self = this;
-    const isTabbarLabel = (self.tabLink || self.tabLink === '') && self.$parent && self.$parent.tabbar && self.$parent.labels;
+    const props = self.props;
+    const {
+      tabbarLabel,
+      tabLink,
+      text,
+      badge,
+      badgeColor,
+      iconOnly,
+      iconBadge,
+      icon,
+      iconColor,
+      iconSize,
+      iconMaterial,
+      iconIon,
+      iconFa,
+      iconF7,
+      iconIfMd,
+      iconIfIos,
+      id,
+      style,
+    } = props;
+
+    const defaultSlots = self.slots.default;
+    const isTabbarLabel = false; // self.props.tabbarLabel || ((self.props.tabLink || self.props.tabLink === '') && self.$parent && self.$parent.tabbar && self.$parent.labels);
 
     let iconEl;
     let textEl;
     let badgeEl;
     let iconBadgeEl;
 
-    if (self.text) {
-      if (self.badge) badgeEl = c('f7-badge', { props: { color: self.badgeColor } }, self.badge);
-      textEl = c('span', { class: { 'tabbar-label': isTabbarLabel } }, [self.text, badgeEl]);
+    if (text) {
+      if (badge) badgeEl = (<F7Badge color={badgeColor}>{badge}</F7Badge>);
+      textEl = (
+        <span className={isTabbarLabel ? 'tabbar-label' : ''}>
+          {text}
+          {badgeEl}
+        </span>
+      )
     }
-    if (self.icon || self.iconMaterial || self.iconIon || self.iconFa || self.iconF7 || (self.iconIfMd && self.$theme.md) || (self.iconIfIos && self.$theme.ios)) {
-      if (self.iconBadge) iconBadgeEl = c('f7-badge', { props: { color: self.badgeColor } }, self.iconBadge);
-      iconEl = c('f7-icon', {
-        props: {
-          material: self.iconMaterial,
-          ion: self.iconIon,
-          fa: self.iconFa,
-          f7: self.iconF7,
-          icon: self.icon,
-          ifMd: self.iconIfMd,
-          ifIos: self.iconIfIos,
-          color: self.iconColor,
-          size: self.iconSize,
-        },
-      }, [iconBadgeEl]);
+    if (icon || iconMaterial || iconIon || iconFa || iconF7 || (iconIfMd && self.$theme.md) || (iconIfIos && self.$theme.ios)) {
+      if (iconBadge) {
+        iconBadgeEl = <F7Badge color={badgeColor}>{iconBadge}</F7Badge>
+      }
+      iconEl = (
+        <F7Icon
+          material={iconMaterial}
+          f7={iconF7}
+          fa={iconFa}
+          ion={iconIon}
+          icon={icon}
+          ifMd={iconIfMd}
+          ifIos={iconIfIos}
+          color={iconColor}
+          size={iconSize}
+        >{iconBadgeEl}</F7Icon>
+      );
     }
     if (
-      self.iconOnly ||
-      (!self.text && self.$slots.default && self.$slots.default.length === 0) ||
-      (!self.text && !self.$slots.default)
+      iconOnly ||
+      (!text && defaultSlots && defaultSlots.length === 0) ||
+      (!self.text && !defaultSlots)
     ) {
-      self.classes['icon-only'] = true;
+      self.iconOnlyComputed = true;
+    } else {
+      self.iconOnlyComputed = false;
     }
-    self.classes.link = !(self.noLinkClass || isTabbarLabel);
-    const linkEl = c('a', {
-      class: self.classes,
-      attrs: self.attrs,
-      on: {
-        click: self.onClick,
-      },
-    }, [iconEl, textEl, self.$slots.default]);
-    return linkEl;
+
+    return (
+      <a
+        id={id}
+        style={style}
+        className={self.classes}
+        onClick={self.onClick.bind(self)}
+        {...self.attrs}
+      >
+        {iconEl}
+        {textEl}
+        {defaultSlots}
+      </a>
+    );
   },
   computed: {
     attrs() {
       const self = this;
-      const { href, target, tabLink } = self;
+      const { href, target, tabLink } = self.props;
       let hrefComputed = href;
       if (href === true) hrefComputed = '#';
       if (href === false) hrefComputed = undefined; // no href attribute
@@ -90,10 +124,10 @@ export default {
         {
           href: hrefComputed,
           target,
-          'data-tab': Utils.isStringProp(tabLink) && tabLink,
+          'data-tab': (Utils.isStringProp(tabLink) && tabLink) || undefined,
         },
         Mixins.linkRouterAttrs(self),
-        Mixins.linkActionsAttrs(self)
+        Mixins.linkActionsAttrs(self),
       );
     },
     classes() {
@@ -103,23 +137,28 @@ export default {
         noFastClick,
         tabLink,
         tabLinkActive,
-      } = self;
+        noLinkClass,
+        className,
+      } = self.props;
 
-      return Utils.extend(
+      return Utils.classNames(
+        className,
         {
+          link: !(noLinkClass || self.isTabbarLabel),
+          'icon-only': self.iconOnlyComputed,
           'tab-link': tabLink || tabLink === '',
           'tab-link-active': tabLinkActive,
           'no-fastclick': noFastclick || noFastClick,
         },
         Mixins.colorClasses(self),
         Mixins.linkRouterClasses(self),
-        Mixins.linkActionsClasses(self)
+        Mixins.linkActionsClasses(self),
       );
     },
   },
   methods: {
     onClick(event) {
-      this.$emit('click', event);
+      this.dispatchEvent('click', event);
     },
   },
 };

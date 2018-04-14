@@ -1,6 +1,6 @@
 import Utils from './utils/utils';
 import Mixins from './utils/mixins';
-import F7Icon from './icon.js';
+import F7Icon from './icon';
 
 const ButtonProps = Utils.extend(
   {
@@ -39,7 +39,7 @@ const ButtonProps = Utils.extend(
 export default {
   name: 'f7-button',
   props: ButtonProps,
-  render(c) {
+  render() {
     const self = this;
     let iconEl;
     let textEl;
@@ -53,6 +53,8 @@ export default {
       iconF7,
       iconIfMd,
       iconIfIos,
+      iconColor,
+      iconSize,
     } = self.props;
 
     if (text) {
@@ -98,7 +100,7 @@ export default {
         {
           href: hrefComputed,
           target,
-          'data-tab': Utils.isStringProp(tabLink) && tabLink || undefined,
+          'data-tab': (Utils.isStringProp(tabLink) && tabLink) || undefined,
         },
         Mixins.linkRouterAttrs(self),
         Mixins.linkActionsAttrs(self),
@@ -157,7 +159,7 @@ export default {
         },
         Mixins.colorClasses(self),
         Mixins.linkRouterClasses(self),
-        Mixins.linkActionsClasses(self)
+        Mixins.linkActionsClasses(self),
       );
     },
   },
