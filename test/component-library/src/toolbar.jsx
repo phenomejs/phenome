@@ -22,15 +22,15 @@ export default {
     const self = this;
     return (
       <div ref="el" className={self.classes}>
-        <slot name="before-inner"></slot>
+        <slot name="before-inner" />
         {self.props.inner ? (
           <div className="toolbar-inner">
-            <slot></slot>
+            <slot />
           </div>
         ) : (
-          <slot></slot>
+          <slot />
         )}
-        <slot name="after-inner"></slot>
+        <slot name="after-inner" />
       </div>
     );
   },

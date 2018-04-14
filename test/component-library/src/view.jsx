@@ -80,7 +80,7 @@ export default {
           const PageComponent = page.component;
           return (
             <PageComponent key={page.id} {...page.props} />
-          )
+          );
         })}
       </div>
     );
