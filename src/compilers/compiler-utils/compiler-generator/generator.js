@@ -1,3 +1,4 @@
+const path = require('path');
 const codeToAst = require('../code-to-ast');
 const astToCode = require('../ast-to-code');
 const objectIsPhenomeComponent = require('./object-is-phenome-component');
@@ -25,6 +26,7 @@ function generator(jsxTransformer, componentTransformer) {
       return {
         componentCode: componentString,
         runtimeHelpers: [],
+        transformed: false,
       };
     }
 
@@ -40,6 +42,7 @@ function generator(jsxTransformer, componentTransformer) {
     return {
       componentCode: astToCode(ast),
       runtimeHelpers: state.runtimeHelpers,
+      transformed: true,
     };
   }
   return generate;
