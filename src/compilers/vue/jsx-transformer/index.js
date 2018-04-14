@@ -34,7 +34,7 @@ function createSlot(node) {
     }
     children.push(slotChild);
   });
-  const slotNode = codeToAst(`this.slots.${slotName}${children.length ? ' || []' : ''}`).body[0].expression;
+  const slotNode = codeToAst(`this.$slots.${slotName}${children.length ? ' || []' : ''}`).body[0].expression;
   if (children.length) {
     slotNode.right.elements = children;
   }
