@@ -18,5 +18,6 @@ module.exports = {
     }],
     'react/react-in-jsx-scope': 'off',
     'react/jsx-filename-extension': 'off',
+    'react/no-string-refs': 'off',
   }
 };
