@@ -33,9 +33,6 @@ const addComputed = `
       slots() {
         return this.$slots;
       },
-      forceUpdate() {
-        return this.$forceUpdate();
-      },
     }
   }
 `;
@@ -47,6 +44,9 @@ const addMethods = `
       },
       setState(updater, callback) {
         __vueComponentSetState(this, updater, callback);
+      },
+      forceUpdate() {
+        return this.$forceUpdate();
       },
     }
   }
@@ -176,6 +176,37 @@ function modifyVueComponent(componentNode, config, requiredHelpers) {
   if (methods.value && methods.value.properties.length === 0) {
     componentNode.properties.splice(componentNode.properties.indexOf(methods), 1);
   }
+
+  // Modify Slots
+  if (requiredHelpers.slots) {
+    const thisAliases = ('this that self component').split(' ');
+    walk(componentNode, {
+      MemberExpression(node) {
+        if (
+          (
+            (node.object.type === 'ThisExpression') ||
+            (node.object.type === 'Identifier' && thisAliases.indexOf(node.object.name) >= 0)
+          ) &&
+          node.property.type === 'Identifier' &&
+          node.property.name === 'slots'
+        ) {
+          node.property.name = '$slots';
+        }
+      },
+      VariableDeclarator(node) {
+        const isDistructuring = node.id.type === 'ObjectPattern';
+        if (!isDistructuring) return;
+        const props = node.id.properties;
+        const init = node.init.name;
+        if (thisAliases.indexOf(init) < 0) return;
+        props.forEach((prop) => {
+          if (prop.key.name === 'slots') {
+            prop.key.name = '$slots';
+          }
+        });
+      },
+    });
+  }
 }
 
 function findHelpers(ast, componentNode, config, jsxHelpers) {
@@ -202,6 +233,21 @@ function findHelpers(ast, componentNode, config, jsxHelpers) {
       if (node.object.type === 'Identifier' && node.object.name === 'state' && foundHelpers.indexOf('state') < 0) {
         foundHelpers.push('state');
       }
+    },
+    VariableDeclarator(node) {
+      const isDistructuring = node.id.type === 'ObjectPattern';
+      if (!isDistructuring) return;
+      const props = node.id.properties;
+      const init = node.init.name;
+      if (thisAliases.indexOf(init) < 0) return;
+      props.forEach((prop) => {
+        if (
+          lookForHelpers.indexOf(prop.key.name) >= 0 &&
+          foundHelpers.indexOf(prop.key.name) < 0
+        ) {
+          foundHelpers.push(prop.key.name)
+        }
+      });
     },
   });
 
