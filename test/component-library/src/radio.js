@@ -12,7 +12,7 @@ const RadioProps = Utils.extend({
 export default {
   name: 'f7-radio',
   props: RadioProps,
-  render(c) {
+  render() {
     const self = this;
     const { name, value, disabled, readonly, checked } = self;
 

@@ -12,7 +12,7 @@ const CheckboxProps = Utils.extend({
 export default {
   name: 'f7-checkbox',
   props: CheckboxProps,
-  render(c) {
+  render() {
     const self = this;
     const { name, value, disabled, readonly, checked } = self;
 

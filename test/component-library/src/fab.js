@@ -16,7 +16,7 @@ const FabProps = Utils.extend(
 export default {
   name: 'f7-fab',
   props: FabProps,
-  render(c) {
+  render() {
     const self = this;
     const { morphTo } = self.props;
 

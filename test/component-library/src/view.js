@@ -71,7 +71,7 @@ export default {
       pages: [],
     };
   },
-  render(c) {
+  render() {
     const self = this;
     return (
       <div ref="el" id={self.props.id} style={self.props.style} className={self.classes}>

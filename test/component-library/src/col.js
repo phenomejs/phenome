@@ -24,7 +24,7 @@ const ColProps = Utils.extend(
 export default {
   name: 'f7-col',
   props: ColProps,
-  render(c) {
+  render() {
     const self = this;
 
     const ColTag = self.props.tag;

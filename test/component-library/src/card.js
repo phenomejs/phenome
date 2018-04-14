@@ -21,7 +21,7 @@ const CardProps = Utils.extend(
 export default {
   name: 'f7-card',
   props: CardProps,
-  render(c) {
+  render() {
     const self = this;
     let headerEl;
     let contentEl;

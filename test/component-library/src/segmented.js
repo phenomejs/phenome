@@ -13,7 +13,7 @@ const SegmentedProps = Utils.extend({
 export default {
   name: 'f7-segmented',
   props: SegmentedProps,
-  render(c) {
+  render() {
     const self = this;
     const classNames = Utils.classNames(
       self.props.className,

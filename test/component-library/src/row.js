@@ -15,7 +15,7 @@ const RowProps = Utils.extend(
 export default {
   name: 'f7-row',
   props: RowProps,
-  render(c) {
+  render() {
     const self = this;
 
     const RowTag = self.props.tag;

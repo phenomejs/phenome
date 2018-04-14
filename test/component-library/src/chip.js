@@ -13,7 +13,7 @@ const ChipProps = Utils.extend({
 export default {
   name: 'f7-chip',
   props: ChipProps,
-  render(c) {
+  render() {
     const self = this;
     let mediaEl;
     let labelEl;
