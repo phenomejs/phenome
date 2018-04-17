@@ -26,7 +26,7 @@ export default {
     );
   },
   watch: {
-    opened(opened) {
+    'popup.opened': function watchOpened(opened) {
       const self = this;
       if (!self.f7Popup) return;
       if (opened) {
