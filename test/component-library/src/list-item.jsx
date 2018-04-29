@@ -101,8 +101,8 @@ export default {
 
     if (!self.simpleListComputed) {
       // Item Content
-      const itemContentOnClick = (link || href || accordionItem || smartSelect) ? undefined : self.onClick.bind(self);
-      const itemContentOnChange = (link || href || accordionItem || smartSelect) ? undefined : self.onChange.bind(self);
+      const itemContentOnClick = (link || href || accordionItem || smartSelect) ? null : self.onClick.bind(self);
+      const itemContentOnChange = (link || href || accordionItem || smartSelect) ? null : self.onChange.bind(self);
 
       itemContentEl = (
         <F7ListItemContent
