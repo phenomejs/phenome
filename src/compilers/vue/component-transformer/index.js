@@ -15,23 +15,8 @@ function __vueComponentGetPropKeys(props) {
 const addComputed = `
   const obj = {
     computed: {
-      refs() {
-        return this.$refs;
-      },
       props() {
-        return __vueComponentGetProps(this, __vueComponentPropsKeys);
-      },
-      children() {
-        return this.$children;
-      },
-      parent() {
-        return this.$parent;
-      },
-      el() {
-        return this.$el;
-      },
-      slots() {
-        return this.$slots;
+        return __vueComponentProps(this, __vueComponentPropsKeys);
       },
     }
   }
@@ -53,7 +38,7 @@ const addMethods = `
 `;
 const stateFunctionCode = `
 function state() {
-  const props = __vueComponentGetProps(this, __vueComponentPropsKeys);
+  const props = __vueComponentProps(this, __vueComponentPropsKeys);
   const state = (() => {})();
   return { state };
 }
@@ -177,8 +162,13 @@ function modifyVueComponent(componentNode, config, requiredHelpers) {
     componentNode.properties.splice(componentNode.properties.indexOf(methods), 1);
   }
 
-  // Modify Slots
-  if (requiredHelpers.slots) {
+  // add-$-helpers
+  const add$Helpers = ('el refs children parent slots').split(' ');
+  let needToAdd$Helpers = false;
+  Object.keys(requiredHelpers).forEach((requiredHelper) => {
+    if (add$Helpers.indexOf(requiredHelper) >= 0) needToAdd$Helpers = true;
+  });
+  if (needToAdd$Helpers) {
     const thisAliases = ('this that self component').split(' ');
     walk(componentNode, {
       MemberExpression(node) {
@@ -188,9 +178,9 @@ function modifyVueComponent(componentNode, config, requiredHelpers) {
             (node.object.type === 'Identifier' && thisAliases.indexOf(node.object.name) >= 0)
           ) &&
           node.property.type === 'Identifier' &&
-          node.property.name === 'slots'
+          add$Helpers.indexOf(node.property.name) >= 0
         ) {
-          node.property.name = '$slots';
+          node.property.name = `$${node.property.name}`;
         }
       },
       VariableDeclarator(node) {
@@ -200,8 +190,8 @@ function modifyVueComponent(componentNode, config, requiredHelpers) {
         const init = node.init.name;
         if (thisAliases.indexOf(init) < 0) return;
         props.forEach((prop) => {
-          if (prop.key.name === 'slots') {
-            prop.key.name = '$slots';
+          if (add$Helpers.indexOf(prop.key.name) >= 0) {
+            prop.key.name = `$${prop.key.name}`;
           }
         });
       },
@@ -287,7 +277,7 @@ function transform(ast, name, componentNode, state, config, jsxHelpers) {
   // Add props
   if (requiredHelpers.props) {
     const getPropsFunctionsNodes = codeToAst(getPropsFunctionCode).body;
-    state.addRuntimeHelper('__vueComponentGetProps', './runtime-helpers/vue-component-get-props.js');
+    state.addRuntimeHelper('__vueComponentProps', './runtime-helpers/vue-component-props.js');
 
     state.addDeclaration('__vueComponentPropsKeys', getPropsFunctionsNodes[0]);
     state.addDeclaration('__vueComponentGetPropKeys', getPropsFunctionsNodes[1]);
