@@ -11,6 +11,8 @@ import F7Swiper from '../../../component-library/dist/react/swiper';
 import F7SwiperSlide from '../../../component-library/dist/react/swiper-slide';
 import F7Tabs from '../../../component-library/dist/react/tabs';
 import F7Tab from '../../../component-library/dist/react/tab';
+import F7List from '../../../component-library/dist/react/list';
+import F7ListItem from '../../../component-library/dist/react/list-item';
 
 export default class TestPage extends React.Component {
   constructor(props, context) {
@@ -92,6 +94,12 @@ export default class TestPage extends React.Component {
             <F7Tab id="tab3"></F7Tab>
           </F7Tabs>
         </F7Block>
+        <F7List>
+          <F7ListItem title="Item 1"></F7ListItem>
+          <F7ListItem link="http://google.com" external target="_blank" title="Item 2"></F7ListItem>
+          <F7ListItem after="CEO" title="Item 3"></F7ListItem>
+          <F7ListItem badge="3" badgeColor="red" title="Item 4"></F7ListItem>
+        </F7List>
       </F7Page>
     );
   }

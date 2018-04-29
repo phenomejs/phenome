@@ -69,6 +69,12 @@
         <f7-tab id="tab3"></f7-tab>
       </f7-tabs>
     </f7-block>
+    <f7-list>
+      <f7-list-item title="Item 1"></f7-list-item>
+      <f7-list-item link="http://google.com" external target="_blank" title="Item 2"></f7-list-item>
+      <f7-list-item after="CEO" title="Item 3"></f7-list-item>
+      <f7-list-item badge="3" badgeColor="red" title="Item 4"></f7-list-item>
+    </f7-list>
   </f7-page>
 </template>
 <script>
@@ -85,6 +91,8 @@ import f7Tabs from '../../../component-library/dist/vue/tabs';
 import f7Tab from '../../../component-library/dist/vue/tab';
 import f7Swiper from '../../../component-library/dist/vue/swiper';
 import f7SwiperSlide from '../../../component-library/dist/vue/swiper-slide';
+import f7List from '../../../component-library/dist/vue/list';
+import f7ListItem from '../../../component-library/dist/vue/list-item';
 
 export default {
   components: {
@@ -101,6 +109,8 @@ export default {
     f7SwiperSlide,
     f7Tabs,
     f7Tab,
+    f7List,
+    f7ListItem,
   },
   data() {
     return {

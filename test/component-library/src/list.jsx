@@ -58,7 +58,16 @@ export default {
         tag = child.tag;
       }
 
-      if ((!tag && process.env.COMPILER === 'react') || (tag && !(tag === 'li' || tag === 'F7ListItem'))) {
+      if (
+        (!tag && process.env.COMPILER === 'react') ||
+        (tag && !(
+          tag === 'li' ||
+          tag === 'F7ListItem' ||
+          tag === 'F7ListButton' ||
+          tag.indexOf('list-item') >= 0 ||
+          tag.indexOf('list-button') >= 0
+        ))
+      ) {
         rootChildren.push(child);
       } else if (tag) {
         ulChildren.push(child);
