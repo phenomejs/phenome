@@ -106,12 +106,6 @@ export default class TestPage extends React.Component {
   onBackClick() {
     console.log('back click')
   }
-  toggleNavRight() {
-    console.log('toggle');
-    this.setState({
-      hasNavRight: !this.state.hasNavRight,
-    });
-  }
   onPriceChange(values) {
     console.log(values);
     this.setState({priceMin: values[0]});

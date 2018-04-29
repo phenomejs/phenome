@@ -21,7 +21,7 @@
         <f7-toggle checked></f7-toggle>
       </p>
       <p>
-        <f7-toggle checked color="blue"></f7-toggle>
+        <f7-toggle checked color="red"></f7-toggle>
       </p>
       <p>
         <f7-toggle checked disabled></f7-toggle>
