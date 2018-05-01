@@ -21,9 +21,9 @@ function transformJSXExpressionContainer(node, parentNode) {
 function createSlot(node, parentNode) {
   let slotName = 'default';
   node.openingElement.attributes.forEach((attr) => {
-    if (attr.name.name === 'name') slotName = attr.name.name;
+    if (attr.name.name === 'name') slotName = attr.value.value;
   });
-  const slotNode = codeToAst(`this.slots.${slotName}`).body[0].expression;
+  const slotNode = codeToAst(`this.slots['${slotName}']`).body[0].expression;
   const children = node.children;
   delete node.children;
   delete node.openingElement;

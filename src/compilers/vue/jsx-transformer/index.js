@@ -23,7 +23,8 @@ function transformJSXExpressionContainer(node, parentNode) {
 function createSlot(node) {
   let slotName = 'default';
   node.openingElement.attributes.forEach((attr) => {
-    if (attr.name.name === 'name') slotName = attr.name.name;
+    // console.log(attr);
+    if (attr.name.name === 'name') slotName = attr.value.value;
   });
   const children = [];
   node.children.forEach((slotChild) => {
@@ -34,7 +35,7 @@ function createSlot(node) {
     }
     children.push(slotChild);
   });
-  const slotNode = codeToAst(`this.$slots.${slotName}${children.length ? ' || []' : ''}`).body[0].expression;
+  const slotNode = codeToAst(`this.$slots['${slotName}']${children.length ? ' || []' : ''}`).body[0].expression;
   if (children.length) {
     slotNode.right.elements = children;
   }
