@@ -1,17 +1,12 @@
 import Mixins from './utils/mixins';
 import Utils from './utils/utils';
 
-const PopupProps = Utils.extend(
-  {
-    'tablet-fullscreen': Boolean,
-    opened: Boolean,
-  },
-  Mixins.colorProps,
-);
-
 export default {
-  name: 'f7-popup',
-  props: PopupProps,
+  name: 'f7-login-screen',
+  props: {
+    opened: Boolean,
+    ...Mixins.colorProps,
+  },
   render() {
     const self = this;
     return (
@@ -26,13 +21,13 @@ export default {
     );
   },
   watch: {
-    'popup.opened': function watchOpened(opened) {
+    'props.opened': function watchOpened(opened) {
       const self = this;
-      if (!self.f7Popup) return;
+      if (!self.f7LoginScreen) return;
       if (opened) {
-        self.f7Popup.open();
+        self.f7LoginScreen.open();
       } else {
-        self.f7Popup.close();
+        self.f7LoginScreen.close();
       }
     },
   },
@@ -41,15 +36,11 @@ export default {
       const self = this;
       return Utils.classNames(
         self.props.className,
-        'popup',
-        {
-          'popup-tablet-fullscreen': self.props.tabletFullscreen,
-        },
+        'login-screen',
         Mixins.colorClasses(self),
       );
     },
   },
-
   componentDidMount() {
     const self = this;
 
@@ -59,52 +50,52 @@ export default {
     self.onOpenedBound = self.onOpened.bind(self);
     self.onCloseBound = self.onClose.bind(self);
     self.onClosedBound = self.onClosed.bind(self);
-    el.addEventListener('popup:open', self.onOpenBound);
-    el.addEventListener('popup:opened', self.onOpenedBound);
-    el.addEventListener('popup:close', self.onCloseBound);
-    el.addEventListener('popup:closed', self.onClosedBound);
+    el.addEventListener('loginscreen:open', self.onOpenBound);
+    el.addEventListener('loginscreen:opened', self.onOpenedBound);
+    el.addEventListener('loginscreen:close', self.onCloseBound);
+    el.addEventListener('loginscreen:closed', self.onClosedBound);
 
     self.$f7ready(() => {
-      self.f7Popup = self.$f7.popup.create({
+      self.f7LoginScreen = self.$f7.loginScreen.create({
         el,
       });
       if (self.props.opened) {
-        self.f7Popup.open(false);
+        self.f7LoginScreen.open(false);
       }
     });
   },
   componentWillUnmount() {
     const self = this;
-    if (self.f7Popup) self.f7Popup.destroy();
     const el = self.refs.el;
+    if (self.f7LoginScreen) self.f7LoginScreen.destroy();
     if (!el) return;
-    el.removeEventListener('popup:open', self.onOpenBound);
-    el.removeEventListener('popup:opened', self.onOpenedBound);
-    el.removeEventListener('popup:close', self.onCloseBound);
-    el.removeEventListener('popup:closed', self.onClosedBound);
+    el.removeEventListener('loginscreen:open', self.onOpenBound);
+    el.removeEventListener('loginscreen:opened', self.onOpenedBound);
+    el.removeEventListener('loginscreen:close', self.onCloseBound);
+    el.removeEventListener('loginscreen:closed', self.onClosedBound);
   },
   methods: {
     onOpen(event) {
-      this.dispatchEvent('popup:open', event);
+      this.$emit('loginscreen:open loginScreenOpen', event);
     },
     onOpened(event) {
-      this.dispatchEvent('popup:opened', event);
+      this.$emit('loginscreen:opened loginScreenOpened', event);
     },
     onClose(event) {
-      this.dispatchEvent('popup:close', event);
+      this.$emit('loginscreen:close loginScreenClose', event);
     },
     onClosed(event) {
-      this.dispatchEvent('popup:closed', event);
+      this.$emit('loginscreen:closed loginScreenClosed', event);
     },
     open(animate) {
       const self = this;
       if (!self.$f7) return undefined;
-      return self.$f7.popup.open(self.refs.el, animate);
+      return self.$f7.loginScreen.open(self.$el, animate);
     },
     close(animate) {
       const self = this;
       if (!self.$f7) return undefined;
-      return self.$f7.popup.close(self.refs.el, animate);
+      return self.$f7.loginScreen.close(self.$el, animate);
     },
   },
 };

@@ -77,7 +77,7 @@ export default {
   componentWillUnmount() {
     const self = this;
     if (self.f7Popover) self.f7Popover.destroy();
-    const el = self.el;
+    const el = self.refs.el;
     if (!el) return;
     el.removeEventListener('popover:open', self.onOpenBound);
     el.removeEventListener('popover:opened', self.onOpenedBound);
