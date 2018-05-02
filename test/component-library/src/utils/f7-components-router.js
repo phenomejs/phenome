@@ -40,11 +40,11 @@ export default {
         pageData.el = pageEl;
         let pageEvents;
         if (component.on) {
-          const pageVue = routerComponent.$children[routerComponent.$children.length - 1];
-          if (pageVue && pageVue.$el === pageEl) {
+          const componentInstance = routerComponent.$children[routerComponent.$children.length - 1];
+          if (componentInstance && componentInstance.$el === pageEl) {
             pageEvents = Utils.extend({}, component.on);
             Object.keys(pageEvents).forEach((pageEvent) => {
-              pageEvents[pageEvent] = pageEvents[pageEvent].bind(pageVue);
+              pageEvents[pageEvent] = pageEvents[pageEvent].bind(componentInstance);
             });
           }
         }
