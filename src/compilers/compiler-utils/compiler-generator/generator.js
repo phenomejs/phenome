@@ -1,4 +1,3 @@
-const path = require('path');
 const codeToAst = require('../code-to-ast');
 const astToCode = require('../ast-to-code');
 const objectIsPhenomeComponent = require('./object-is-phenome-component');
