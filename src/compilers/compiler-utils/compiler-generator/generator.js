@@ -7,6 +7,7 @@ const CompilerState = require('../compiler-state');
 const getComponentVisitor = require('./get-component-visitor');
 const parseCommentCommands = require('./parse-comment-commands');
 const replaceEnvironmentVars = require('./replace-environment-vars');
+const removeConstantConditions = require('./remove-constant-conditions');
 const processDeclarations = require('./process-declarations');
 const processImports = require('./process-imports');
 const porcessReplaceComponentNode = require('./process-replace-component-node');
@@ -29,6 +30,8 @@ function generator(jsxTransformer, componentTransformer) {
         transformed: false,
       };
     }
+
+    removeConstantConditions(ast);
 
     const { name, componentNode, componentExportNode } = getComponentVisitor(ast);
     const { helpers: jsxHelpers } = jsxTransformer(ast, name, componentNode, state, config);
