@@ -26,17 +26,22 @@ export default (component, props) => {
       } else {
         component.propTypes[propName] = PropTypes.oneOfType(type.map(propType));
       }
+    } else if (required) {
+      component.propTypes[propName] = propType(type).required;
     } else {
-      if (required) {
-        component.propTypes[propName] = propType(type).required;
-      } else {
-        component.propTypes[propName] = propType(type);
-      }
+      component.propTypes[propName] = propType(type);
     }
 
     if (typeof prop.default !== 'undefined') {
+      const hasFunctionType =
+        prop.type === Function ||
+        (Array.isArray(prop.type) && prop.type.indexOf(Function) >= 0);
       if (!component.defaultProps) component.defaultProps = {};
-      component.defaultProps[propName] = prop.default
+      if (typeof prop.default === 'function' && !hasFunctionType) {
+        component.defaultProps[propName] = prop.default();
+      } else {
+        component.defaultProps[propName] = prop.default;
+      }
     }
   });
 };
