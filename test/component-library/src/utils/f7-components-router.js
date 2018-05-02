@@ -8,6 +8,7 @@ let routerComponentIdCounter = 0;
 export default {
   proto: {
     pageComponentLoader(routerEl, component, componentUrl, options, resolve, reject) {
+      const router = this;
       const el = routerEl;
       let routerComponent;
       routers.views.forEach((data) => {
@@ -27,6 +28,7 @@ export default {
         id,
         params: Utils.extend({}, options.route.params),
       };
+      routerComponent.$f7router = router;
       routerComponent.$f7route = options.route;
 
       let resolved;
@@ -89,15 +91,16 @@ export default {
       }
     },
     tabComponentLoader(tabEl, component, componentUrl, options, resolve, reject) {
+      const router = this;
       if (!tabEl) reject();
 
-      let tabComponent;
+      let tabsComponent;
       routers.tabs.forEach((tabData) => {
         if (tabData.el && tabData.el === tabEl) {
-          tabComponent = tabData.component;
+          tabsComponent = tabData.component;
         }
       });
-      if (!tabComponent) {
+      if (!tabsComponent) {
         reject();
         return;
       }
@@ -109,18 +112,19 @@ export default {
         params: Utils.extend({}, options.route.params),
       };
 
-      tabComponent.$f7route = options.route;
+      tabsComponent.$f7router = router;
+      tabsComponent.$f7route = options.route;
 
       let resolved;
       function onDidUpdate(componentRouterData) {
-        if (componentRouterData.component !== tabComponent || resolved) return;
+        if (componentRouterData.component !== tabsComponent || resolved) return;
         events.off('tabRouterDidUpdate', onDidUpdate);
 
         let tabEvents;
         if (component.on) {
           tabEvents = Utils.extend({}, component.on);
           Object.keys(tabEvents).forEach((pageEvent) => {
-            tabEvents[pageEvent] = tabEvents[pageEvent].bind(tabComponent);
+            tabEvents[pageEvent] = tabEvents[pageEvent].bind(tabsComponent);
           });
         }
 
@@ -132,7 +136,7 @@ export default {
 
       events.on('tabRouterDidUpdate', onDidUpdate);
 
-      tabComponent.setState({ tabContent });
+      tabsComponent.setState({ tabContent });
     },
     removeTabContent(tabEl) {
       if (!tabEl) return;
