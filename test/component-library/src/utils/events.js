@@ -20,6 +20,14 @@ const eventsEmitter = {
       }
     });
   },
+  once(events, handler) {
+    if (typeof handler !== 'function') return;
+    function onceHandler(...args) {
+      handler(...args);
+      eventsEmitter.off(events, onceHandler);
+    }
+    eventsEmitter.on(events, onceHandler);
+  },
   emit(events, ...args) {
     events.split(' ').forEach((event) => {
       if (eventsEmitter.listeners && eventsEmitter.listeners[event]) {
