@@ -201,6 +201,21 @@ export default {
     }
     return inputEl;
   },
+  watch: {
+    'props.value': function watchValue() {
+      const self = this;
+      const {
+        type,
+      } = self.props;
+
+      if (type === 'range' || type === 'toggle') return;
+
+      const f7 = self.$f7;
+      if (!f7) return;
+
+      self.updateInputOnDidUpdate = true;
+    },
+  },
   componentDidCreate() {
     const self = this;
     self.onFocusBound = self.onFocus.bind(self);
@@ -239,6 +254,24 @@ export default {
       }
     });
   },
+  componentDidUpdate() {
+    const self = this;
+    const { validate, resizable } = self.props;
+    const f7 = self.$f7;
+    if (!f7) return;
+    if (self.updateInputOnDidUpdate) {
+      const inputEl = self.refs.inputEl;
+      if (!inputEl) return;
+      self.updateInputOnDidUpdate = false;
+      f7.input.checkEmptyState(inputEl);
+      if (validate) {
+        f7.input.validate(inputEl);
+      }
+      if (resizable) {
+        f7.input.resizeTextarea(inputEl);
+      }
+    }
+  },
   componentWillUnmount() {
     const self = this;
 
@@ -257,34 +290,7 @@ export default {
     inputEl.removeEventListener('input:empty', self.onInputEmptyBound, false);
     inputEl.removeEventListener('input:clear', self.onInputClearBound, false);
   },
-  watch: {
-    'props.value': function watchValue() {
-      const self = this;
-      const {
-        type,
-        validate,
-        resizable,
-      } = self.props;
 
-      if (type === 'range' || type === 'toggle') return;
-
-      const f7 = self.$f7;
-      if (!f7) return;
-
-      const inputEl = self.refs.inputEl;
-      if (!inputEl) return;
-
-      self.$nextTick(() => {
-        f7.input.checkEmptyState(inputEl);
-        if (validate) {
-          f7.input.validate(inputEl);
-        }
-        if (resizable) {
-          f7.input.resizeTextarea(inputEl);
-        }
-      });
-    },
-  },
   methods: {
     onTextareaResize(event) {
       this.dispatchEvent('textarea:resize textareaResize', event);

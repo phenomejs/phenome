@@ -235,7 +235,7 @@ export default {
     };
   },
   computed: {
-    // TODO!
+    // TODO set forced/computed !
     // sortableComputed() {
     //   return this.sortable || this.$parent.sortable || this.$parent.sortableComputed;
     // },
@@ -249,7 +249,7 @@ export default {
   componentDidCreate() {
     const self = this;
     self.onClickBound = self.onClick.bind(self);
-    self.onChangeBound = self.onChangeBound.bind(self);
+    self.onChangeBound = self.onChange.bind(self);
     self.onSwipeoutOpenBound = self.onSwipeoutOpen.bind(self);
     self.onSwipeoutOpenedBound = self.onSwipeoutOpened.bind(self);
     self.onSwipeoutCloseBound = self.onSwipeoutClose.bind(self);
@@ -262,7 +262,7 @@ export default {
     self.onAccCloseBound = self.onAccClose.bind(self);
     self.onAccClosedBound = self.onAccClosed.bind(self);
   },
-  componentMounted() {
+  componentDidMount() {
     const self = this;
     const el = self.refs.el;
     if (!el) return;
