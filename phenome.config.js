@@ -1,7 +1,7 @@
 module.exports = {
-  paths: ['./component-library/src/**/*.js', './component-library/src/**/*.jsx'],
+  paths: ['./test/component-library/src/**/*.js', './test/component-library/src/**/*.jsx'],
   react: {
-    out: './component-library/dist/react/',
+    out: './test/component-library/dist/react/',
     helpers: {
       el: 'auto',
       slots: 'auto',
@@ -14,7 +14,7 @@ module.exports = {
     },
   },
   vue: {
-    out: './component-library/dist/vue/',
+    out: './test/component-library/dist/vue/',
     helpers: {
       el: 'auto',
       slots: 'auto',
