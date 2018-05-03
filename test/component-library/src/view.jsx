@@ -85,25 +85,27 @@ export default {
       </div>
     );
   },
+  componentDidCreate() {
+    const self = this;
+    self.onSwipeBackMoveBound = self.onSwipeBackMove.bind(self);
+    self.onSwipeBackBeforeChangeBound = self.onSwipeBackBeforeChange.bind(self);
+    self.onSwipeBackAfterChangeBound = self.onSwipeBackAfterChange.bind(self);
+    self.onSwipeBackBeforeResetBound = self.onSwipeBackBeforeReset.bind(self);
+    self.onSwipeBackAfterResetBound = self.onSwipeBackAfterReset.bind(self);
+    self.onTabShowBound = self.onTabShow.bind(self);
+    self.onTabHideBound = self.onTabHide.bind(self);
+  },
   componentDidMount() {
     const self = this;
     const el = self.refs.el;
 
-    self.onSwipeBackMove = self.onSwipeBackMove.bind(self);
-    self.onSwipeBackBeforeChange = self.onSwipeBackBeforeChange.bind(self);
-    self.onSwipeBackAfterChange = self.onSwipeBackAfterChange.bind(self);
-    self.onSwipeBackBeforeReset = self.onSwipeBackBeforeReset.bind(self);
-    self.onSwipeBackAfterReset = self.onSwipeBackAfterReset.bind(self);
-    self.onTabShow = self.onTabShow.bind(self);
-    self.onTabHide = self.onTabHide.bind(self);
-
-    el.addEventListener('swipeback:move', self.onSwipeBackMove);
-    el.addEventListener('swipeback:beforechange', self.onSwipeBackBeforeChange);
-    el.addEventListener('swipeback:afterchange', self.onSwipeBackAfterChange);
-    el.addEventListener('swipeback:beforereset', self.onSwipeBackBeforeReset);
-    el.addEventListener('swipeback:afterreset', self.onSwipeBackAfterReset);
-    el.addEventListener('tab:show', self.onTabShow);
-    el.addEventListener('tab:hide', self.onTabHide);
+    el.addEventListener('swipeback:move', self.onSwipeBackMoveBound);
+    el.addEventListener('swipeback:beforechange', self.onSwipeBackBeforeChangeBound);
+    el.addEventListener('swipeback:afterchange', self.onSwipeBackAfterChangeBound);
+    el.addEventListener('swipeback:beforereset', self.onSwipeBackBeforeResetBound);
+    el.addEventListener('swipeback:afterreset', self.onSwipeBackAfterResetBound);
+    el.addEventListener('tab:show', self.onTabShowBound);
+    el.addEventListener('tab:hide', self.onTabHideBound);
 
     self.setState({ pages: [] });
 
@@ -126,13 +128,13 @@ export default {
     const self = this;
     const el = self.refs.el;
 
-    el.removeEventListener('swipeback:move', self.onSwipeBackMove);
-    el.removeEventListener('swipeback:beforechange', self.onSwipeBackBeforeChange);
-    el.removeEventListener('swipeback:afterchange', self.onSwipeBackAfterChange);
-    el.removeEventListener('swipeback:beforereset', self.onSwipeBackBeforeReset);
-    el.removeEventListener('swipeback:afterreset', self.onSwipeBackAfterReset);
-    el.removeEventListener('tab:show', self.onTabShow);
-    el.removeEventListener('tab:hide', self.onTabHide);
+    el.removeEventListener('swipeback:move', self.onSwipeBackMoveBound);
+    el.removeEventListener('swipeback:beforechange', self.onSwipeBackBeforeChangeBound);
+    el.removeEventListener('swipeback:afterchange', self.onSwipeBackAfterChangeBound);
+    el.removeEventListener('swipeback:beforereset', self.onSwipeBackBeforeResetBound);
+    el.removeEventListener('swipeback:afterreset', self.onSwipeBackAfterResetBound);
+    el.removeEventListener('tab:show', self.onTabShowBound);
+    el.removeEventListener('tab:hide', self.onTabHideBound);
 
     if (!self.props.init) return;
     if (self.f7View && self.f7View.destroy) self.f7View.destroy();

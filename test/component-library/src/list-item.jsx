@@ -227,7 +227,7 @@ export default {
       </li>
     );
   },
-  data() {
+  state() {
     return {
       itemInputForced: false,
       inlineLabelForced: false,
