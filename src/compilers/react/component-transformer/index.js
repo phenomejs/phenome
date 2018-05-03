@@ -161,9 +161,9 @@ function addWatchers(watchers, propNode) {
       .replace(/{{prevProps}}/g, methodArguments[0])
       .replace(/{{prevState}}/g, methodArguments[1]);
 
-    const watcherNode = codeToAst(watcherCode).body[0].expression;
-    watcherNode.arguments[4].params = watcher.value.params;
-    watcherNode.arguments[4].body = watcher.value.body;
+    const watcherNode = codeToAst(watcherCode).body[0];
+    watcherNode.expression.arguments[4].params = watcher.value.params;
+    watcherNode.expression.arguments[4].body = watcher.value.body;
 
     newWatchers.push(watcherNode);
   });
@@ -176,6 +176,21 @@ function modifyReactClass(name, componentNode, config, requiredHelpers) {
   const reactHelpersClassNode = codeToAst(reactHelpersClassCode).body[0];
 
   let reactClassConstructor;
+  const supportedProps = [
+    'name',
+    'props',
+    'state',
+    'render',
+    'methods',
+    'computed',
+    'componentWillCreate',
+    'componentDidCreate',
+    'componentWillUpdate',
+    'componentDidUpdate',
+    'componentWillMount',
+    'componentDidMount',
+    'componentWillUnmount',
+  ];
 
   reactClassBody.forEach((node) => {
     if (node.kind === 'constructor') reactClassConstructor = node;
@@ -184,6 +199,10 @@ function modifyReactClass(name, componentNode, config, requiredHelpers) {
   let propsNode;
   let watchers;
 
+  const staticProps = [];
+  componentNode.properties.forEach((prop) => {
+    if (supportedProps.indexOf(prop.key.name) < 0) staticProps.push(prop);
+  });
   traversePhenomeComponent(componentNode, {
     state(node) {
       const stateSetterBody = codeToAst(stateFunctionCode).body[0];
@@ -285,6 +304,7 @@ function modifyReactClass(name, componentNode, config, requiredHelpers) {
 
   return {
     propsNode,
+    staticProps,
     reactClassNode,
   };
 }
@@ -294,7 +314,7 @@ function transform(ast, name = 'MyComponent', componentNode, state, config, jsxH
 
   const camelCaseName = toCamelCase(name);
   const requiredHelpers = findHelpers(ast, componentNode, config, jsxHelpers);
-  const { reactClassNode, propsNode } = modifyReactClass(camelCaseName, componentNode, config, requiredHelpers);
+  const { reactClassNode, propsNode, staticProps } = modifyReactClass(camelCaseName, componentNode, config, requiredHelpers);
 
   if (requiredHelpers.watch) {
     state.addRuntimeHelper('__reactComponentWatch', './runtime-helpers/react-component-watch.js');
@@ -322,6 +342,13 @@ function transform(ast, name = 'MyComponent', componentNode, state, config, jsxH
     const setPropsFunctionCall = codeToAst(setPropsFunctionCallCode.replace(/{{name}}/g, camelCaseName));
     setPropsFunctionCall.body[0].expression.arguments[1] = propsNode;
     state.addDeclaration('set-props-function-call', setPropsFunctionCall, true);
+  }
+  if (staticProps.length) {
+    staticProps.forEach((prop) => {
+      const staticPropAst = codeToAst(`${camelCaseName}.${prop.key.name} = {}`).body[0];
+      staticPropAst.expression.right = prop.value;
+      state.addDeclaration(`set-static-prop-${prop.key.name}`, staticPropAst, true);
+    });
   }
 
   state.addExport(camelCaseName);
