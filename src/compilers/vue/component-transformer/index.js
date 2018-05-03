@@ -242,7 +242,7 @@ function findHelpers(ast, componentNode, config, jsxHelpers) {
   });
 
   traversePhenomeComponent(componentNode, {
-    data() {
+    state() {
       if (foundHelpers.indexOf('state') < 0) foundHelpers.push('state');
     },
     props() {
