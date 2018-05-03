@@ -2,7 +2,7 @@
   "name": "phenome",
   "version": "0.0.1",
   "description": "Coming soon",
-  "main": "src/compiler-io/index.js",
+  "main": "lib/compiler-io/index.js",
   "directories": {
     "test": "test"
   },
