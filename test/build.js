@@ -5,7 +5,7 @@ const rollupCommonJs = require('rollup-plugin-commonjs');
 const rollupReplace = require('rollup-plugin-replace');
 const rollupVue = require('rollup-plugin-vue');
 
-const phenomeCompiler = require('../src/compiler-io/');
+const phenomeCompiler = require('../lib/compiler-io/');
 
 const buildComponentLibrary = async () => {
   await phenomeCompiler();
