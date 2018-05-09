@@ -8,6 +8,7 @@ module.exports = {
       props: 'auto',
       children: 'auto',
       parent: 'auto',
+      refs: 'auto',
       dispatchEvent: 'auto',
       watch: 'auto',
       forceUpdate: 'auto',
