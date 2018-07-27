@@ -1,6 +1,6 @@
 {
   "name": "phenome",
-  "version": "0.0.15",
+  "version": "0.0.16",
   "description": "Coming soon",
   "main": "lib/compiler-io/index.js",
   "directories": {
