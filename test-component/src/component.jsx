@@ -7,7 +7,9 @@ export default {
   },
   render() {
     return (
-      <div className="test-component" />
+      <div className="test-component">
+        {/* Hello */}
+      </div>
     );
   },
 }

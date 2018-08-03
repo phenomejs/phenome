@@ -9,7 +9,7 @@
             "type": "node",
             "request": "launch",
             "name": "Launch Program",
-            "program": "${workspaceFolder}/test/build.js"
+            "program": "${workspaceFolder}/test-component/build.js"
         },
     ]
 }
