@@ -2,7 +2,7 @@ module.exports = {
   paths: ['./test-component/src/**/*.js', './test-component/src/**/*.jsx'],
   react: {
     out: './test-component/dist/react/',
-    generateTypeScriptDefinitions: true,
+    typeScriptDefinitions: true,
     helpers: {
       el: 'auto',
       slots: 'auto',
