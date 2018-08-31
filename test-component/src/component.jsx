@@ -10,6 +10,7 @@ export default {
       required: true,
     },
     two: window.FormData,
+    dt: Date,
     ...Mixins.colorProps,
   },
   methods: {
