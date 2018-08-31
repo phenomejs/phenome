@@ -1,3 +1,16 @@
+import Mixins from './mixins';
+
+const moreProps = {
+  moreFoo: String,
+};
+const deepProps = {
+  moreDeepProps: {
+    eventMoreDeepProps: {
+      superDeepFoo: String,
+    },
+  }
+}
+
 export default {
   name: 'my-phenome-component',
   props: {
@@ -10,7 +23,9 @@ export default {
       required: true,
     },
     two: window.FormData,
-    dt: Date,
+    date: Date,
+    ...moreProps,
+    ...deepProps.moreDeepProps.eventMoreDeepProps,
     ...Mixins.colorProps,
   },
   methods: {
