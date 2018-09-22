@@ -1,5 +1,10 @@
 import Mixins from './mixins';
-
+/* phenome-dts-imports
+import Something from 'somewhere';
+*/
+/* phenome-react-dts-imports
+import SomethingReact from 'somewhere-react';
+*/
 const moreProps = {
   moreFoo: String,
 };
@@ -10,6 +15,11 @@ const deepProps = {
     },
   }
 }
+
+/* phenome-dts-instance
+  instanceFoo: String
+  instanceFoo2: String
+*/
 
 export default {
   name: 'my-phenome-component',
@@ -27,6 +37,13 @@ export default {
     ...moreProps,
     ...deepProps.moreDeepProps.eventMoreDeepProps,
     ...Mixins.colorProps,
+    /* phenome-dts-props
+    fooDts: string
+    fooDts2: string
+    */
+    /* phenome-react-dts-props
+    reactFoo: string
+    */
   },
   methods: {
     open(animate = true) {
